@@ -120,7 +120,7 @@
                                                                                        <li><a href="index-3.jsp">Home 3</a></li>-->
                                             </ul>
                                         </li>
-                                        <li class="menu-item-has-children"><a href="course.jsp">Course</a>
+                                        <li class="menu-item-has-children"><a href="get-course-info">Course</a>
                                             <ul class="sub-menu">
                                                 <!--                                       <li><a href="course.jsp">Course 1</a></li>
                                                                                        <li><a href="course-2.jsp">Course 2</a></li>

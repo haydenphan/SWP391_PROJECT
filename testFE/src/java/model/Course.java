@@ -12,6 +12,13 @@ public class Course {
     private int TotalEnrolled;
     private LocalDateTime LastUpdate;
     private String Requirements;
+    private String Level;
+    private int Ratings;
+    private double Price;
+    private String Language;
+    private int Duration;
+    private String BackgroundImage;
+    private String Curriculum;
 
     public void setCourseID(int courseID) {
         this.CourseID = courseID;
@@ -93,11 +100,66 @@ public class Course {
         return Requirements;
     }
 
+    public void setLevel(String Level) {
+        this.Level = Level;
+    }
+
+    public void setRatings(int Ratings) {
+        this.Ratings = Ratings;
+    }
+
+    public void setPrice(double Price) {
+        this.Price = Price;
+    }
+
+    public void setLanguage(String Language) {
+        this.Language = Language;
+    }
+
+    public void setDuration(int Duration) {
+        this.Duration = Duration;
+    }
+
+    public void setBackgroundImage(String BackgroundImage) {
+        this.BackgroundImage = BackgroundImage;
+    }
+
+    public void setCurriculum(String Curriculum) {
+        this.Curriculum = Curriculum;
+    }
+
+    public String getLevel() {
+        return Level;
+    }
+
+    public int getRatings() {
+        return Ratings;
+    }
+
+    public double getPrice() {
+        return Price;
+    }
+
+    public String getLanguage() {
+        return Language;
+    }
+
+    public int getDuration() {
+        return Duration;
+    }
+
+    public String getBackgroundImage() {
+        return BackgroundImage;
+    }
+
+    public String getCurriculum() {
+        return Curriculum;
+    }
+
     public Course() {
     }
 
-    public Course(int courseID, String CourseName, String Description, int CreatedBy, LocalDateTime CreatedDate, boolean IsPublished, int SubcategoryID, int TotalEnrolled, LocalDateTime LastUpdate, String Requirements) {
-        this.CourseID = courseID;
+    public Course(String CourseName, String Description, int CreatedBy, LocalDateTime CreatedDate, boolean IsPublished, int SubcategoryID, int TotalEnrolled, LocalDateTime LastUpdate, String Requirements, String Level, int Ratings, double Price, String Language, int Duration, String BackgroundImage, String Curriculum) {
         this.CourseName = CourseName;
         this.Description = Description;
         this.CreatedBy = CreatedBy;
@@ -107,6 +169,13 @@ public class Course {
         this.TotalEnrolled = TotalEnrolled;
         this.LastUpdate = LastUpdate;
         this.Requirements = Requirements;
+        this.Level = Level;
+        this.Ratings = Ratings;
+        this.Price = Price;
+        this.Language = Language;
+        this.Duration = Duration;
+        this.BackgroundImage = BackgroundImage;
+        this.Curriculum = Curriculum;
     }
 
     @Override

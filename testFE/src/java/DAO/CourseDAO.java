@@ -1,7 +1,6 @@
 package DAO;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Category;
 import model.Course;
 
 public class CourseDAO extends DAO<Course> {
@@ -16,19 +16,26 @@ public class CourseDAO extends DAO<Course> {
     @Override
     public int insert(Course t) {
         int res = 0;
-        String sql = "INSERT INTO Courses (CourseName, Description, CreatedBy, CreatedDate, IsPublished, SubcategoryID, TotalEnrolled, LastUpdate, Requirements) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Courses (CourseName, Description, CreatedBy, CreatedDate, IsPublished, SubcategoryID, TotalEnrolled, LastUpdate, Requirements, Level, Ratings, Price, Language, Duration, BackgroundImage, Curriculum) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
 
             st.setString(1, t.getCourseName());
             st.setString(2, t.getDescription());
             st.setInt(3, t.getCreatedBy());
-            st.setDate(4, Date.valueOf(t.getCreatedDate().toLocalDate()));
+            st.setTimestamp(4, java.sql.Timestamp.valueOf(t.getCreatedDate())); // Correct conversion from LocalDateTime to java.sql.Timestamp
             st.setBoolean(5, t.isIsPublished());
             st.setInt(6, t.getSubcategoryID());
             st.setInt(7, t.getTotalEnrolled());
-            st.setDate(8, Date.valueOf(t.getLastUpdate().toLocalDate()));
+            st.setTimestamp(8, java.sql.Timestamp.valueOf(t.getLastUpdate())); // Correct conversion from LocalDateTime to java.sql.Timestamp
             st.setString(9, t.getRequirements());
+            st.setString(10, t.getLevel());
+            st.setInt(11, t.getRatings());
+            st.setDouble(12, t.getPrice());
+            st.setString(13, t.getLanguage());
+            st.setInt(14, t.getDuration());
+            st.setString(15, t.getBackgroundImage());
+            st.setString(16, t.getCurriculum());
 
             res = st.executeUpdate();
 
@@ -44,7 +51,7 @@ public class CourseDAO extends DAO<Course> {
 
     public static List<Course> getAllCourses() {
         List<Course> courses = new ArrayList<>();
-        String sql = "SELECT CourseID, CourseName, Description, CreatedBy, CreatedDate, IsPublished, SubcategoryID, TotalEnrolled, LastUpdate, Requirements FROM Courses";
+        String sql = "SELECT * FROM Courses";
 
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql); ResultSet rs = st.executeQuery()) {
 
@@ -54,12 +61,19 @@ public class CourseDAO extends DAO<Course> {
                 course.setCourseName(rs.getString("CourseName"));
                 course.setDescription(rs.getString("Description"));
                 course.setCreatedBy(rs.getInt("CreatedBy"));
-                course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime()); // Correct conversion from java.sql.Date to LocalDate
+                course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
                 course.setIsPublished(rs.getBoolean("IsPublished"));
                 course.setSubcategoryID(rs.getInt("SubcategoryID"));
                 course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
-                course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime()); // Correct conversion from java.sql.Date to LocalDate
+                course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime());
                 course.setRequirements(rs.getString("Requirements"));
+                course.setLevel(rs.getString("Level"));
+                course.setRatings(rs.getInt("Ratings"));
+                course.setPrice(rs.getDouble("Price"));
+                course.setLanguage(rs.getString("Language"));
+                course.setDuration(rs.getInt("Duration"));
+                course.setBackgroundImage(rs.getString("BackgroundImage"));
+                course.setCurriculum(rs.getString("Curriculum"));
 
                 courses.add(course);
             }
@@ -74,6 +88,7 @@ public class CourseDAO extends DAO<Course> {
         return courses;
     }
 
+    // Phương thức lấy thông tin khóa học dựa trên ID
     public static Course getCoursesByID(int id) {
         String sql = "SELECT * FROM Courses WHERE CourseID = ?";
         Course course = null;
@@ -93,6 +108,13 @@ public class CourseDAO extends DAO<Course> {
                     course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
                     course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime());
                     course.setRequirements(rs.getString("Requirements"));
+                    course.setLevel(rs.getString("Level"));
+                    course.setRatings(rs.getInt("Ratings"));
+                    course.setPrice(rs.getDouble("Price"));
+                    course.setLanguage(rs.getString("Language"));
+                    course.setDuration(rs.getInt("Duration"));
+                    course.setBackgroundImage(rs.getString("BackgroundImage"));
+                    course.setCurriculum(rs.getString("Curriculum"));
                 }
             }
 
@@ -106,11 +128,32 @@ public class CourseDAO extends DAO<Course> {
         return course;
     }
 
-    public static void main(String[] args) {
-        CourseDAO dao = new CourseDAO();
-        List<Course> list = dao.getAllCourses();
-        for (Course course : list) {
-            System.out.println(course.toString());
+    public static Category getCourseSubCategory(Course course) {
+        int subCategoryID = course.getSubcategoryID();
+        String sql = "SELECT Categories.CategoryID, Categories.CategoryName\n"
+                + "FROM Categories\n"
+                + "INNER JOIN Subcategories\n"
+                + "ON Categories.CategoryID=Subcategories.CategoryID\n"
+                + "WHERE Subcategories.SubcategoryID = ?;";
+
+        Category category = null;
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, subCategoryID);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    category = new Category();
+                    category.setCategoryID(rs.getInt("CategoryID"));
+                    category.setCategoryName(rs.getString("CategoryName"));
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        return category;
     }
 }
