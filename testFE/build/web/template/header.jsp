@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="model.*" %>
+<%@ page import="java.util.ArrayList" %>
 
 
 <% 
@@ -57,54 +58,28 @@
                                     <div class="dropdown-category">
                                         <nav>
                                             <ul>
-                                                <li class="item-has-children"><a href="course.jsp">Development</a>
+                                                <%
+                                                    ArrayList<Category> categories = (ArrayList<Category>) request.getAttribute("categories");
+                                                    if (categories != null) {
+                                                        for (Category category : categories) {
+                                                %>
+                                                <li class="item-has-children">
+                                                    <a href="course.jsp?category=<%=category.getCategoryID()%>"><%=category.getName()%></a>
                                                     <ul class="category-submenu">
-                                                        <li><a href="course.jsp">All Development</a></li>
-                                                        <li><a href="course.jsp">Mobile App</a></li>
-                                                        <li><a href="course.jsp">Web Development</a></li>
-                                                        <li><a href="course.jsp">Development tools</a></li>
-                                                        <li><a href="course.jsp">Database</a></li>
-                                                        <li><a href="course.jsp">Programming language</a></li>
+                                                        <li><a href="course.jsp?category=<%=category.getCategoryID()%>">All <%=category.getName()%></a></li>
+                                                            <%
+                                                                for (SubCategory subCategory : category.getSubCategories()) {
+                                                            %>
+                                                        <li><a href="course.jsp?subcategory=<%=subCategory.getSubCategoryID()%>"><%=subCategory.getName()%></a></li>
+                                                            <%
+                                                                }
+                                                            %>
                                                     </ul>
                                                 </li>
-                                                <li class="item-has-children"><a href="course.jsp">Art & Design</a>
-                                                    <ul class="category-submenu">
-                                                        <li><a href="course.jsp">Web Design</a></li>
-                                                        <li><a href="course.jsp">Graphic Design</a></li>
-                                                        <li><a href="course.jsp">Design tools</a></li>
-                                                        <li><a href="course.jsp">All Art</a></li>
-                                                        <li><a href="course.jsp">Marketing</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="item-has-children"><a href="course.jsp">Business</a>
-                                                    <ul class="category-submenu">
-                                                        <li><a href="course.jsp">All Business</a></li>
-                                                        <li><a href="course.jsp">Communications</a></li>
-                                                        <li><a href="course.jsp">Finance</a></li>
-                                                        <li><a href="course.jsp">Management</a></li>
-                                                        <li><a href="course.jsp">Sales</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="item-has-children"><a href="course.jsp">Life Style</a>
-                                                    <ul class="category-submenu">
-                                                        <li><a href="course.jsp">Life Style</a></li>
-                                                        <li><a href="course.jsp">Mental Health</a></li>
-                                                        <li><a href="course.jsp">Dieting</a></li>
-                                                        <li><a href="course.jsp">All Art</a></li>
-                                                        <li><a href="course.jsp">Nutrition</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="item-has-children"><a href="course.jsp">Health & Fitness</a>
-                                                    <ul class="category-submenu">
-                                                        <li><a href="course.jsp">All Health & Fitness</a></li>
-                                                        <li><a href="course.jsp">Beauty & Makeup</a></li>
-                                                        <li><a href="course.jsp">Food & Beverages</a></li>
-                                                        <li><a href="course.jsp">Good Food</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li><a href="course.jsp">Data Science</a></li>
-                                                <li><a href="course.jsp">Marketing</a></li>
-                                                <li><a href="course.jsp">Photography</a></li>
+                                                <%
+                                                        }
+                                                    }
+                                                %>
                                             </ul>
                                         </nav>
                                     </div>
@@ -120,7 +95,7 @@
                                                                                        <li><a href="index-3.jsp">Home 3</a></li>-->
                                             </ul>
                                         </li>
-                                        <li class="menu-item-has-children"><a href="get-course-info">Course</a>
+                                        <li class="menu-item-has-children"><a href="course.jsp">Course</a>
                                             <ul class="sub-menu">
                                                 <!--                                       <li><a href="course.jsp">Course 1</a></li>
                                                                                        <li><a href="course-2.jsp">Course 2</a></li>

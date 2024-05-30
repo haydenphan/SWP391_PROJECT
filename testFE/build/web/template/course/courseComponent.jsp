@@ -24,27 +24,25 @@
         requirementList = Collections.singletonList(requirements); // Treat as a single sentence if no delimiters found
     }
     
-    Category category = CourseDAO.getCourseSubCategory(rCourse);
 %>
 
 <div class="col-xl-4 col-lg-6 col-md-6">
     <div class="course-wrapper-2 mb-30">
         <div class="student-course-img">
-            <img src="${pageContext.request.contextPath}/img/course/course-01.jpg" alt="course-img">
-                <!-- <%=rCourse.getBackgroundImage() %> -->
+            <img src="${pageContext.request.contextPath}/img/course/course-01.jpg" alt="courde-img">
         </div>
         <div class="course-cart">
             <div class="course-info-wrapper">
                 <div class="cart-info-body">
                     <span class="category-color category-color-1"><a
-                            href="course.html"><%=category.getCategoryName() %></a></span>
+                            href="course.html">Development</a></span>
                     <a href="${pageContext.request.contextPath}/pages/courseDetails.jsp">
                         <h3>
                             <%=rCourse.getCourseName() %>
                         </h3>
                     </a>
                     <div class="cart-lavel">
-                        <h5>Level : <span><%=rCourse.getLevel() %></span></h5>
+                        <h5>Level : <span>Beginner</span></h5>
                         <p>
                             <%=rCourse.getDescription() %>
                         </p>
@@ -79,7 +77,8 @@
                     <span class="ms-2">12 Lessons</span>
                 </div>
                 <div class="portfolio-price">
-                    <span><%=rCourse.getPrice() %></span>
+                    <span>$12.57</span>
+                    <del>$24.50</del>
                 </div>
             </div>
             <div class="student-course-text">
@@ -93,15 +92,13 @@
                 <div class="user-icon">
                     <a href="instructor-profile.html"><i class="fas fa-user"></i>Danial</a>
                 </div>
-                <div class="course-star">
-                    <% for (int i = 1; i <= 5; i++) { %>
-                    <ul>
-                        <li>
-                            <i class="fas fa-star<%= (i <= rCourse.getRatings()) ? "" : " fal" %>"></i>
-                        </li>
-                    </ul>
-                    <% } %>
-                    <span>(100 reviews)</span>
+                <div class="course-icon">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fal fa-star"></i>
+                    <span>(25)</span>
                 </div>
             </div>
         </div>

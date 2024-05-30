@@ -47,8 +47,6 @@
                 } else {
                     requirementList = Collections.singletonList(requirements); // Treat as a single sentence if no delimiters found
                 }
-                
-                Category category = CourseDAO.getCourseSubCategory(rCourse);
             %>
 
             <!-- course-details-area-start -->
@@ -62,14 +60,22 @@
                                         <%=rCourse.getCourseName() %>
                                     </h2>
                                     <div class="course-star">
-                                        <% for (int i = 1; i <= 5; i++) { %>
                                         <ul>
-                                            <li>
-                                                <i class="fas fa-star<%= (i <= rCourse.getRatings()) ? "" : " fal" %>"></i>
-                                            </li>
+                                            <li><i class="fas fa-star"></i></li>
                                         </ul>
-                                        <% } %>
-                                        <span>(100 reviews)</span>
+                                        <ul>
+                                            <li><i class="fas fa-star"></i></li>
+                                        </ul>
+                                        <ul>
+                                            <li><i class="fas fa-star"></i></li>
+                                        </ul>
+                                        <ul>
+                                            <li><i class="fas fa-star"></i></li>
+                                        </ul>
+                                        <ul>
+                                            <li><i class="fal fa-star"></i></li>
+                                        </ul>
+                                        <span>(254 reviews)</span>
                                     </div>
                                 </div>
                                 <div class="course-detelis-meta">
@@ -97,7 +103,7 @@
                                     </div>
                                     <div class="course-category">
                                         <p>01 January 2022 </p>
-                                        <span><a href="course.html"><%=category.getCategoryName() %></a></span>
+                                        <span><a href="course.html">Data Science</a></span>
                                     </div>
                                 </div>
                                 <div class="course-description pt-45 pb-30">

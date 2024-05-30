@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="model.*" %>
+<%@ page import="java.util.ArrayList" %>
 
 
 <% 
@@ -57,8 +58,30 @@
                                     <div class="dropdown-category">
                                         <nav>
                                             <ul>
-                                                <li class="item-has-children"><a href="course.jsp">Development</a>
+                                                <%
+                                                    ArrayList<Category> categories = (ArrayList<Category>) request.getAttribute("categories");
+                                                    if (categories != null) {
+                                                        for (Category category : categories) {
+                                                %>
+                                                <li class="item-has-children">
+                                                    <a href="course.jsp?category=<%=category.getCategoryID()%>"><%=category.getName()%></a>
                                                     <ul class="category-submenu">
+<<<<<<< HEAD:testFE/testFE/web/template/header.jsp
+                                                        <li><a href="course.jsp?category=<%=category.getCategoryID()%>">All <%=category.getName()%></a></li>
+                                                            <%
+                                                                for (SubCategory subCategory : category.getSubCategories()) {
+                                                            %>
+                                                        <li><a href="course.jsp?subcategory=<%=subCategory.getSubCategoryID()%>"><%=subCategory.getName()%></a></li>
+                                                            <%
+                                                                }
+                                                            %>
+                                                    </ul>
+                                                </li>
+                                                <%
+                                                        }
+                                                    }
+                                                %>
+=======
                                                         <li><a href="course.jsp">All Development</a></li>
                                                         <li><a href="course.jsp">Mobile App</a></li>
                                                         <li><a href="course.jsp">Web Development</a></li>
@@ -105,6 +128,7 @@
                                                 <li><a href="course.jsp">Data Science</a></li>
                                                 <li><a href="course.jsp">Marketing</a></li>
                                                 <li><a href="course.jsp">Photography</a></li>
+>>>>>>> origin/master:testFE/web/template/header.jsp
                                             </ul>
                                         </nav>
                                     </div>
@@ -120,7 +144,7 @@
                                                                                        <li><a href="index-3.jsp">Home 3</a></li>-->
                                             </ul>
                                         </li>
-                                        <li class="menu-item-has-children"><a href="get-course-info">Course</a>
+                                        <li class="menu-item-has-children"><a href="course.jsp">Course</a>
                                             <ul class="sub-menu">
                                                 <!--                                       <li><a href="course.jsp">Course 1</a></li>
                                                                                        <li><a href="course-2.jsp">Course 2</a></li>

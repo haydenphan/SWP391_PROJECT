@@ -10,8 +10,7 @@
     </head>
 
     <body>
-        <%-- PRE LOADER --%>
-        <%@ include file="../template/preLoader.jsp" %>
+
 
         <%-- SIDE TOGGLE --%>
         <%@ include file="../template/sideToggle.jsp" %>
@@ -325,11 +324,9 @@
                         </div>
                         <div class="col-xl-9 col-lg-8 col-md-12">
                             <div class="row">
-                                <c:forEach var="course" items="${courses}">
-                                    <jsp:include page="../template/course/courseComponent.jsp">
-                                        <jsp:param name="courseID" value="${course.getCourseID()}" />
-                                    </jsp:include>
-                                </c:forEach>                                
+                                <jsp:include page="../template/course/courseComponent.jsp">
+                                    <jsp:param name="courseID" value="2" />
+                                </jsp:include>
                             </div>
                         </div>
                     </div>
