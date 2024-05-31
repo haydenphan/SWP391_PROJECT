@@ -152,7 +152,7 @@
                <div class="row align-items-center">
                   <div class="col-9">
                      <a href="index.jsp">
-                        <img src="${pageContext.request.contextPath}/img/logo/logo-black.png" alt="Logo">
+                        
                      </a>
                   </div>
                   <div class="col-3 text-end"><button class="side-info-close"><i class="fal fa-times"></i></button>
@@ -199,7 +199,7 @@
                   <div class="col-xl-7 col-lg-7 col-md-5 col-sm-9 col-9">
                      <div class="header-left d-flex align-items-center">
                         <div class="header-logo">
-                           <a href="index.jsp"><img src="${pageContext.request.contextPath}/img/logo/logo-black.png" alt="logo"></a>
+                           
                         </div>
                         <div class="category-menu d-none d-xxl-block">
                            <div class="Category-click">
