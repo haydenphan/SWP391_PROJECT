@@ -1,22 +1,35 @@
 INSERT INTO [dbo].[Categories] ([CategoryName]) VALUES
-('Programming'),
-('Database'),
-('Web Development'),
+('Development'),
+('Art & Design'),
+('Business'),
+('Life Style'),
+('Health & Fitness'),
 ('Data Science'),
-('Networking');
+('Marketing'),
+('Photography');
 GO
 
 INSERT INTO [dbo].[Subcategories] ([SubcategoryName], [CategoryID]) VALUES
-('Java', 1),
-('Python', 1),
-('SQL Server', 2),
-('MySQL', 2),
-('HTML/CSS', 3),
-('JavaScript', 3),
-('Machine Learning', 4),
-('Data Analysis', 4),
-('Network Security', 5),
-('Cloud Networking', 5);
+('Mobile App', 1),
+('Web Development', 1),
+('Development Tools', 1),
+('Database', 1),
+('Programming Language', 1),
+('Web Design', 2),
+('Graphic Design', 2),
+('Design Tools', 2),
+('Communications', 3),
+('Finance', 3),
+('Management', 3),
+('Sales', 3),
+('Nutrition', 5),
+('Dieting', 5);
+GO
+
+INSERT INTO [dbo].[Levels] ([LevelName]) VALUES
+('Beginner'),
+('Intermediate'),
+('Expert');
 GO
 
 INSERT INTO [dbo].[Courses] (
@@ -29,102 +42,19 @@ INSERT INTO [dbo].[Courses] (
     [TotalEnrolled],
     [LastUpdate],
     [Requirements],
-    [Level],
-    [Ratings],
+    [LevelID],
     [Price],
     [Language],
     [Duration],
     [BackgroundImage],
     [Curriculum]
 ) VALUES
-(
-    'Introduction to Java Programming',
-    'This course provides an introduction to Java programming.',
-    9,
-    GETDATE(),
-    1,
-    1,
-    150,
-    GETDATE(),
-    'Basic knowledge of programming.',
-    'Beginner',
-    5,
-    199.99,
-    'English',
-    1200,
-    'https://example.com/images/java.jpg',
-    'Module 1: Basics\nModule 2: OOP\nModule 3: Advanced Topics'
-),
-(
-    'Intermediate SQL Server',
-    'Deep dive into SQL Server intermediate topics.',
-    9,
-    GETDATE(),
-    1,
-    2,
-    200,
-    GETDATE(),
-    'Basic SQL knowledge.',
-    'Intermediate',
-    4,
-    299.99,
-    'English',
-    1800,
-    'https://example.com/images/sql.jpg',
-    'Module 1: SQL Basics\nModule 2: Joins\nModule 3: Performance Tuning'
-),
-(
-    'Expert JavaScript Development',
-    'Master JavaScript with advanced techniques.',
-    9,
-    GETDATE(),
-    1,
-    3,
-    300,
-    GETDATE(),
-    'Intermediate JavaScript knowledge.',
-    'Expert',
-    5,
-    399.99,
-    'English',
-    2400,
-    'https://example.com/images/javascript.jpg',
-    'Module 1: ES6 Features\nModule 2: Asynchronous Programming\nModule 3: Testing'
-),
-(
-    'Python for Data Science',
-    'Learn Python for data analysis and machine learning.',
-    9,
-    GETDATE(),
-    1,
-    1,
-    400,
-    GETDATE(),
-    'Basic Python knowledge.',
-    'Intermediate',
-    5,
-    299.99,
-    'English',
-    1500,
-    'https://example.com/images/python.jpg',
-    'Module 1: Data Analysis\nModule 2: Machine Learning\nModule 3: Deep Learning'
-),
-(
-    'Beginner HTML and CSS',
-    'Get started with web development using HTML and CSS.',
-    9,
-    GETDATE(),
-    1,
-    1,
-    500,
-    GETDATE(),
-    'No prerequisites.',
-    'Beginner',
-    4,
-    99.99,
-    'English',
-    600,
-    'https://example.com/images/html_css.jpg',
-    'Module 1: HTML Basics\nModule 2: CSS Basics\nModule 3: Responsive Design'
-);
+('Introduction to Mobile App Development', 'Learn the basics of mobile app development using Java and Kotlin.', 3, '2023-01-01', 1, 1, 200, '2023-05-01', 'Basic knowledge of programming', 1, 0.00, 'English', 30, 'path/to/image1.jpg', 'Curriculum details...'),
+('Advanced Web Development', 'Master advanced web development techniques with React and Node.js.', 3, '2023-02-15', 1, 2, 150, '2023-05-10', 'Intermediate knowledge of web development', 2, 50.00, 'English', 45, 'path/to/image2.jpg', 'Curriculum details...'),
+('Database Design and Management', 'Comprehensive guide to designing and managing databases.', 3, '2023-03-01', 1, 4, 300, '2023-05-15', 'Basic understanding of databases', 1, 30.00, 'English', 40, 'path/to/image3.jpg', 'Curriculum details...'),
+('Graphic Design for Beginners', 'Learn graphic design fundamentals and tools.', 3, '2023-01-10', 1, 7, 100, '2023-04-20', 'No prior knowledge required', 1, 20.00, 'English', 20, 'path/to/image4.jpg', 'Curriculum details...'),
+('Financial Management 101', 'Introduction to financial management principles and practices.', 3, '2023-03-05', 1, 10, 80, '2023-05-18', 'Basic understanding of finance', 1, 40.00, 'English', 35, 'path/to/image5.jpg', 'Curriculum details...'),
+('Nutrition and Diet Planning', 'Learn how to create balanced and healthy diet plans.', 3, '2023-02-20', 1, 13, 120, '2023-05-20', 'Interest in health and nutrition', 2, 25.00, 'English', 25, 'path/to/image6.jpg', 'Curriculum details...'),
+('Yoga for Beginners', 'A complete guide to starting yoga practice for beginners.', 3, '2023-01-25', 1, 14, 250, '2023-05-22', 'No prior experience required', 1, 0.00, 'English', 15, 'path/to/image7.jpg', 'Curriculum details...')
 GO
+

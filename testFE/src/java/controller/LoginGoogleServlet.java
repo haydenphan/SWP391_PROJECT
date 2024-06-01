@@ -45,9 +45,13 @@ public class LoginGoogleServlet extends HttpServlet {
                     }
                 } else {
                     User existingUser = userDAO.checkExistedGGAccount(googleUser);
+                    int role = existingUser.getRole();
                     if (existingUser != null) {
                         request.getSession().setAttribute("user", existingUser);
-                        response.sendRedirect(request.getContextPath() + "/pages/user-profile.jsp");
+                        if (role == 1) {
+                            response.sendRedirect(request.getContextPath() + "/pages/user-profile.jsp");
+                        }
+                        response.sendRedirect(request.getContextPath() + "/pages/lecturer-profile.jsp");
                     } else {
                         request.setAttribute("error", "User not found. Please register.");
                         RequestDispatcher dis = request.getRequestDispatcher("/errors/errorAlert.jsp");
@@ -70,4 +74,3 @@ public class LoginGoogleServlet extends HttpServlet {
         doGet(request, response);
     }
 }
-

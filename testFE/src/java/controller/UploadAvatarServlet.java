@@ -32,6 +32,10 @@ public class UploadAvatarServlet extends HttpServlet {
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
+        
+        // Print out the upload path for debugging
+        System.out.println("Upload Path: " + uploadPath);
+        System.out.println("File Path: " + filePath);
 
         // Save the file on the server
         try {

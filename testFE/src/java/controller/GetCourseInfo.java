@@ -20,10 +20,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Course;
 
-/**
- *
- * @author ASUS-PRO
- */
 @WebServlet(name = "GetCourseInfo", urlPatterns = {"/get-course-info"})
 public class GetCourseInfo extends HttpServlet {
 
