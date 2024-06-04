@@ -62,7 +62,7 @@ public class UserDAO extends DAO<User> {
 
         return res;
     }
-    
+
     public User retExistedEmailAcc(String email) throws Exception {
         User user = null;
         String sql = "SELECT * FROM Users WHERE Email = ?";
@@ -230,6 +230,39 @@ public class UserDAO extends DAO<User> {
         return user;
     }
 
+    public User getUserByID(int id){
+        User user = null;
+        String sql = "SELECT * FROM Users WHERE UserID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, id);
+
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    user = new User();
+                    user.setUserID(rs.getInt("UserID"));
+                    user.setUserName(rs.getString("UserName"));
+                    user.setPasswordHash(rs.getString("PasswordHash"));
+                    user.setFirstName(rs.getString("FirstName"));
+                    user.setLastName(rs.getString("LastName"));
+                    user.setEmail(rs.getString("Email"));
+                    user.setRole(rs.getInt("RoleID"));
+                    user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
+                    user.setIsActive(rs.getBoolean("IsActive"));
+                    user.setAvatar(rs.getString("Avatar"));
+                    user.setBio(rs.getString("Bio"));
+                    user.setStoredSalt(rs.getBytes("StoredSalt"));
+                }
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return user;
+    }
+
     public boolean updateUser(User user) throws Exception {
         boolean result = false;
         String sql = "UPDATE Users SET PasswordHash = ?, StoredSalt = ? WHERE UserID = ?";
@@ -339,7 +372,8 @@ public class UserDAO extends DAO<User> {
 //        }
 //    }
     public static void main(String[] args) {
-        UserDAO user = new UserDAO();
+        UserDAO userDAO = new UserDAO();
 //        user.insert(new User("4232", "gwgh", "fgrwgw", "gfaeg", "sgwG", "GFGW", "1", LocalDateTime.now(), true, null, null));
+        System.out.print(userDAO.getUserByID(2));
     }
 }

@@ -14,6 +14,86 @@
     <head>
         <%-- HEAD --%>
         <%@ include file="../template/head.jsp" %>
+        <style>
+            .pagination-btn {
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+            .pagination-btn:disabled {
+                background-color: #cccccc;
+                cursor: not-allowed;
+            }
+
+            .pagination-btn:hover {
+                background-color: #0056b3;
+            }
+            .rating li.selected i {
+                color: gold;
+            }
+            .firstStar{
+                color: gold;
+            }
+            .rating li i {
+                cursor: pointer;
+            }
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            var currentPage = 1;
+
+            $(document).ready(function () {
+                loadFeedbacks(currentPage);
+            });
+            function updatePaginationButtons() {
+                $("#prevBtn").prop("disabled", currentPage === 1);
+            }
+            function loadFeedbacks(page) {
+                var urlParams = new URLSearchParams(window.location.search);
+                var courseID = urlParams.get('id');
+                $.ajax({
+                    type: "GET",
+                    url: "/testFE/courseFeedbacks?courseID=" + courseID + "&page=" + page,
+                    success: function (data) {
+                        $("#feedbacks").html(data);
+                        updatePaginationButtons();
+                    }
+                });
+            }
+
+            function nextPage() {
+                currentPage++;
+                loadFeedbacks(currentPage);
+            }
+
+            function prevPage() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadFeedbacks(currentPage);
+                }
+            }
+            document.addEventListener('DOMContentLoaded', function () {
+                const starRating = document.getElementById('star-rating');
+                const stars = starRating.querySelectorAll('li');
+                const ratingInput = document.getElementById('rating');
+
+                stars.forEach(star => {
+                    star.addEventListener('click', function () {
+                        const rating = this.getAttribute('data-value');
+                        ratingInput.value = rating;
+                        stars.forEach(s => s.classList.remove('selected'));
+                        for (let i = 0; i < rating; i++) {
+                            stars[i].classList.add('selected');
+                        }
+                    });
+                });
+            });
+        </script>
     </head>
 
     <body>
@@ -32,26 +112,6 @@
                 <jsp:param name="title" value="Courses" />
             </jsp:include>  
 
-            <%
-                int id = Integer.parseInt(request.getParameter("courseID"));
-                Course rCourse = CourseDAO.getCoursesByID(id);
-
-                String requirements = rCourse.getRequirements();
-                List<String> requirementList;
-                if (requirements.contains(".")) {
-                    requirementList = Arrays.asList(requirements.split("\\.")); // Split the paragraph into sentences based on "."
-                } else if (requirements.contains("\n")) {
-                    requirementList = Arrays.asList(requirements.split("\\n")); // Split based on new lines if no periods
-                } else if (requirements.contains(",")) {
-                    requirementList = Arrays.asList(requirements.split(",")); // Split based on commas if no periods or new lines
-                } else {
-                    requirementList = Collections.singletonList(requirements); // Treat as a single sentence if no delimiters found
-                }
-                
-                String categoryName = CategoryDAO.getCategoryBySubcategory(rCourse.getSubcategoryID());
-                int categoryId = CategoryDAO.getCategoryIdByName(categoryName);
-            %>
-
             <!-- course-details-area-start -->
             <section class="course-detalis-area pb-90">
                 <div class="container">
@@ -60,7 +120,7 @@
                             <div class="course-detalis-wrapper mb-30">
                                 <div class="course-heading mb-20">
                                     <h2>
-                                        <%=rCourse.getCourseName() %>
+                                        ${course.courseName}
                                     </h2>
                                     <div class="course-star">
                                         <ul>
@@ -78,7 +138,6 @@
                                         <ul>
                                             <li><i class="fal fa-star"></i></li>
                                         </ul>
-                                        <span>(254 reviews)</span>
                                     </div>
                                 </div>
                                 <div class="course-detelis-meta">
@@ -95,20 +154,20 @@
                                     <div class="course-Enroll border-line-meta">
                                         <p>Total Enrolled</p>
                                         <span>
-                                            <%=rCourse.getTotalEnrolled() %>
+                                            ${course.totalEnrolled}
                                         </span>
                                     </div>
                                     <div class="course-update border-line-meta">
                                         <p>Last Update</p>
                                         <span>
-                                            <%=rCourse.getLastUpdate() %>
+                                            ${course.lastUpdate}
                                         </span>
                                     </div>
                                     <div class="course-category">
-                                        <p><%=rCourse.getCreatedDate() %></p>
+                                        <p>${course.createdDate}</p>
                                         <span>
-                                            <a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%= categoryId %>&courses=<%= courses %>">
-                                                <%= categoryName %>
+                                            <a href="${pageContext.request.contextPath}/CourseList?subcategory=${course.subcategoryID}">
+                                                ${course.subcategoryName}
                                             </a>
                                         </span>
                                     </div>
@@ -118,7 +177,7 @@
                                         <h4>Description</h4>
                                     </div>
                                     <p>
-                                        <%=rCourse.getDescription() %>
+                                        Description here
                                     </p>
                                 </div>
                                 <div class="course-learn-wrapper">
@@ -156,7 +215,7 @@
                                     <h4>Requirements</h4>
                                     <div class="course-requirements-text">
                                         <ul>
-                                            <c:forEach items="<%=requirementList%>" var="requirement">
+                                            <c:forEach items="${course.getRequirementsList()}" var="requirement">
                                                 <li><i class="far fa-check"></i> <c:out value="${fn:trim(requirement)}"/></li>
                                                 </c:forEach>
                                         </ul>
@@ -458,15 +517,9 @@
                                         <div class="col-xl-3">
                                             <div class="reating-point mb-30">
                                                 <div class="rating-point-wrapper text-center">
-                                                    <h2>4.7</h2>
-                                                    <div class="rating-star">
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                    </div>
-                                                    <span>5785 Rating</span>
+                                                    <h2>${course.averageRating}<i class="fas fa-star"></i></h2>
+
+                                                    <span> ${course.getTotalNumberOfRating()} Rating</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -483,12 +536,12 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: 98%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${course.getPercentageOfNStarRating(5)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>98%</span>
+                                                            <span>${course.getPercentageOfNStarRating(5)}%</span>
                                                         </div>
                                                     </div>
                                                     <div class="rating-row mb-10">
@@ -501,12 +554,12 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: 78%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${course.getPercentageOfNStarRating(4)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>78%</span>
+                                                            <span>${course.getPercentageOfNStarRating(4)}%</span>
                                                         </div>
                                                     </div>
                                                     <div class="rating-row mb-10">
@@ -519,12 +572,12 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: 55%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${course.getPercentageOfNStarRating(3)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>55%</span>
+                                                            <span>${course.getPercentageOfNStarRating(3)}%</span>
                                                         </div>
                                                     </div>
                                                     <div class="rating-row mb-10">
@@ -537,30 +590,30 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: 60%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${course.getPercentageOfNStarRating(2)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>60%</span>
+                                                            <span>${course.getPercentageOfNStarRating(2)}%</span>
                                                         </div>
                                                     </div>
                                                     <div class="rating-row mb-10">
                                                         <div class="rating-star">
                                                             <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
+                                                            <i class="fal fa-star"></i>
                                                             <i class="fal fa-star"></i>
                                                             <i class="fal fa-star"></i>
                                                             <i class="fal fa-star"></i>
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: 10%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${course.getPercentageOfNStarRating(1)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>10%</span>
+                                                            <span>${course.getPercentageOfNStarRating(1)}%</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -568,7 +621,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="course-detalis-reviews pt-15">
+                                <div class="course-detalis-reviews pt-15" id="feedbacks">
                                     <div class="course-detalis-reviews-tittle">
                                         <h3>Reviews</h3>
                                     </div>
@@ -639,40 +692,39 @@
                                         </div>
                                     </div>
                                 </div>
+                                <button id="prevBtn" class="pagination-btn" onclick="prevPage()">Back</button>
+                                <button id="nextBtn" class="pagination-btn" onclick="nextPage()">Next</button>
+
+                                
+                                <%                                   
+                                    if ((boolean)request.getAttribute("hasEnrolled")) {
+                                %>
                                 <div class="col-xl-12">
                                     <div class="course-review-btn">
                                         <a id="show-review-box" class="edu-btn" href="javascript:void(0)">Write a Review</a>
                                         <div id="review-box" class="review-comment mt-45">
                                             <div class="comment-title mb-20">
-                                                <p>Your email address will not be published. Required fields are marked *
+                                                <p>
+                                                    leave your rating and comment
                                                 </p>
                                             </div>
                                             <div class="comment-rating mb-20">
                                                 <span>Overall ratings</span>
-                                                <ul>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fal fa-star"></i></a></li>
+                                                <ul id="star-rating" class="rating">
+                                                    <li data-value="1"><i class="fas fa-star firstStar"></i></li>
+                                                    <li data-value="2"><i class="fas fa-star"></i></li>
+                                                    <li data-value="3"><i class="fas fa-star"></i></li>
+                                                    <li data-value="4"><i class="fas fa-star"></i></li>
+                                                    <li data-value="5"><i class="fas fa-star"></i></li>
                                                 </ul>
                                             </div>
                                             <div class="comment-input-box mb-15">
-                                                <form action="#">
+                                                <form id="feedbackForm" action="courseFeedbacks" method="Post">
+                                                    <input type="hidden" id="rating" name="rating" value="1">
+                                                    <input type="hidden" id="courseID" name="courseID" value="<%= request.getParameter("id") %>">
                                                     <div class="row">
                                                         <div class="col-xxl-12">
-                                                            <textarea placeholder="Your review"
-                                                                      class="comment-input comment-textarea mb-20"></textarea>
-                                                        </div>
-                                                        <div class="col-xxl-6">
-                                                            <div class="comment-input mb-20">
-                                                                <input type="text" placeholder="Your Name">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-xxl-6">
-                                                            <div class="comment-input mb-20">
-                                                                <input type="email" placeholder="Your Email">
-                                                            </div>
+                                                            <textarea id="content" name="content" placeholder="Your review" class="comment-input comment-textarea mb-20"></textarea>
                                                         </div>
                                                         <div class="col-xxl-12">
                                                             <div class="comment-submit">
@@ -686,6 +738,13 @@
                                     </div>
 
                                 </div>
+                                <%
+                                    } else {
+                                %>
+                                <p>Only those enrolling in the course can leave their feedbacks</p>
+                                <%
+                                    }
+                                %>
                             </div>
                         </div>
                         <div class="col-xxl-4 col-xl-4 col-lg-8 col-md-8">
@@ -699,7 +758,7 @@
                                         </div>
                                     </div>
                                     <div class="course-video-price">
-                                        <span>$147.00</span>
+                                        <span>${course.price}$</span>
                                     </div>
                                     <div class="course-video-body">
                                         <ul>
@@ -709,34 +768,34 @@
                                                     <span>Level</span>
                                                 </div>
                                                 <div class="video-corse-info">
-                                                    <span>Beginners</span>
+                                                    <span>${course.levelName}</span>
                                                 </div>
                                             </li>
-                                            <li>
-                                                <div class="course-vide-icon">
-                                                    <i class="flaticon-computer"></i>
-                                                    <span>Lectures</span>
-                                                </div>
-                                                <div class="video-corse-info">
-                                                    <span>8 Lectures</span>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="course-vide-icon">
-                                                    <i class="flaticon-clock"></i>
-                                                    <span>Duration</span>
-                                                </div>
-                                                <div class="video-corse-info">
-                                                    <span>1h 30m 12s</span>
-                                                </div>
-                                            </li>
+                                            <!--                                        <li>
+                                                                                            <div class="course-vide-icon">
+                                                                                                <i class="flaticon-computer"></i>
+                                                                                                <span>Lectures</span>
+                                                                                            </div>
+                                                                                            <div class="video-corse-info">
+                                                                                                <span>8 Lectures</span>
+                                                                                            </div>
+                                                                                        </li>-->
+                                            <!--                                            <li>
+                                                                                            <div class="course-vide-icon">
+                                                                                                <i class="flaticon-clock"></i>
+                                                                                                <span>Duration</span>
+                                                                                            </div>
+                                                                                            <div class="video-corse-info">
+                                                                                                <span>1h 30m 12s</span>
+                                                                                            </div>
+                                                                                        </li>-->
                                             <li>
                                                 <div class="course-vide-icon">
                                                     <i class="flaticon-menu-2"></i>
                                                     <span>Category</span>
                                                 </div>
                                                 <div class="video-corse-info">
-                                                    <span>Data Science</span>
+                                                    <span>${course.subcategoryName}</span>
                                                 </div>
                                             </li>
                                             <li>
@@ -745,7 +804,7 @@
                                                     <span>Laguage</span>
                                                 </div>
                                                 <div class="video-corse-info">
-                                                    <span>English</span>
+                                                    <span>${course.languageName}</span>
                                                 </div>
                                             </li>
                                             <li>
@@ -766,15 +825,15 @@
                                                     <span>Yes </span>
                                                 </div>
                                             </li>
-                                            <li>
-                                                <div class="course-vide-icon">
-                                                    <i class="flaticon-list"></i>
-                                                    <span>Recourse</span>
-                                                </div>
-                                                <div class="video-corse-info">
-                                                    <span>5 Downloadable Files </span>
-                                                </div>
-                                            </li>
+                                            <!--                                            <li>
+                                                                                            <div class="course-vide-icon">
+                                                                                                <i class="flaticon-list"></i>
+                                                                                                <span>Recourse</span>
+                                                                                            </div>
+                                                                                            <div class="video-corse-info">
+                                                                                                <span>5 Downloadable Files </span>
+                                                                                            </div>
+                                                                                        </li>-->
                                         </ul>
                                     </div>
                                     <div class="video-wishlist">

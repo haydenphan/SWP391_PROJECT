@@ -67,13 +67,13 @@
                                                         for (Category category : categories) {
                                                 %>
                                                 <li class="item-has-children">
-                                                    <a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%=category.getCategoryID()%>&courses=<%=courses%>"><%=category.getName()%></a>
+                                                    <a href="${pageContext.request.contextPath}/CourseList?categoryID=<%=category.getCategoryID()%>"><%=category.getName()%></a>
                                                     <ul class="category-submenu">
-                                                        <li><a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%=category.getCategoryID()%>&courses=<%=courses%>">All <%=category.getName()%></a></li>
+                                                        <li><a href="${pageContext.request.contextPath}/CourseList?categoryID=<%=category.getCategoryID()%>"> All <%=category.getName()%></a></li>
                                                             <%
                                                                 for (SubCategory subCategory : category.getSubCategories()) {
                                                             %>
-                                                        <li><a href="${pageContext.request.contextPath}/pages/courseList.jsp?subcategory=<%=subCategory.getSubCategoryID()%>&courses=<%=courses%>"><%=subCategory.getName()%></a></li>
+                                                        <li><a href="${pageContext.request.contextPath}/CourseList?subcategoryID=<%=subCategory.getSubCategoryID()%>"><%=subCategory.getName()%></a></li>
                                                             <%
                                                                 }
                                                             %>

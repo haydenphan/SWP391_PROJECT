@@ -21,12 +21,7 @@ import model.Category;
 public class HomeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         CategoryDAO categoryDAO = new CategoryDAO();
-        ArrayList<Category> categories = null;
-        try {
-            categories = categoryDAO.selectAllWithSubCategories();
-        } catch (Exception ex) {
-            Logger.getLogger(HomeServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        ArrayList<Category> categories = categoryDAO.selectAllWithSubCategories();
         request.setAttribute("categories", categories);
         request.getRequestDispatcher("/pages/home.jsp").forward(request, response);
     }

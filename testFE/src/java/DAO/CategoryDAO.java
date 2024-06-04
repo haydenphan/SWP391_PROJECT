@@ -18,7 +18,7 @@ public class CategoryDAO extends DAO<Category> {
         throw new UnsupportedOperationException("Insert operation is not supported.");
     }
 
-    public static ArrayList<Category> selectAllWithSubCategories() throws Exception {
+    public static ArrayList<Category> selectAllWithSubCategories() {
         ArrayList<Category> categories = new ArrayList<>();
         String sql = "SELECT c.CategoryID, c.CategoryName AS CategoryName, sc.SubCategoryID, sc.SubCategoryName AS SubCategoryName "
                 + "FROM Categories c "
@@ -46,6 +46,8 @@ public class CategoryDAO extends DAO<Category> {
 
         } catch (SQLException | ClassNotFoundException e) {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return categories;

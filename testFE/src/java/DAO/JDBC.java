@@ -8,11 +8,11 @@ public class JDBC {
 
     public static Connection getConnectionWithSqlJdbc() throws Exception {
         Connection con = null;
-        String dbUser = "sa";
-        String dbPassword = "123";
+        String dbUser = "tears";
+        String dbPassword = "235711";
         String port = "1433";
         String IP = "169.254.157.38";
-        String ServerName = "LAPTOP-DVKPB8S9";
+        String ServerName = "ENDLESSTEARS\\SQLEXPRESS";
         String DBName = "OnlineLearningV2";
         String driverClass = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 

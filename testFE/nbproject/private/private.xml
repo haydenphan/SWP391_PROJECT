@@ -3,16 +3,40 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/testFE/src/java/controller/ChooseRoleServlet.java</file>
-            <file>file:/D:/testFE/web/pages/registration.jsp</file>
-            <file>file:/D:/testFE/src/java/DAO/CategoryDAO.java</file>
-            <file>file:/D:/testFE/src/java/DAO/CourseDAO.java</file>
-            <file>file:/D:/testFE/web/pages/courseDetails.jsp</file>
-            <file>file:/D:/testFE/src/java/controller/Register.java</file>
-            <file>file:/D:/testFE/web/pages/lecturer-profile.jsp</file>
-            <file>file:/D:/testFE/src/java/model/Course.java</file>
-            <file>file:/D:/testFE/src/java/DAO/UserDAO.java</file>
-            <file>file:/D:/testFE/src/java/controller/Login.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/pages/home.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/Course.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/utils/NumberUtils.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/CourseEnrollmentDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/Language.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/UserDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/Login.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/GetCourseInfo.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/Level.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/CourseFeedbackServlet.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/LoginGoogleServlet.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/CourseListServlet.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/pages/login.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/RoleDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/template/header.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/CourseStatistics.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/pages/courseDetails.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/pages/courseList.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/CourseEnrollment.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/LevelDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/HomeServlet.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/CourseFeedbackDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/CourseDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/ValidateRegisterInfo.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/JDBC.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/ChangePassword.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/User.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/template/course/courseComponent.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/utils/TimeUtils.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/template/head.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/CourseFeedback.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/LanguageDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/CategoryDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/CourseDetailServlet.java</file>
         </group>
     </open-files>
 </project-private>
