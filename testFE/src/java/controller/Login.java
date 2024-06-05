@@ -53,26 +53,19 @@ public class Login extends HttpServlet {
             // Tao session luu thong tin user 
             HttpSession session = request.getSession();
             session.setAttribute("user", res);
-
-            String roles = res.getRoleName();
-            int roleID = 0;
-            if (roles.equals("Learner")) {
-                roleID = 1;
+            System.out.println(res.getRole());
+            if (res.getRole() == 1) {
                 url = "/pages/user-profile.jsp";
             } else {
-                roleID = 2;
-                url = "/pages/lectureProfile.jsp";
+                url = "/pages/lecturer-profile.jsp";
             }
-            RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
-            rd.forward(request, response);
+            
         } else {
             request.setAttribute("baoLoi", "Tên đăng nhập hoặc mật khẩu không đúng!");
             url = "/pages/login.jsp";
-            
-            RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
-            rd.forward(request, response);
         }
-
+        RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
+        rd.forward(request, response);
     }
 
     @Override

@@ -1,4 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="DAO.*" %>
 
 <!doctype html>
 <html class="no-js" lang="zxx">
@@ -10,8 +12,7 @@
     </head>
 
     <body>
-        <%-- PRE LOADER --%>
-        <%@ include file="../template/preLoader.jsp" %>
+
 
         <%-- SIDE TOGGLE --%>
         <%@ include file="../template/sideToggle.jsp" %>
@@ -323,13 +324,37 @@
                                 </div>
                             </div>
                         </div>
+                        <%
+                            // Retrieve the categoryID and subcategoryID from the request parameters
+                            String categoryID = request.getParameter("category");
+                            String subCategoryID = request.getParameter("subcategory");
+                            courses = (List<Course>)request.getAttribute("courses");
+                            System.out.println(courses);
+                            if (categoryID != null) {
+                                // Fetch courses based on the categoryID
+                                courses = CourseDAO.selectByCategoryID(Integer.parseInt(categoryID));
+                            } else if (subCategoryID != null) {
+                                // Fetch courses based on the subcategoryID
+                                courses = CourseDAO.selectBySubCategoryID(Integer.parseInt(subCategoryID));
+                            } else if (courses == null){
+                                // Fetch all courses if no categoryID or subcategoryID is provided
+                                courses = CourseDAO.getAllCourses();
+                            }
+
+                            // Set the courses attribute for the page context
+                            request.setAttribute("courses", courses);
+                        %>
+
                         <div class="col-xl-9 col-lg-8 col-md-12">
                             <div class="row">
-                                <jsp:include page="../template/course/courseComponent.jsp">
-                                    <jsp:param name="courseID" value="2" />
-                                </jsp:include>
+                                <c:forEach var="course" items="${courses}">
+                                    <jsp:include page="../template/course/courseComponent.jsp">
+                                        <jsp:param name="courseID" value="${course.getCourseID()}" />
+                                    </jsp:include>
+                                </c:forEach>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </section>

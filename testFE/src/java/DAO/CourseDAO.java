@@ -24,7 +24,7 @@ public class CourseDAO extends DAO<Course> {
             st.setString(2, t.getDescription());
             st.setInt(3, t.getCreatedBy());
             st.setDate(4, Date.valueOf(t.getCreatedDate().toLocalDate()));
-            st.setBoolean(5, t.isIsPublished());
+            st.setBoolean(5, t.IsPublished());
             st.setInt(6, t.getSubcategoryID());
             st.setInt(7, t.getTotalEnrolled());
             st.setDate(8, Date.valueOf(t.getLastUpdate().toLocalDate()));
@@ -104,6 +104,194 @@ public class CourseDAO extends DAO<Course> {
         }
 
         return course;
+    }
+
+    public List<Course> getFilteredCourses(Integer categoryID, Integer subcategoryID, String priceFilter, Integer languageID, Double minRating, String sortOrder) {
+        List<Course> courses = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT c.*, ISNULL(AVG(cf.Rating), 0) AS AverageRating "
+                + "FROM Courses c "
+                + "LEFT JOIN CourseFeedbacks cf ON c.CourseID = cf.CourseID "
+                + "WHERE 1 = 1 ");
+
+        if (categoryID != null) {
+            sql.append("AND c.SubcategoryID IN (SELECT SubcategoryID FROM Subcategories WHERE CategoryID = ?) ");
+        }
+        if (subcategoryID != null) {
+            sql.append("AND c.SubcategoryID = ? ");
+        }
+        if (priceFilter != null) {
+            if (priceFilter.equals("free")) {
+                sql.append("AND c.Price = 0 ");
+            } else if (priceFilter.equals("paid")) {
+                sql.append("AND c.Price > 0 ");
+            }
+        }
+        if (languageID != null) {
+            sql.append("AND c.LanguageID = ? ");
+        }
+        if (minRating != null) {
+            sql.append("HAVING AVG(cf.Rating) >= ? ");
+        }
+        sql.append("GROUP BY c.CourseID, c.CourseName, c.Description, c.CreatedBy, c.CreatedDate, c.IsPublished, c.SubcategoryID, c.TotalEnrolled, c.LastUpdate, c.Requirements, c.Price, c.LanguageID, c.LevelID, c.ImageURL ");
+
+        // Add sorting logic
+        if (sortOrder != null) {
+            if (sortOrder.equals("popularity")) {
+                sql.append("ORDER BY c.TotalEnrolled DESC ");
+            } else if (sortOrder.equals("latest")) {
+                sql.append("ORDER BY c.CreatedDate DESC ");
+            }
+        }
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+            if (categoryID != null) {
+                st.setInt(paramIndex++, categoryID);
+            }
+            if (subcategoryID != null) {
+                st.setInt(paramIndex++, subcategoryID);
+            }
+            if (languageID != null) {
+                st.setInt(paramIndex++, languageID);
+            }
+            if (minRating != null) {
+                st.setDouble(paramIndex++, minRating);
+            }
+
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    Course course = new Course();
+                    course.setCourseID(rs.getInt("CourseID"));
+                    course.setCourseName(rs.getString("CourseName"));
+                    course.setDescription(rs.getString("Description"));
+                    course.setCreatedBy(rs.getInt("CreatedBy"));
+                    course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
+                    course.setIsPublished(rs.getBoolean("IsPublished"));
+                    course.setSubcategoryID(rs.getInt("SubcategoryID"));
+                    course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
+                    course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime());
+                    course.setRequirements(rs.getString("Requirements"));
+                    course.setPrice(rs.getDouble("Price"));
+                    course.setLanguageID(rs.getInt("LanguageID"));
+                    course.setLevelID(rs.getInt("LevelID"));
+                    course.setImageURL(rs.getString("ImageURL"));
+                    course.setAverageRating(rs.getDouble("AverageRating"));
+
+                    courses.add(course);
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return courses;
+    }
+    
+    public static List<Course> selectBySubCategoryID(int subcategoryID) {
+        List<Course> courses = new ArrayList<>();
+        String sql = "SELECT CourseID, CourseName, Description, CreatedBy, CreatedDate, IsPublished, SubcategoryID, TotalEnrolled, LastUpdate, Requirements "
+                + "FROM Courses WHERE SubcategoryID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, subcategoryID);
+
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    Course course = new Course();
+                    course.setCourseID(rs.getInt("CourseID"));
+                    course.setCourseName(rs.getString("CourseName"));
+                    course.setDescription(rs.getString("Description"));
+                    course.setCreatedBy(rs.getInt("CreatedBy"));
+                    course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
+                    course.setIsPublished(rs.getBoolean("IsPublished"));
+                    course.setSubcategoryID(rs.getInt("SubcategoryID"));
+                    course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
+                    course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime());
+                    course.setRequirements(rs.getString("Requirements"));
+
+                    courses.add(course);
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return courses;
+    }
+
+    public static List<Course> selectByCategoryID(int categoryID) {
+        List<Course> courses = new ArrayList<>();
+        String sql = "SELECT c.CourseID, c.CourseName, c.Description, c.CreatedBy, c.CreatedDate, c.IsPublished, c.SubcategoryID, c.TotalEnrolled, c.LastUpdate, c.Requirements "
+                + "FROM Courses c "
+                + "JOIN Subcategories s ON c.SubcategoryID = s.SubcategoryID "
+                + "WHERE s.CategoryID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, categoryID);
+
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    Course course = new Course();
+                    course.setCourseID(rs.getInt("CourseID"));
+                    course.setCourseName(rs.getString("CourseName"));
+                    course.setDescription(rs.getString("Description"));
+                    course.setCreatedBy(rs.getInt("CreatedBy"));
+                    course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
+                    course.setIsPublished(rs.getBoolean("IsPublished"));
+                    course.setSubcategoryID(rs.getInt("SubcategoryID"));
+                    course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
+                    course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime());
+                    course.setRequirements(rs.getString("Requirements"));
+
+                    courses.add(course);
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return courses;
+    }
+    
+    public List<Course> SearchCourseByName(String name) {
+        List<Course> list = new ArrayList<>();
+        String sql = "SELECT * FROM Courses WHERE [CourseName] LIKE ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, "%" + name + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                // populate the course object with data from result set
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setCourseName(rs.getString("CourseName"));
+                course.setDescription(rs.getString("Description"));
+                course.setCreatedBy(rs.getInt("CreatedBy"));
+                course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
+                course.setIsPublished(rs.getBoolean("IsPublished"));
+                course.setSubcategoryID(rs.getInt("SubcategoryID"));
+                course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
+                course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime());
+                course.setRequirements(rs.getString("Requirements"));
+                course.setPrice(rs.getDouble("Price"));
+                list.add(course);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     public static void main(String[] args) {

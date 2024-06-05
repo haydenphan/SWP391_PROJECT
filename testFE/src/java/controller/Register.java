@@ -17,10 +17,6 @@ import model.User;
 import java.time.LocalDateTime;
 import utils.PasswordUtils;
 
-/**
- *
- * @author ASUS-PRO
- */
 @WebServlet(name = "Register", urlPatterns = {"/dang-ky"})
 public class Register extends HttpServlet {
 
@@ -70,7 +66,7 @@ public class Register extends HttpServlet {
         String password = (String) session.getAttribute("password");
         String roles = (String) session.getAttribute("roles");
         int roleID = 0;
-        if (roles.equals("Learner")) {
+        if (roles.equals("learner")) {
             roleID = 1;
         } else {
             roleID = 2;
@@ -93,33 +89,31 @@ public class Register extends HttpServlet {
         User user = new User(username, hashedPassword, firstname, lastname, email, roleID, now, true, defaultAvatarUrl, defaultBio, salt);
         userDAO.insert(user);
         session.setAttribute("user", user);
-        if (roleID == 1) { 
+                    System.out.println(user.getRole());
+        if (user.getRole() == 1) {
             url = "/${pageContext.request.contextPath}/../pages/user-profile.jsp";
-        } else if (roleID == 2) {
-            url = "/${pageContext.request.contextPath}/../pages/lectureProfile.jsp";
+        } else {
+            url = "/${pageContext.request.contextPath}/../pages/lecturer-profile.jsp";
         }
-//        url = "/${pageContext.request.contextPath}/../pages/user-profile.jsp";
-            RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
-            rd.forward(request, response);
-        }
-
-        @Override
-        protected void doPost
-        (HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-            doGet(request, response);
-        }
-
-        /**
-         * Returns a short description of the servlet.
-         *
-         * @return a String containing servlet description
-         */
-        @Override
-        public String getServletInfo
         
-            () {
-        return "Short description";
-        }// </editor-fold>
-
+        RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
+        rd.forward(request, response);
     }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response);
+    }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
+
+}

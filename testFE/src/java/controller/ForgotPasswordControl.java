@@ -1,4 +1,4 @@
-package controller;
+package control;
 
 import DAO.UserDAO;
 import jakarta.mail.Message;

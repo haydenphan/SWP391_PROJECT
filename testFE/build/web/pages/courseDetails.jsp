@@ -47,6 +47,9 @@
                 } else {
                     requirementList = Collections.singletonList(requirements); // Treat as a single sentence if no delimiters found
                 }
+                
+                String categoryName = CategoryDAO.getCategoryBySubcategory(rCourse.getSubcategoryID());
+                int categoryId = CategoryDAO.getCategoryIdByName(categoryName);
             %>
 
             <!-- course-details-area-start -->
@@ -102,8 +105,12 @@
                                         </span>
                                     </div>
                                     <div class="course-category">
-                                        <p>01 January 2022 </p>
-                                        <span><a href="course.html">Data Science</a></span>
+                                        <p><%=rCourse.getCreatedDate() %></p>
+                                        <span>
+                                            <a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%= categoryId %>&courses=<%= courses %>">
+                                                <%= categoryName %>
+                                            </a>
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="course-description pt-45 pb-30">

@@ -22,8 +22,12 @@
         <%-- HEADER --%>
         <%@ include file="../template/header.jsp" %>
 
-        <main style="height: 500px">
+        <main>
+            <!-- BANNER -->
+            <%@ include file="../template/homeBanner.jsp" %>
 
+            <!-- TOP CATEGORIES -->
+            <%@ include file="../template/categoryArea.jsp" %>
         </main>
 
         <%-- FOOTER --%>
