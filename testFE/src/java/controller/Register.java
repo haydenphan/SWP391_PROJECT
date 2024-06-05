@@ -17,10 +17,6 @@ import model.User;
 import java.time.LocalDateTime;
 import utils.PasswordUtils;
 
-/**
- *
- * @author ASUS-PRO
- */
 @WebServlet(name = "Register", urlPatterns = {"/dang-ky"})
 public class Register extends HttpServlet {
 
@@ -93,7 +89,13 @@ public class Register extends HttpServlet {
         User user = new User(username, hashedPassword, firstname, lastname, email, roleID, now, true, defaultAvatarUrl, defaultBio, salt);
         userDAO.insert(user);
         session.setAttribute("user", user);
-        url = "/${pageContext.request.contextPath}/../pages/user-profile.jsp";
+                    System.out.println(user.getRole());
+        if (user.getRole() == 1) {
+            url = "/${pageContext.request.contextPath}/../pages/user-profile.jsp";
+        } else {
+            url = "/${pageContext.request.contextPath}/../pages/lecturer-profile.jsp";
+        }
+        
         RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
         rd.forward(request, response);
     }

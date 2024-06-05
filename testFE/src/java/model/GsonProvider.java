@@ -13,4 +13,3 @@ public class GsonProvider {
         return gson;
     }
 }
-

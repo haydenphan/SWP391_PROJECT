@@ -1,14 +1,16 @@
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="model.*" %>
+<%@ page import="DAO.*" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
 
 
 <% 
            // String userName = (String)request.getAttribute("UserName");
             User user = (User)session.getAttribute("user");
-            
+            int role = (user != null) ? user.getRole() : 0;
 %>
 
 <!-- header-area-start  -->
@@ -58,57 +60,33 @@
                                     <div class="dropdown-category">
                                         <nav>
                                             <ul>
-                                                <li class="item-has-children"><a href="course.jsp">Development</a>
+                                                <%
+                                                    List<Course> courses = null;
+                                                    ArrayList<Category> categories = CategoryDAO.selectAllWithSubCategories();
+                                                    if (categories != null) {
+                                                        for (Category category : categories) {
+                                                %>
+                                                <li class="item-has-children">
+                                                    <a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%=category.getCategoryID()%>&courses=<%=courses%>"><%=category.getName()%></a>
                                                     <ul class="category-submenu">
-                                                        <li><a href="course.jsp">All Development</a></li>
-                                                        <li><a href="course.jsp">Mobile App</a></li>
-                                                        <li><a href="course.jsp">Web Development</a></li>
-                                                        <li><a href="course.jsp">Development tools</a></li>
-                                                        <li><a href="course.jsp">Database</a></li>
-                                                        <li><a href="course.jsp">Programming language</a></li>
+                                                        <li><a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%=category.getCategoryID()%>&courses=<%=courses%>">All <%=category.getName()%></a></li>
+                                                            <%
+                                                                for (SubCategory subCategory : category.getSubCategories()) {
+                                                            %>
+                                                        <li><a href="${pageContext.request.contextPath}/pages/courseList.jsp?subcategory=<%=subCategory.getSubCategoryID()%>&courses=<%=courses%>"><%=subCategory.getName()%></a></li>
+                                                            <%
+                                                                }
+                                                            %>
                                                     </ul>
                                                 </li>
-                                                <li class="item-has-children"><a href="course.jsp">Art & Design</a>
-                                                    <ul class="category-submenu">
-                                                        <li><a href="course.jsp">Web Design</a></li>
-                                                        <li><a href="course.jsp">Graphic Design</a></li>
-                                                        <li><a href="course.jsp">Design tools</a></li>
-                                                        <li><a href="course.jsp">All Art</a></li>
-                                                        <li><a href="course.jsp">Marketing</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="item-has-children"><a href="course.jsp">Business</a>
-                                                    <ul class="category-submenu">
-                                                        <li><a href="course.jsp">All Business</a></li>
-                                                        <li><a href="course.jsp">Communications</a></li>
-                                                        <li><a href="course.jsp">Finance</a></li>
-                                                        <li><a href="course.jsp">Management</a></li>
-                                                        <li><a href="course.jsp">Sales</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="item-has-children"><a href="course.jsp">Life Style</a>
-                                                    <ul class="category-submenu">
-                                                        <li><a href="course.jsp">Life Style</a></li>
-                                                        <li><a href="course.jsp">Mental Health</a></li>
-                                                        <li><a href="course.jsp">Dieting</a></li>
-                                                        <li><a href="course.jsp">All Art</a></li>
-                                                        <li><a href="course.jsp">Nutrition</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="item-has-children"><a href="course.jsp">Health & Fitness</a>
-                                                    <ul class="category-submenu">
-                                                        <li><a href="course.jsp">All Health & Fitness</a></li>
-                                                        <li><a href="course.jsp">Beauty & Makeup</a></li>
-                                                        <li><a href="course.jsp">Food & Beverages</a></li>
-                                                        <li><a href="course.jsp">Good Food</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li><a href="course.jsp">Data Science</a></li>
-                                                <li><a href="course.jsp">Marketing</a></li>
-                                                <li><a href="course.jsp">Photography</a></li>
+                                                <%
+                                                        }
+                                                    }
+                                                %>
                                             </ul>
                                         </nav>
                                     </div>
+
                                 </div>
                             </div>
                             <div class="main-menu d-none d-xl-block">
@@ -121,7 +99,7 @@
                                                                                        <li><a href="index-3.jsp">Home 3</a></li>-->
                                             </ul>
                                         </li>
-                                        <li class="menu-item-has-children"><a href="get-course-info">Course</a>
+                                        <li class="menu-item-has-children"><a href="${pageContext.request.contextPath}/get-course-info">Course</a>
                                             <ul class="sub-menu">
                                                 <!--                                       <li><a href="course.jsp">Course 1</a></li>
                                                                                        <li><a href="course-2.jsp">Course 2</a></li>
@@ -191,7 +169,7 @@
                     <div class="col-xl-5 col-lg-5 col-md-7 col-sm-3 col-3">
                         <div class="header-right d-flex align-items-center justify-content-end">
                             <div class="header-search d-none d-xxl-block mr-30">
-                                <form action="search" method="get">
+                                <form action="${pageContext.request.contextPath}/search" method="get">
                                     <div class="search-icon p-relative">
                                         <input name="txt" type="text" placeholder="Search courses...">
                                             <button type="submit"><i class="fas fa-search"></i></button>
@@ -201,17 +179,31 @@
 
                             <!-- Display user avatar if logged in, otherwise display Sign In and Sign Up buttons -->
                             <c:choose>
-                                <c:when test="${user!=null}">
+                                <c:when test="${user != null}">
+
+
                                     <div class="user-avatar-wrapper mr-30">
-                                        <a href="${pageContext.request.contextPath}/pages/user-profile.jsp" class="user-avatar-btn">
+                                        <a href="
+
+                                           <% if (role == 2) { %>
+                                           ${pageContext.request.contextPath}/pages/lecturer-profile.jsp
+                                           <% } else if (role == 1) { %>
+                                           ${pageContext.request.contextPath}/pages/user-profile.jsp"
+                                           <% } %>
+
+                                           " 
+                                           class="user-avatar-btn">
                                             <div class="header__user-avatar p-relative">
                                                 <img src="${user.getAvatar()}" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%;">
                                             </div>
                                         </a>
                                     </div>
+
+
                                     <div class="user-logout-wrapper mr-30">
                                         <a href="${pageContext.request.contextPath}/LogoutServlet" class="user-logout-btn">Logout</a>
                                     </div>
+
                                 </c:when>
                                 <c:otherwise>
                                     <div class="user-btn-inner p-relative d-none d-md-block">

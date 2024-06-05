@@ -1,43 +1,48 @@
 package model;
 
-public class Subcategory {
-    private int SubcategoryID;
-    private String SubcategoryName;
-    private int CategoryID;
+public class SubCategory {
+    private int subCategoryID;
+    private int categoryID;
+    private String name;
 
-    public int getSubcategoryID() {
-        return SubcategoryID;
+    // Constructor
+    public SubCategory(int subCategoryID, int categoryID, String name) {
+        this.subCategoryID = subCategoryID;
+        this.categoryID = categoryID;
+        this.name = name;
     }
 
-    public void setSubcategoryID(int SubcategoryID) {
-        this.SubcategoryID = SubcategoryID;
+    // Getters and Setters
+    public int getSubCategoryID() {
+        return subCategoryID;
     }
 
-    public String getSubcategoryName() {
-        return SubcategoryName;
-    }
-
-    public void setSubcategoryName(String SubcategoryName) {
-        this.SubcategoryName = SubcategoryName;
-    }
-
-    public Subcategory() {
-    }
-
-    public Subcategory(String SubcategoryName) {
-        this.SubcategoryName = SubcategoryName;
+    public void setSubCategoryID(int subCategoryID) {
+        this.subCategoryID = subCategoryID;
     }
 
     public int getCategoryID() {
-        return CategoryID;
+        return categoryID;
     }
 
-    public void setCategoryID(int CategoryID) {
-        this.CategoryID = CategoryID;
+    public void setCategoryID(int categoryID) {
+        this.categoryID = categoryID;
     }
-    
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
-        return "Subcategory{" + "SubcategoryID=" + SubcategoryID + ", SubcategoryName=" + SubcategoryName + '}';
-    }    
+        return "SubCategory{" +
+                "subCategoryID=" + subCategoryID +
+                ", categoryID=" + categoryID +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

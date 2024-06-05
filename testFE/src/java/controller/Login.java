@@ -53,8 +53,13 @@ public class Login extends HttpServlet {
             // Tao session luu thong tin user 
             HttpSession session = request.getSession();
             session.setAttribute("user", res);
+            System.out.println(res.getRole());
+            if (res.getRole() == 1) {
+                url = "/pages/user-profile.jsp";
+            } else {
+                url = "/pages/lecturer-profile.jsp";
+            }
             
-            url = "/pages/user-profile.jsp";
         } else {
             request.setAttribute("baoLoi", "Tên đăng nhập hoặc mật khẩu không đúng!");
             url = "/pages/login.jsp";

@@ -135,8 +135,8 @@ public class User {
     public User(String userName, String passwordHash, String firstName, String lastName, String email, int roleID, LocalDateTime registrationDate, boolean isActive, String avatar, String bio, byte[] storedSalt) {
         this.userName = userName;
         this.passwordHash = passwordHash;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.firstName = (firstName == null ? "" : firstName);
+        this.lastName = (lastName == null ? "" : lastName);
         this.email = email;
         this.roleID = roleID;
         this.registrationDate = registrationDate;
