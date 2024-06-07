@@ -62,7 +62,8 @@ public class FilterLanguageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         CourseDAO courseDAO = new CourseDAO();
-        String language = request.getParameter("language");
+        String language_raw = request.getParameter("language");
+        int language = Integer.parseInt(language_raw);
         List<Course> courses = courseDAO.getLanguage(language);
         request.setAttribute("courses", courses);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/courseList.jsp");

@@ -274,59 +274,30 @@
                                         <ul>
                                             <li>
                                                 <div class="course-sidebar-list">
-                                                    <input class="edu-check-box" type="radio" id="e-eng" name="language" value="English"  required>
-                                                    <label class="edu-check-label" for="e-eng">English (21))</label>
+                                                    <input class="edu-check-box" type="radio" id="e-eng" name="language" value="1"  required>
+                                                    <label class="edu-check-label" for="e-eng">English (21)</label>
                                                 </div>
                                             </li>
                                             <li>
                                                 <div class="course-sidebar-list">
-                                                    <input class="edu-check-box" type="radio" id="e-hin" name="language" value="Hindi">
-                                                    <label class="edu-check-label" for="e-hin">Hindi (12)</label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="course-sidebar-list">
-                                                    <input class="edu-check-box" type="radio" id="e-fren" name="language" values="French">
-                                                    <label class="edu-check-label" for="e-fren">French (7)</label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="course-sidebar-list">
-                                                    <input class="edu-check-box" type="radio" id="e-japa" name="language" value="Japanese">
-                                                    <label class="edu-check-label" for="e-japa">Japanese (10)</label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="course-sidebar-list">
-                                                    <input class="edu-check-box" type="radio" id="e-kore" name="language" value="Korean">
-                                                    <label class="edu-check-label" for="e-kore">Korean (5)</label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="course-sidebar-list">
-                                                    <input class="edu-check-box" type="radio" id="m-japa" name="language" value="Japanese">
-                                                    <label class="edu-check-label" for="m-japa">Japanese (10))</label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="course-sidebar-list">
-                                                    <input class="edu-check-box" type="radio" id="e-span" name="language" value="Spanish">
+                                                    <input class="edu-check-box" type="radio" id="e-span" name="language" value="2">
                                                     <label class="edu-check-label" for="e-span">Spanish (14)</label>
                                                 </div>
                                             </li>
                                             <li>
                                                 <div class="course-sidebar-list">
-                                                    <input class="edu-check-box" type="radio" id="e-ita" name="language" value ="Italian">
-                                                    <label class="edu-check-label" for="e-ita">Italian (8)</label>
+                                                    <input class="edu-check-box" type="radio" id="e-span" name="language" value="3">
+                                                    <label class="edu-check-label" for="e-fren">French (7)</label>
                                                 </div>
                                             </li>
+                                            
                                         </ul>
                                     </div>
                                     <button type="submit" class="view-details-btn">Lọc</button>
 
                                 </div>
                             </form>
-                            <form action="filter-duration" method="get">
+<!--                            <form action="filter-duration" method="get">
 
                                 <div class="course-sidebar-widget mb-20">
                                     <div class="course-sidebar-info">
@@ -360,7 +331,8 @@
                                     </div>
                                     <button type="submit" class="view-details-btn">Lọc</button>
                                 </div>
-                            </form>
+                            </form>-->
+
                         </div>
                         <%
                             // Retrieve the categoryID and subcategoryID from the request parameters
