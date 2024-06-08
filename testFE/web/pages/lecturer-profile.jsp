@@ -2,6 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="model.*" %>
+<%@ page import="DAO.*" %>
+<%@ page import="java.util.ArrayList" %>
+
 <!doctype html>
 <html class="no-js" lang="zxx">
 
@@ -23,6 +26,12 @@
         <%@ include file="../template/header.jsp" %>
 
         <main>
+            <%
+                int lecturerID = ((User)session.getAttribute("user")).getUserID();
+                System.out.println(lecturerID);
+                courses = CourseDAO.getCoursesByLecturer(lecturerID);
+            %>
+            
             <!-- hero-area -->
             <jsp:include page="../template/heroArea.jsp">
                 <jsp:param name="title" value="My profile" />
@@ -161,8 +170,17 @@
                                         </ul>
                                     </div>
                                     <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                                        <h4 class='mb-25'>Enrolled Courses</h4>
-
+                                        <h4 class='mb-25'>My Courses</h4>
+                                        <form style="margin-bottom: 50px" action="../course-adding-servlet/create-course" method="POST">
+                                            <button type='submit' class="cont-btn">New course</button>
+                                        </form>
+                                        
+                                        <div class="row">
+                                            <c:forEach var="course" items="<%=courses%>">
+                                                <c:set var="currentCourse" value="${course}" scope="request" />
+                                                <jsp:include page="../template/course/lecturerCourseComponent.jsp" />
+                                            </c:forEach>
+                                        </div>
                                     </div>
 
                                     <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">

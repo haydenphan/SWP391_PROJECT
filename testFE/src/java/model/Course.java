@@ -1,6 +1,10 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import utils.NumberUtils;
 
 public class Course {
 
@@ -11,15 +15,43 @@ public class Course {
     private LocalDateTime CreatedDate;
     private boolean IsPublished;
     private int SubcategoryID;
+    private String SubcategoryName;
     private int TotalEnrolled;
     private LocalDateTime LastUpdate;
     private String Requirements;
     private double price;
     private int languageID;
+    private String LanguageName;
     private int LevelID;
+    private String LevelName;
     private String imageURL;
     private double averageRating;
+    private List<Integer> NumberOfStarRatingList = new ArrayList<>();
 
+    public double avgRatingDisplay(int places){
+        return NumberUtils.round(averageRating, places);
+    }
+    public List<Integer> getNumberOfStarRatingList() {
+        return NumberOfStarRatingList;
+    }
+
+    public void setNumberOfStarRatingList(List<Integer> NumberOfStarRatingList) {
+        this.NumberOfStarRatingList = NumberOfStarRatingList;
+    }
+    
+    public Integer getTotalNumberOfRating(){
+        int sum = 0;
+        for (int i = 0; i < this.NumberOfStarRatingList.size(); i++) {
+            sum += this.NumberOfStarRatingList.get(i);
+        }
+        return sum;
+    }
+    public Integer getNumberOfNStarRating(int n){
+        return NumberOfStarRatingList.get(n-1);
+    }
+    public double getPercentageOfNStarRating(int n){
+        return (double)this.getNumberOfNStarRating(n)/(double)this.getTotalNumberOfRating()*100;
+    }
     public double getAverageRating() {
         return averageRating;
     }
@@ -139,6 +171,30 @@ public class Course {
     public String getRequirements() {
         return Requirements;
     }
+
+    public String getSubcategoryName() {
+        return SubcategoryName;
+    }
+
+    public void setSubcategoryName(String SubcategoryName) {
+        this.SubcategoryName = SubcategoryName;
+    }
+
+    public String getLanguageName() {
+        return LanguageName;
+    }
+
+    public void setLanguageName(String LanguageName) {
+        this.LanguageName = LanguageName;
+    }
+
+    public String getLevelName() {
+        return LevelName;
+    }
+
+    public void setLevelName(String LevelName) {
+        this.LevelName = LevelName;
+    }
     
     
 
@@ -157,10 +213,16 @@ public class Course {
         this.LastUpdate = LastUpdate;
         this.Requirements = Requirements;
     }
-
+// New method to get the list of requirements
+    public List<String> getRequirementsList() {
+        if (Requirements != null && !Requirements.isEmpty()) {
+            return Arrays.asList(Requirements.split(",\\s*"));
+        } else {
+            return Arrays.asList();
+        }
+    }
     @Override
     public String toString() {
-        return "Course{" + "CourseID=" + CourseID + ", CourseName=" + CourseName + ", Description=" + Description + ", CreatedBy=" + CreatedBy + ", CreatedDate=" + CreatedDate + ", IsPublished=" + IsPublished + ", SubcategoryID=" + SubcategoryID + ", TotalEnrolled=" + TotalEnrolled + ", LastUpdate=" + LastUpdate + ", Requirements=" + Requirements + ", price=" + price + ", languageID=" + languageID + ", LevelID=" + LevelID + ", imageURL=" + imageURL + '}';
+        return "Course{" + "CourseID=" + CourseID + ", CourseName=" + CourseName + ", Description=" + Description + ", CreatedBy=" + CreatedBy + ", CreatedDate=" + CreatedDate + ", IsPublished=" + IsPublished + ", SubcategoryID=" + SubcategoryID + ", SubcategoryName=" + SubcategoryName + ", TotalEnrolled=" + TotalEnrolled + ", LastUpdate=" + LastUpdate + ", Requirements=" + Requirements + ", price=" + price + ", languageID=" + languageID + ", LanguageName=" + LanguageName + ", LevelID=" + LevelID + ", LevelName=" + LevelName + ", imageURL=" + imageURL + ", averageRating=" + averageRating + '}';
     }
-
 }

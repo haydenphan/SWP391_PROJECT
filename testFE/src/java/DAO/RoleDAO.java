@@ -35,6 +35,7 @@ public class RoleDAO extends DAO<Role>{
         RoleDAO r = new RoleDAO();
         r.insert(new Role("Learner"));
         r.insert(new Role("Lecturer"));
+        r.insert(new Role("Admin"));
     }
     
 }
