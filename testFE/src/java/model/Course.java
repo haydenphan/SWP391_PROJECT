@@ -11,7 +11,7 @@ public class Course {
     private int CourseID;
     private String CourseName;
     private String Description;
-    private int CreatedBy; //Lecturer ID
+    private int CreatedBy; //Instructor ID
     private LocalDateTime CreatedDate;
     private boolean IsPublished;
     private int SubcategoryID;

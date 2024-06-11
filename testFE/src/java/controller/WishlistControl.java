@@ -107,13 +107,15 @@ public class WishlistControl extends HttpServlet {
     private void removeFromWishlist(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         int CourseID = Integer.parseInt(request.getParameter("CourseID"));
-        HashMap<Integer, ProductCart> cart = (HashMap<Integer, ProductCart>) session.getAttribute("cart");
+        HashMap<Integer, ProductCart> wishlist = (HashMap<Integer, ProductCart>) session.getAttribute("wishlist");
 
-        if (cart != null && cart.containsKey(CourseID)) {
-            cart.remove(CourseID);
+        if (wishlist != null && wishlist.containsKey(CourseID)) {
+            wishlist.remove(CourseID);
         }
 
-        session.setAttribute("cart", cart);
+        session.setAttribute("wishlist", wishlist);
+        response.setContentType("text/plain");
+        response.getWriter().write("Success");
     }
 
     @Override

@@ -41,7 +41,7 @@
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="role" id="flexRadioDefault2" value="2" checked>
                         <label class="form-check-label" for="flexRadioDefault2">
-                            Lecturer
+                            Instructor
                         </label>
                     </div>
 

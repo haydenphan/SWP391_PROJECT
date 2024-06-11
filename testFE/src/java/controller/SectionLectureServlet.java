@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 )
 public class SectionLectureServlet extends HttpServlet {
 
-    private static final String UPLOAD_DIR = "uploads";
+    private static final String UPLOAD_DIR = "uploads/coursematerials";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

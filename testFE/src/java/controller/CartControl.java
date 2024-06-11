@@ -28,6 +28,8 @@ public class CartControl extends HttpServlet {
             addToCart(request, response);
         } else if (actionString.equals("/remove-from-cart")) {
             removeFromCart(request, response);
+        } else if (actionString.equals("/cancelcart")) {
+            cancelCart(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -36,7 +38,7 @@ public class CartControl extends HttpServlet {
     private void showCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         HashMap<Integer, ProductCart> cart = (HashMap<Integer, ProductCart>) session.getAttribute("cart");
-        
+
         if (cart == null) {
             cart = new HashMap<>();
             session.setAttribute("cart", cart);
@@ -75,7 +77,7 @@ public class CartControl extends HttpServlet {
 
         if (cart.containsKey(CourseID)) {
             productCart = cart.get(CourseID);
-            productCart.incrementQuantity();
+            //productCart.incrementQuantity();
         } else {
             productCart = new ProductCart(course, 1);
             cart.put(CourseID, productCart);
@@ -99,10 +101,16 @@ public class CartControl extends HttpServlet {
         response.getWriter().write(String.valueOf(updatedTotal));
     }
 
+    private void cancelCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        session.removeAttribute("cart");
+        response.getWriter().write("Cart cleared");
+    }
+
     private double calculateTotal(HashMap<Integer, ProductCart> cart) {
         double total = 0;
         for (ProductCart item : cart.values()) {
-            total += item.getCourse().getPrice() * item.getQuantity();
+            total += item.getCourse().getPrice();
         }
         return total;
     }

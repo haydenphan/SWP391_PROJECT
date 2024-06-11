@@ -42,7 +42,7 @@
             </div>
             <div class="cartmini__viewcart">
                 <a href="${pageContext.request.contextPath}/pages/cartOrder.jsp" class="edu-sec-btn">View cart</a>
-                <a href="checkout.html" class="edu-sec-btn">Checkout</a>
+                <a href="${pageContext.request.contextPath}/pages/checkout.jsp" class="edu-sec-btn">Checkout</a>
             </div>
         </div>
     </div>

@@ -39,7 +39,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-xl-12 col-lg-7 col-md-12">
-                            <form action="../course-adding-servlet/course-info" method="POST" enctype="multipart/form-data">
+                            <form action="course-info" method="POST" enctype="multipart/form-data">
                                 <div class="contact-area-wrapper">
                                     <div class="section-title mb-50">
                                         <h2>Step 1</h2>

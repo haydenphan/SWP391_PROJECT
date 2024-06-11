@@ -23,7 +23,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-xl-12 col-lg-7 col-md-12">
-                            <form action="../course-adding-servlet/save-info" method="POST">
+                            <form action="save-info" method="POST">
                                 <div class="contact-area-wrapper">
                                     <div class="section-title mb-50">
                                         <h2>Step 2</h2>

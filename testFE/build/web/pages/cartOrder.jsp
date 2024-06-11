@@ -7,21 +7,42 @@
         <%@ include file="../template/head.jsp" %>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            function deleteOrder(CourseID) {
+            function deleteOrder(courseID) {
                 var contextPath = '<%= request.getContextPath() %>';
-                var url = contextPath + "/Cart/remove-from-cart?CourseID=" + CourseID;
+                var url = contextPath + "/Cart/remove-from-cart?CourseID=" + courseID;
                 $.ajax({
                     url: url,
                     type: "get",
                     success: function (responseData) {
                         document.getElementById("contentTotalMoney").innerHTML = responseData;
-                        document.getElementById("product-row-" + CourseID).remove();
+                        document.getElementById("product-row-" + courseID).remove();
+                        updateCartTotals();
                     },
                     error: function () {
                         alert('Failed to remove item from cart');
                     }
                 });
+                location.reload();
             }
+            $(document).ready(function () {
+                $("#cancelOrderBtn").click(function () {
+                    if (confirm("Are you sure you want to delete all courses in cart?")) {
+                        var contextPath = '<%= request.getContextPath() %>';
+                        var url = contextPath + "/Cart/cancelcart";
+                        $.ajax({
+                            url: url,
+                            type: "get",
+                            success: function (responseData) {
+                                alert("Courses have been deleted.");
+                                window.location.href = contextPath + "/get-course-info";
+                            },
+                            error: function () {
+                                alert('Failed to delete all courses');
+                            }
+                        });
+                    }
+                });
+            });
         </script>
     </head>
     <body>
@@ -40,7 +61,7 @@
                             <div class="course-title-breadcrumb">
                                 <nav>
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="/pages/home.jsp">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="<%= request.getContextPath() %>/pages/home.jsp">Home</a></li>
                                         <li class="breadcrumb-item active" aria-current="page">Cart</li>
                                     </ol>
                                 </nav>
@@ -76,10 +97,12 @@
                                         %>
                                         <tr id="product-row-<%= course.getCourseID() %>">
                                             <td class="product-thumbnail">
-                                                <a href="course-details.html"><img src="<%= course.getImageURL() %>" alt=""></a>
+                                                <a href="<%= request.getContextPath() %>/course-details.jsp?CourseID=<%= course.getCourseID() %>">
+                                                    <img src="<%= course.getImageURL() %>" alt="">
+                                                </a>
                                             </td>
                                             <td class="product-name">
-                                                <a href="course-details.html"><%= course.getCourseName() %></a>
+                                                <a href="<%= request.getContextPath() %>/course-details.jsp?CourseID=<%= course.getCourseID() %>"><%= course.getCourseName() %></a>
                                             </td>
                                             <td class="product-price">
                                                 <span class="amount">$<%= course.getPrice() %></span>
@@ -114,6 +137,7 @@
                                         <div class="coupon2">
                                             <button onClick="window.location.reload()" class="edu-btn" name="update_cart"
                                                     type="submit">Update cart</button>
+                                            <button class="edu-btn" id="cancelOrderBtn">Delete All Courses</button>
                                         </div>
                                     </div>
                                 </div>
@@ -123,11 +147,10 @@
                                     <div class="cart-page-total">
                                         <h2>Cart totals</h2>
                                         <ul class="mb-20">
-                                            <li>Subtotal <span>$<%= total %></span></li>
-                                            <li>VAT <span>$<%= total * 0.1 %></span></li>
-                                            <li>Total <span>$<%= total * 1.1 %></span></li>
+                                            <li>Total <span id="total">$<%= total %></span></li>
                                         </ul>
-                                        <a class="edu-border-btn" href="checkout.html">Proceed to checkout</a>
+                                        <button id="proceedToCheckoutBtn" class="edu-border-btn">Proceed to checkout</button>
+
                                     </div>
                                 </div>
                             </div>
@@ -135,6 +158,19 @@
                     </div>
                 </div>
             </section>
+            <script>
+                $(document).ready(function () {
+                    $("#proceedToCheckoutBtn").click(function () {
+                        var cartIsEmpty = <%= cart == null || cart.isEmpty() %>;
+                        if (cartIsEmpty) {
+                            alert("Please add product to cart before checkout");
+                        } else {
+                            var contextPath = '<%= request.getContextPath() %>';
+                            window.location.href = contextPath + "/pages/checkout.jsp?total=<%= total %>";
+                        }
+                    });
+                });
+            </script>
         </main>
 
         <%@ include file="../template/footer.jsp" %>

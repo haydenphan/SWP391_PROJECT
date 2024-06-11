@@ -61,7 +61,7 @@ public class ChooseRoleServlet extends HttpServlet {
         session.setAttribute("user", user);
 
         // Forward to the user profile page
-        String url = "/pages/lecturer-profile.jsp";
+        String url = "/pages/instructor-profile.jsp";
         if (user.getRole() == 1) {
             url = "/pages/user-profile.jsp";
         }

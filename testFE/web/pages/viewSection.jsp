@@ -96,13 +96,20 @@
         <div class="wrapper">
             <div class="content-wrapper">
                 <div class="course-content">
-                    <h2 id="video-title">${sections.get(0).lectures.get(0).getLectureName()}</h2>
-                    <video id="course-video" controls>
-                        <source src="${pageContext.request.contextPath}/${sections.get(0).lectures.get(0).getLectureURL()}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                    <p id="video-description">Description</p>
-                    <button type="button" class="btn btn-primary">Next Lecture</button>
+                    <c:choose>
+                        <c:when test="${not empty sections and not empty sections[0].lectures}">
+                            <h2 id="video-title">${sections[0].lectures[0].lectureName}</h2>
+                            <video id="course-video" controls>
+                                <source src="${pageContext.request.contextPath}/${sections[0].lectures[0].lectureURL}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <p id="video-description">Description</p>
+                            <button type="button" class="btn btn-primary">Next Lecture</button>
+                        </c:when>
+                        <c:otherwise>
+                            <h2>No lectures available</h2>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
                 <div class="course-sidebar">
                     <h3>Content</h3>

@@ -60,10 +60,10 @@
 
                                             </div> <!-- Message display area -->
                                             <div style="display: flex;">
-                                                <label style="padding: 10px; margin-right: 10px" for="roles">Are you Learner or Lecturer?</label>
+                                                <label style="padding: 10px; margin-right: 10px" for="roles">Are you Learner or Instructor?</label>
                                                 <select name="roles" required id="roles" aria-label="Default select example">
                                                     <option value="learner">Learner</option>
-                                                    <option value="lecturer">Lecturer</option>
+                                                    <option value="instructor">Instructor</option>
                                                 </select>
                                             </div>
                                             <br/>

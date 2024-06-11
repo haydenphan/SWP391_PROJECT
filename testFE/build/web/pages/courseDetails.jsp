@@ -143,12 +143,12 @@
                                 <div class="course-detelis-meta">
                                     <div class="course-meta-wrapper border-line-meta">
                                         <div class="course-meta-img">
-                                            <a href="instructor-profile.html"><img src="${pageContext.request.contextPath}/img/course/course-meta.png"
+                                            <a href="instructor-profile.html"><img src="${CourseDAO.getInstructor(course.getCreatedBy()).getAvatar()}"
                                                                                    alt="course-meta"></a>
                                         </div>
                                         <div class="course-meta-text">
                                             <span>Created by</span>
-                                            <h6><a href="instructor-profile.html">David Allberto</a></h6>
+                                            <h6><a href="instructor-profile.html">${CourseDAO.getInstructor(course.getCreatedBy()).getFirstName()} ${CourseDAO.getInstructor(course.getCreatedBy()).getLastName()}</a></h6>
                                         </div>
                                     </div>
                                     <div class="course-Enroll border-line-meta">
@@ -486,11 +486,11 @@
                                     <div class="instructors-heading">
                                         <div class="instructors-img w-img">
                                             <a href="instructor-profile.html"><img
-                                                    src="${pageContext.request.contextPath}/img/course/course-instructors.png"
+                                                    src="${CourseDAO.getInstructor(course.getCreatedBy()).getAvatar()}"
                                                     alt="image not found"></a>
                                         </div>
                                         <div class="instructors-body">
-                                            <h5><a href="instructor-profile.html">David Allberto</a></h5>
+                                            <h5><a href="instructor-profile.html">${CourseDAO.getInstructor(course.getCreatedBy()).getFirstName()} ${CourseDAO.getInstructor(course.getCreatedBy()).getLastName()}</a></h5>
                                             <span>Data Scientist, BDevs Ltd.</span>
                                             <div class="intructors-review">
                                                 <i class="fas fa-star"></i>
@@ -498,7 +498,7 @@
                                             </div>
                                             <div class="instructors-footer">
                                                 <i class="fas fa-desktop"></i>
-                                                <span>3 Coursess</span>
+                                                <span>3 Courses</span>
                                                 <i class="far fa-user-friends"></i>
                                                 <span>78,742 Students</span>
                                             </div>

@@ -11,8 +11,27 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Course;
+import model.User;
 
 public class CourseDAO extends DAO<Course> {
+
+    public static boolean isCoursePublished(int courseId) {
+        String sql = "SELECT IsPublished FROM Courses WHERE CourseID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, courseId);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean("IsPublished");
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 
     @Override
     public int insert(Course t) {
@@ -113,7 +132,7 @@ public class CourseDAO extends DAO<Course> {
                 course.setCourseName(rs.getString("CourseName"));
                 course.setDescription(rs.getString("Description"));
                 course.setCreatedBy(rs.getInt("CreatedBy"));
-                course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime()); // Correct conversion from java.sql.Date to LocalDate
+                course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime()); // Correct conversion from java.sql.Timestamp to LocalDateTime
                 course.setIsPublished(rs.getBoolean("IsPublished"));
                 course.setSubcategoryID(rs.getInt("SubcategoryID"));
                 course.setLevelID(rs.getInt("LevelID"));
@@ -121,7 +140,7 @@ public class CourseDAO extends DAO<Course> {
                 course.setPrice(rs.getInt("Price"));
                 course.setImageURL(rs.getString("ImageURL"));
                 course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
-                course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime()); // Correct conversion from java.sql.Date to LocalDate
+                course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime()); // Correct conversion from java.sql.Timestamp to LocalDateTime
                 course.setRequirements(rs.getString("Requirements"));
 
                 courses.add(course);
@@ -168,8 +187,42 @@ public class CourseDAO extends DAO<Course> {
 
         return course;
     }
+    
+    public static User getInstructor(int id) {
+        String sql = "SELECT * FROM Users WHERE UserID = ?";
+        User instructor = null;
 
-    public static ArrayList<Course> getCoursesByLecturer(int id) {
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, id);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    instructor = new User();
+                    instructor.setAvatar(rs.getString("Avatar"));
+                    instructor.setBio(rs.getString("Bio"));
+                    instructor.setEmail(rs.getString("Email"));
+                    instructor.setFirstName(rs.getString("FirstName"));
+                    instructor.setIsActive(rs.getBoolean("IsActive"));
+                    instructor.setLastName(rs.getString("LastName"));
+                    instructor.setPasswordHash(rs.getString("PasswordHash"));
+                    instructor.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
+                    instructor.setRole(rs.getInt("RoleID"));
+                    instructor.setStoredSalt(rs.getBytes("StoredSalt"));
+                    instructor.setUserID(rs.getInt("UserID"));
+                    instructor.setEmail(rs.getString("Username"));
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return instructor;
+    }
+
+    public static ArrayList<Course> getCoursesByInstructor(int id) {
         String sql = "SELECT * FROM Courses WHERE CreatedBy = ?";
         ArrayList<Course> list = new ArrayList<>();
 
@@ -205,8 +258,8 @@ public class CourseDAO extends DAO<Course> {
 
         return list;
     }
-    
-    public static int getCourseIDByLecturerAndName(int id, String name) {
+
+    public static int getCourseIDByInstructorAndName(int id, String name) {
         String sql = "SELECT * FROM Courses WHERE CreatedBy = ? AND CourseName = ?";
         int courseID = -1;
 
@@ -550,8 +603,8 @@ public class CourseDAO extends DAO<Course> {
 //        System.out.println(dao.getCourseByID("3"));
 //        List<Integer> starCounts = dao.getStarRatingsCount("3");
 //        System.out.println("Star ratings count for course ID " + "3" + ": " + starCounts);
-        System.out.println(CourseDAO.getCoursesByLecturer(3).size());
-//        for (Course course : CourseDAO.getCoursesByLecturer(3)) {
+        System.out.println(CourseDAO.getCoursesByInstructor(3).size());
+//        for (Course course : CourseDAO.getCoursesByInstructor(3)) {
 //            System.out.println(course.toString());
 //        }
     }

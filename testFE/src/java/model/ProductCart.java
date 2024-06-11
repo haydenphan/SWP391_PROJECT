@@ -10,17 +10,29 @@ package model;
  */
 public class ProductCart {
     private Course course;
-    private int quantity;
+    private double totalCart;
 
-    public ProductCart(Course course, int quantity) {
+    public ProductCart(Course course, double totalCart) {
         this.course = course;
-        this.quantity = quantity;
-    }
-    
-    public void incrementQuantity(){
-        this.quantity++;
+        this.totalCart = course.getPrice();
     }
 
+
+    public ProductCart() {
+    }
+
+    public ProductCart(Course course) {
+        this.course = course;
+    }
+
+    public double getTotalCart() {
+        return totalCart;
+    }
+
+    public void setTotalCart(double totalCart) {
+        this.totalCart = totalCart;
+    }
+   
     public Course getCourse() {
         return course;
     }
@@ -29,17 +41,13 @@ public class ProductCart {
         this.course = course;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
     @Override
     public String toString() {
-        return "Cart{" + "course=" + course + ", quantity=" + quantity + '}';
+        return "ProductCart{" + "course=" + course + ", totalCart=" + totalCart + '}';
     }
+
+    
+
+    
     
 }

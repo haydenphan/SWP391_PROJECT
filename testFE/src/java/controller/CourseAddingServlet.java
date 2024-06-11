@@ -40,92 +40,103 @@ public class CourseAddingServlet extends HttpServlet {
         String actionString = request.getPathInfo();
         String url = "";
         HttpSession session = request.getSession();
-        if (actionString.equals("/course-info")) {
-            // Fetch form parameters
-            String name = request.getParameter("courseName");
-            double price = Double.parseDouble(request.getParameter("price"));
-            String category = request.getParameter("category");
-            String language = request.getParameter("language");
-            String level = request.getParameter("level");
-            String description = request.getParameter("description");
-            String requirements = request.getParameter("requirements");
 
-            // Handle cover image upload
-            Part filePart = request.getPart("coverImage");
-            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-            String uploadPath = getServletContext().getRealPath("") + File.separator + COVER_IMAGE_UPLOAD_DIRECTORY;
-            String filePath = uploadPath + File.separator + fileName;
+        switch (actionString) {
+            case "/course-info":
+                // Fetch form parameters
+                String name = request.getParameter("courseName");
+                double price = Double.parseDouble(request.getParameter("price"));
+                String category = request.getParameter("category");
+                String language = request.getParameter("language");
+                String level = request.getParameter("level");
+                String description = request.getParameter("description");
+                String requirements = request.getParameter("requirements");
 
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
+                // Handle cover image upload
+                Part filePart = request.getPart("coverImage");
+                String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                String uploadPath = getServletContext().getRealPath("") + File.separator + COVER_IMAGE_UPLOAD_DIRECTORY;
+                String filePath = uploadPath + File.separator + fileName;
 
-            File existingFile = new File(filePath);
-            if (existingFile.exists()) {
-                existingFile.delete();
-            }
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs();
+                }
 
-            try (InputStream fileContent = filePart.getInputStream()) {
-                Files.copy(fileContent, Paths.get(filePath));
-            }
+                File existingFile = new File(filePath);
+                if (existingFile.exists()) {
+                    existingFile.delete();
+                }
 
-            // Save the cover image path to the session or database
-            String coverImagePath = COVER_IMAGE_UPLOAD_DIRECTORY + "/" + fileName;
+                try (InputStream fileContent = filePart.getInputStream()) {
+                    Files.copy(fileContent, Paths.get(filePath));
+                }
 
-            session.setAttribute("coverImagePath", coverImagePath);
-            session.setAttribute("name", name);
-            session.setAttribute("price", price);
-            session.setAttribute("category", category);
-            session.setAttribute("language", language);
-            session.setAttribute("level", level);
-            session.setAttribute("description", description);
-            session.setAttribute("requirements", requirements);
+                // Save the cover image path to the session or database
+                String coverImagePath = COVER_IMAGE_UPLOAD_DIRECTORY + "/" + fileName;
 
-            url = "/pages/createCourse2.jsp";
-        } else if (actionString.equals("/save-info")) {
-            String subcategory = request.getParameter("subcategory");
-            String name = (String) session.getAttribute("name");
-            double price = (Double) session.getAttribute("price");
-            String language = (String) session.getAttribute("language");
-            String level = (String) session.getAttribute("level");
-            String description = (String) session.getAttribute("description");
-            String requirements = (String) session.getAttribute("requirements");
-            String coverImagePath = (String) session.getAttribute("coverImagePath");
+                session.setAttribute("coverImagePath", coverImagePath);
+                session.setAttribute("name", name);
+                session.setAttribute("price", price);
+                session.setAttribute("category", category);
+                session.setAttribute("language", language);
+                session.setAttribute("level", level);
+                session.setAttribute("description", description);
+                session.setAttribute("requirements", requirements);
 
-            CourseDAO courseDAO = new CourseDAO();
-            Course course = new Course();
-            course.setCourseName(name);
-            course.setDescription(description);
-            course.setPrice(price);
-            course.setAverageRating(0);
-            course.setCreatedBy(((User)session.getAttribute("user")).getUserID());
-            LocalDateTime now = LocalDateTime.now();
-            course.setCreatedDate(now);
-            course.setImageURL(coverImagePath);
-            course.setIsPublished(false);
-            course.setTotalEnrolled(0);
-            course.setRequirements(requirements);
-            course.setLastUpdate(now);
-            course.setLanguageID(LanguageDAO.getLanguageIdByName(language));
-            course.setLevelID(LevelDAO.getLevelIdByName(level));
-            course.setSubcategoryID(SubcategoryDAO.getSubcategoryIdByName(subcategory));
-            courseDAO.insert(course);
-            session.removeAttribute("coverImagePath");
-            session.removeAttribute("name");
-            session.removeAttribute("price");
-            session.removeAttribute("category");
-            session.removeAttribute("language");
-            session.removeAttribute("level");
-            session.removeAttribute("description");
-            session.removeAttribute("requirements");
-            url = "/pages/testSection.jsp" + "?courseId=" + courseDAO.getCourseIDByLecturerAndName(course.getCreatedBy(), course.getCourseName());
-            System.out.println(url);
-        } else if (actionString.equals("/create-course")) {
-            url = "/pages/createCourse.jsp";
-        } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                url = "/pages/createCourse2.jsp";
+                break;
+
+            case "/save-info":
+                String subcategory = request.getParameter("subcategory");
+                name = (String) session.getAttribute("name");
+                price = (Double) session.getAttribute("price");
+                language = (String) session.getAttribute("language");
+                level = (String) session.getAttribute("level");
+                description = (String) session.getAttribute("description");
+                requirements = (String) session.getAttribute("requirements");
+                coverImagePath = (String) session.getAttribute("coverImagePath");
+
+                CourseDAO courseDAO = new CourseDAO();
+                Course course = new Course();
+                course.setCourseName(name);
+                course.setDescription(description);
+                course.setPrice(price);
+                course.setAverageRating(0);
+                course.setCreatedBy(((User) session.getAttribute("user")).getUserID());
+                LocalDateTime now = LocalDateTime.now();
+                course.setCreatedDate(now);
+                course.setImageURL(coverImagePath);
+                course.setIsPublished(false);
+                course.setTotalEnrolled(0);
+                course.setRequirements(requirements);
+                course.setLastUpdate(now);
+                course.setLanguageID(LanguageDAO.getLanguageIdByName(language));
+                course.setLevelID(LevelDAO.getLevelIdByName(level));
+                course.setSubcategoryID(SubcategoryDAO.getSubcategoryIdByName(subcategory));
+                courseDAO.insert(course);
+
+                session.removeAttribute("coverImagePath");
+                session.removeAttribute("name");
+                session.removeAttribute("price");
+                session.removeAttribute("category");
+                session.removeAttribute("language");
+                session.removeAttribute("level");
+                session.removeAttribute("description");
+                session.removeAttribute("requirements");
+
+                url = "/pages/testSection.jsp?courseId=" + courseDAO.getCourseIDByInstructorAndName(course.getCreatedBy(), course.getCourseName());
+                break;
+
+            case "/create-course":
+                url = "/pages/createCourse.jsp";
+                break;
+
+            default:
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
         }
+
         RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
         rd.forward(request, response);
     }

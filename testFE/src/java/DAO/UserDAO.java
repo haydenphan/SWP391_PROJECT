@@ -98,10 +98,11 @@ public class UserDAO extends DAO<User> {
     }
 
     public User checkExistedGGAccount(User user) throws Exception {
-        String sql = "SELECT * FROM Users WHERE (Email = ?)";
+        String sql = "SELECT * FROM Users WHERE Email = ? AND PasswordHash = ?";
 
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
             st.setString(1, user.getEmail());
+            st.setString(2, "GG");
 
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
