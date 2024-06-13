@@ -649,48 +649,6 @@
                                                 complex concepts and ideas.</p>
                                         </div>
                                     </div>
-                                    <div class="course-review-item mb-30">
-                                        <div class="course-reviews-img">
-                                            <a href="#"><img src="${pageContext.request.contextPath}/img/course/course-reviews-2.png"
-                                                             alt="image not found"></a>
-                                        </div>
-                                        <div class="course-review-list">
-                                            <h5><a href="#">Samantha</a></h5>
-                                            <div class="course-start-icon">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>45 min ago</span>
-                                            </div>
-                                            <p>The course is good at explaining very basic intuition of the concepts. It
-                                                will get
-                                                you scratching the surface so to say. where this course is unique is the
-                                                implementation methods are so well defined Thank you to the team !.</p>
-                                        </div>
-                                    </div>
-                                    <div class="course-review-item mb-30">
-                                        <div class="course-reviews-img">
-                                            <a href="#"><img src="${pageContext.request.contextPath}/img/course/course-reviews-3.png"
-                                                             alt="image not found"></a>
-                                        </div>
-                                        <div class="course-review-list">
-                                            <h5><a href="#">Michell Mariya</a></h5>
-                                            <div class="course-start-icon">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>30 min ago</span>
-                                            </div>
-                                            <p>This course is amazing..!
-                                                I started this course as a beginner and learnt a lot. Instructors are great.
-                                                Query
-                                                handling can be improved.Overall very happy with the course.</p>
-                                        </div>
-                                    </div>
                                 </div>
                                 <button id="prevBtn" class="pagination-btn" onclick="prevPage()">Back</button>
                                 <button id="nextBtn" class="pagination-btn" onclick="nextPage()">Next</button>
