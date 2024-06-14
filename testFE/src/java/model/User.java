@@ -1,31 +1,31 @@
 package model;
 
-import com.google.gson.annotations.SerializedName;
+//import com.google.gson.annotations.SerializedName;
 import java.time.LocalDateTime;
 
 public class User {
-    @SerializedName("id")
+//    @SerializedName("id")
     private int userID;
     
-    @SerializedName("name")
+//    @SerializedName("name")
     private String userName;
     
     private String passwordHash;
     
-    @SerializedName("given_name")
+//    @SerializedName("given_name")
     private String firstName;
     
-     @SerializedName("family_name")
+//     @SerializedName("family_name")
     private String lastName;
     
-    @SerializedName("email")
+//    @SerializedName("email")
     private String email;
     
     private int roleID;
     private LocalDateTime registrationDate;
     private boolean isActive;
     
-    @SerializedName("picture")
+//    @SerializedName("picture")
     private String avatar;
         
     private String bio;

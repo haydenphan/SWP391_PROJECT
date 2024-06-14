@@ -34,7 +34,7 @@
                             type: "get",
                             success: function (responseData) {
                                 alert("Courses have been deleted.");
-                                window.location.href = contextPath + "/get-course-info";
+                                window.location.href = contextPath + "/CourseList";
                             },
                             error: function () {
                                 alert('Failed to delete all courses');

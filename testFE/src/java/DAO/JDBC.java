@@ -9,10 +9,10 @@ public class JDBC {
     public static Connection getConnectionWithSqlJdbc() throws Exception {
         Connection con = null;
         String dbUser = "sa";
-        String dbPassword = "123";
+        String dbPassword = "Nguyet170280";
         String port = "1433";
-        String IP = "169.254.157.38";
-        String ServerName = "LAPTOP-DVKPB8S9";
+        String IP = "192.168.1.13";
+        String ServerName = "ASUS";
         String DBName = "OnlineLearningV3";
         String driverClass = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 
