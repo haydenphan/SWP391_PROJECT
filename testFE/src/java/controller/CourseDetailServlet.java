@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Course;
+import model.FeedbackStatistics;
 import model.User;
 
 @WebServlet(name = "CourseDetailServlet", urlPatterns = {"/CourseDetail"})
@@ -21,10 +22,12 @@ public class CourseDetailServlet extends HttpServlet {
         CourseEnrollmentDAO ceDAO = new CourseEnrollmentDAO();
         User user = (User) request.getSession().getAttribute("user");
         String courseID = request.getParameter("id");
-        boolean hasEnrolled = user==null? false : ceDAO.isUserEnrolledInCourse(user.getUserID(), Integer.parseInt(courseID));
+        boolean hasEnrolled = user!=null && ceDAO.isUserEnrolledInCourse(user.getUserID(), Integer.parseInt(courseID));
         Course course = courseDAO.getCourseByID(courseID);
-        course.setNumberOfStarRatingList(courseDAO.getStarRatingsCount(courseID));
+        FeedbackStatistics coStats = new FeedbackStatistics();
+        coStats.setNumberOfStarRatingList(courseDAO.getStarRatingsCount(courseID));
         request.setAttribute("course", course);
+        request.setAttribute("coStats", coStats);
         request.setAttribute("hasEnrolled", hasEnrolled);
         request.getRequestDispatcher("/pages/courseDetails.jsp").forward(request, response);
     }

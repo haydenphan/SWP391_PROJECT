@@ -101,12 +101,36 @@ public class CourseEnrollmentDAO {
         }
         return false;
     }
+    public boolean isLearnerEnrolledInInstructorCourse(int learnerID, int lecturerID) {
+        String sql = "SELECT COUNT(*) AS count FROM CourseEnrollments ce " +
+                     "JOIN Courses c ON ce.CourseID = c.CreatedBy " +
+                     "WHERE ce.studentID = ? AND c.CreatedBy = ?";
+        
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, learnerID);
+            st.setInt(2, lecturerID);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt("count");
+                    return count > 0;
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 
     public static void main(String[] args) {
         CourseEnrollmentDAO dao = new CourseEnrollmentDAO();
 
-        // Check if user is enrolled in course
-        boolean isEnrolled = dao.isUserEnrolledInCourse(1, 1);
-        System.out.println("Is user enrolled in course: " + isEnrolled);
+        // Example usage
+        int learnerID = 1; // Replace with actual learner ID
+        int lecturerID = 2; // Replace with actual lecturer ID
+        boolean isEnrolled = dao.isLearnerEnrolledInInstructorCourse(learnerID, lecturerID);
+        System.out.println("Is Learner Enrolled: " + isEnrolled);
     }
 }

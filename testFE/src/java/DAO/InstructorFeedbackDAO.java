@@ -11,10 +11,46 @@ import java.util.logging.Logger;
 
 public class InstructorFeedbackDAO extends DAO<InstructorFeedback> {
 
+    public List<Integer> getStarRatingsCount(String instructorID) {
+        List<Integer> starCounts = new ArrayList<>(5);
+        // Initialize list with zeros for 1 to 5 stars
+        for (int i = 0; i < 5; i++) {
+            starCounts.add(0);
+        }
+
+        String sql = "SELECT Rating, COUNT(*) AS starCount "
+                + "FROM InstructorFeedback "
+                + "WHERE InstructorID = ? "
+                + "GROUP BY Rating";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+
+            st.setString(1, instructorID);
+
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    int rating = rs.getInt("Rating");
+                    int count = rs.getInt("starCount");
+
+                    if (rating >= 1 && rating <= 5) {
+                        starCounts.set(rating - 1, count);
+                    }
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return starCounts;
+    }
     public List<InstructorFeedback> getFeedbacksByPage(int instructorID, int page, int pageSize) {
         List<InstructorFeedback> feedbacks = new ArrayList<>();
         String sql = "SELECT * FROM (" +
-                "SELECT ROW_NUMBER() OVER (ORDER BY f.FeedbackDate DESC) AS RowNum, f.*, u.UserID, u.Avatar, u.UserName " +
+                "SELECT ROW_NUMBER() OVER (ORDER BY f.FeedbackDate DESC) AS RowNum, f.*, u.UserID, u.Avatar, u.FirstName, u.LastName " +
                 "FROM InstructorFeedback f " +
                 "JOIN Users u ON f.LearnerID = u.UserID " +
                 "WHERE f.InstructorID = ?) AS Sub " +
@@ -39,7 +75,8 @@ public class InstructorFeedbackDAO extends DAO<InstructorFeedback> {
                     User learner = new User();
                     learner.setUserID(rs.getInt("UserID"));
                     learner.setAvatar(rs.getString("Avatar"));
-                    learner.setUserName(rs.getString("UserName"));
+                    learner.setFirstName(rs.getString("FirstName"));
+                    learner.setLastName(rs.getString("LastName"));
                     feedback.setLearner(learner);
 
                     feedbacks.add(feedback);
@@ -119,13 +156,6 @@ public class InstructorFeedbackDAO extends DAO<InstructorFeedback> {
         feedback.setFeedbackDate(LocalDateTime.now());
 
         // Insert the feedback
-        int result = feedbackDAO.insert(feedback);
-
-        // Print the result
-        if (result > 0) {
-            System.out.println("Feedback inserted successfully!");
-        } else {
-            System.out.println("Failed to insert feedback.");
-        }
+        System.out.println(feedbackDAO.getStarRatingsCount("1"));
     }
 }

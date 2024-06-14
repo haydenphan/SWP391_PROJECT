@@ -26,32 +26,11 @@ public class Course {
     private String LevelName;
     private String imageURL;
     private double averageRating;
-    private List<Integer> NumberOfStarRatingList = new ArrayList<>();
 
     public double avgRatingDisplay(int places){
         return NumberUtils.round(averageRating, places);
     }
-    public List<Integer> getNumberOfStarRatingList() {
-        return NumberOfStarRatingList;
-    }
-
-    public void setNumberOfStarRatingList(List<Integer> NumberOfStarRatingList) {
-        this.NumberOfStarRatingList = NumberOfStarRatingList;
-    }
     
-    public Integer getTotalNumberOfRating(){
-        int sum = 0;
-        for (int i = 0; i < this.NumberOfStarRatingList.size(); i++) {
-            sum += this.NumberOfStarRatingList.get(i);
-        }
-        return sum;
-    }
-    public Integer getNumberOfNStarRating(int n){
-        return NumberOfStarRatingList.get(n-1);
-    }
-    public double getPercentageOfNStarRating(int n){
-        return (double)this.getNumberOfNStarRating(n)/(double)this.getTotalNumberOfRating()*100;
-    }
     public double getAverageRating() {
         return averageRating;
     }

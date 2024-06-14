@@ -1,5 +1,6 @@
 package controller;
 
+import DAO.CourseEnrollmentDAO;
 import DAO.InstructorFeedbackDAO;
 import DAO.UserDAO;
 import jakarta.servlet.ServletException;
@@ -47,7 +48,7 @@ public class InstructorFeedbackServlet extends HttpServlet {
                     out.println("<a href=\"#\"><img src=\"" + feedback.getLearner().getAvatar() + "\" alt=\"image not found\"></a>");
                     out.println("</div>");
                     out.println("<div class=\"course-review-list\">");
-                    out.println("<h5><a href=\"#\">" + feedback.getLearner().getUserName() + "</a></h5>");
+                    out.println("<h5><a href=\"#\">" + feedback.getLearner().getFirstName()+" "+feedback.getLearner().getLastName() + "</a></h5>");
                     out.println("<div class=\"course-start-icon\">");
                     for (int j = 0; j < feedback.getRating(); j++) {
                         out.println("<i class=\"fas fa-star\"></i>");
@@ -67,15 +68,17 @@ public class InstructorFeedbackServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        if (user == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
+        CourseEnrollmentDAO ceDAO = new CourseEnrollmentDAO();
+//        User user = new User();
+//        user.setUserID(1);
+        int instructorID = Integer.parseInt(request.getParameter("instructorID"));
+        boolean hasEnrolled = user!=null && ceDAO.isLearnerEnrolledInInstructorCourse(user.getUserID(), instructorID);
+        if(!hasEnrolled){
             return;
         }
-        int userID = user.getUserID();
         InstructorFeedbackDAO instructorFbDAO = new InstructorFeedbackDAO();
 
         // Receive parameters from the request
-        int instructorID = Integer.parseInt(request.getParameter("instructorID"));
         String content = request.getParameter("content");
         int rating = Integer.parseInt(request.getParameter("rating"));
 
@@ -85,12 +88,15 @@ public class InstructorFeedbackServlet extends HttpServlet {
         feedback.setComment(content);
         feedback.setRating(rating);
         feedback.setFeedbackDate(LocalDateTime.now());
+        User learner = new User();
+        learner.setUserID(user.getUserID());
+        feedback.setLearner(learner);
         
         // Insert the feedback into the database
         int result = instructorFbDAO.insert(feedback);
 
         if (result > 0) {
-            response.sendRedirect(request.getContextPath() + "/InstructorDetail?id=" + instructorID + "&res=success");
+            response.sendRedirect(request.getContextPath() + "/InstructorProfileView?id=" + instructorID + "&res=success");
         } else {
             response.sendRedirect(request.getContextPath() + "/InstructorDetail?id=" + instructorID + "&res=fail");
         }

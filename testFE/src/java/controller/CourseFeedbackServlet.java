@@ -1,5 +1,6 @@
 package controller;
 
+import DAO.CourseEnrollmentDAO;
 import DAO.CourseFeedbackDAO;
 import DAO.UserDAO;
 import jakarta.servlet.ServletException;
@@ -75,13 +76,14 @@ public class CourseFeedbackServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User)session.getAttribute("user");
-        if(user == null){
+        CourseEnrollmentDAO ceDAO = new CourseEnrollmentDAO();
+        String courseID = request.getParameter("courseID");
+        boolean hasEnrolled = user!=null && ceDAO.isUserEnrolledInCourse(user.getUserID(), Integer.parseInt(courseID));
+        if(!hasEnrolled){
             return;
         }
-        int userID = user.getUserID();
         CourseFeedbackDAO courseFbDAO = new CourseFeedbackDAO();
         // Receive parameters from the request
-        String courseID = request.getParameter("courseID");
         String content = request.getParameter("content");
         int rating = Integer.parseInt(request.getParameter("rating"));
         
@@ -91,7 +93,7 @@ public class CourseFeedbackServlet extends HttpServlet {
         feedback.setComment(content);
         feedback.setRating(rating);
         feedback.setFeedbackDate(LocalDateTime.now());
-        feedback.setUserID(userID); 
+        feedback.setUserID(user.getUserID()); 
         
         // Insert the feedback into the database
         int result = courseFbDAO.insert(feedback);

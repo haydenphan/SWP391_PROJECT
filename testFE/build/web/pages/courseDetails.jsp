@@ -519,7 +519,7 @@
                                                 <div class="rating-point-wrapper text-center">
                                                     <h2>${course.averageRating}<i class="fas fa-star"></i></h2>
 
-                                                    <span> ${course.getTotalNumberOfRating()} Rating</span>
+                                                    <span> ${coStats.getTotalNumberOfRating()} Rating</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -536,12 +536,12 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(5)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${coStats.getPercentageOfNStarRating(5)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(5)}%</span>
+                                                            <span>${coStats.getPercentageOfNStarRating(5)}%</span>
                                                         </div>
                                                     </div>
                                                     <div class="rating-row mb-10">
@@ -554,12 +554,12 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(4)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${coStats.getPercentageOfNStarRating(4)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(4)}%</span>
+                                                            <span>${coStats.getPercentageOfNStarRating(4)}%</span>
                                                         </div>
                                                     </div>
                                                     <div class="rating-row mb-10">
@@ -572,12 +572,12 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(3)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${coStats.getPercentageOfNStarRating(3)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(3)}%</span>
+                                                            <span>${coStats.getPercentageOfNStarRating(3)}%</span>
                                                         </div>
                                                     </div>
                                                     <div class="rating-row mb-10">
@@ -590,12 +590,12 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(2)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${coStats.getPercentageOfNStarRating(2)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(2)}%</span>
+                                                            <span>${coStats.getPercentageOfNStarRating(2)}%</span>
                                                         </div>
                                                     </div>
                                                     <div class="rating-row mb-10">
@@ -608,12 +608,12 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(1)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${coStats.getPercentageOfNStarRating(1)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(1)}%</span>
+                                                            <span>${coStats.getPercentageOfNStarRating(1)}%</span>
                                                         </div>
                                                     </div>
                                                 </div>
