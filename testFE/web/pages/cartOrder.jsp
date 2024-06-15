@@ -44,6 +44,25 @@
                 });
             });
         </script>
+        <style>
+            .btn-view-course {
+                display: inline-block;
+                padding: 10px 20px;
+                padding-top: 10px;
+                font-size: 16px;
+                color: #fff;
+                background-color: #007bff;
+                border: none;
+                border-radius: 5px;
+                text-decoration: none;
+                text-align: center;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            .btn-view-course:hover {
+                background-color: #0056b3;
+            }
+        </style>
     </head>
     <body>
         <%@ include file="../template/preLoader.jsp" %>
@@ -143,17 +162,30 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-5 ml-auto">
+                                <div class="col-md-6 ml-auto">
                                     <div class="cart-page-total">
                                         <h2>Cart totals</h2>
                                         <ul class="mb-20">
                                             <li>Total <span id="total">$<%= total %></span></li>
-                                        </ul>
+                                        </ul>`
+
+                                        <div class=" ">
+                                            <button id="proceedToCheckoutBtn" class="edu-border-btn">Proceed to checkout</button>
+                                            <a href="<%= request.getContextPath() %>/CourseList" class="btn-view-course">Continue to View Course</a>
+                                        </div>
+
+
+                                        <!-- <div class="coupon d-flex align-items-center col-md-6">
                                         <button id="proceedToCheckoutBtn" class="edu-border-btn">Proceed to checkout</button>
 
+                                        <div class="col-md-3">
+                                            <a href="<%= request.getContextPath() %>/CourseList" class="btn-view-course">Continue to View Course</a>
+                                        </div> 
+                                    </div>comment -->
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

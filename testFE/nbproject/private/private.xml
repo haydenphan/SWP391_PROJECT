@@ -4,12 +4,14 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/THU%20NGUYET/Documents/GitHub/SWP391_PROJECT/testFE/src/java/DAO/CourseSectionDAO.java</file>
+            <file>file:/C:/Users/THU%20NGUYET/Documents/GitHub/SWP391_PROJECT/testFE/web/pages/cartOrder.jsp</file>
             <file>file:/C:/Users/THU%20NGUYET/Documents/GitHub/SWP391_PROJECT/testFE/src/java/DAO/JDBC.java</file>
             <file>file:/C:/Users/THU%20NGUYET/Documents/GitHub/SWP391_PROJECT/testFE/src/java/controller/ajaxServlet.java</file>
             <file>file:/C:/Users/THU%20NGUYET/Documents/GitHub/SWP391_PROJECT/testFE/src/java/model/TransactionItem.java</file>
             <file>file:/C:/Users/THU%20NGUYET/Documents/GitHub/SWP391_PROJECT/testFE/src/java/DAO/TransactionDAO.java</file>
             <file>file:/C:/Users/THU%20NGUYET/Documents/GitHub/SWP391_PROJECT/testFE/src/java/controller/TransactionServlet.java</file>
             <file>file:/C:/Users/THU%20NGUYET/Documents/GitHub/SWP391_PROJECT/testFE/web/pages/vnpay_return.jsp</file>
+            <file>file:/C:/Users/THU%20NGUYET/Documents/GitHub/SWP391_PROJECT/testFE/src/java/controller/CartControl.java</file>
         </group>
     </open-files>
 </project-private>
