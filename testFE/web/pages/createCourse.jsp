@@ -2,9 +2,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="model.*" %>
+<%@ page import="DAO.*" %>
+<%@ page import="java.util.ArrayList" %>
+
 <!doctype html>
 <html class="no-js" lang="zxx">
-
 
     <head>
         <%-- HEAD --%>
@@ -28,153 +30,103 @@
                 <jsp:param name="title" value="My profile" />
             </jsp:include>
 
-
-            <!-- User Profile Start-->
-            <div class="course-details-area pt-120 pb-100">
+            <%
+                ArrayList<String> categoryList = CategoryDAO.getAllCategoryName();
+                ArrayList<String> languageList = LanguageDAO.getAllLanguageName();
+                ArrayList<String> levelList = LevelDAO.getAllLevelName();
+            %>
+            <div class="contact-area pt-120 pb-90">
                 <div class="container">
-
-                                            <!-- Page Heading -->
-                                            <h1 class="h3 mb-2 text-gray-800 pb-4">Adding Course</h1>
-
-                                            <form action="createCourse" method="POST" enctype="multipart/form-data">
-                                                <div class="row">
-                                                    <div class="col-md-7">
-                                                        <div class="form-group row">
-                                                            <label for="Name" class="col-sm-2 col-form-label">Course
-                                                                Name</label>
-                                                            <div class="col-sm-10">
-                                                                <textarea class="form-control" id="Name" name="name"
-                                                                    rows="2" placeholder="Course Description"
-                                                                    required></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="Description"
-                                                                class="col-sm-2 col-form-label">Course
-                                                                Description</label>
-                                                            <div class="col-sm-10 ">
-                                                                <textarea class="form-control" id="Description"
-                                                                    name="description" rows="5"
-                                                                    placeholder="Course Description"
-                                                                    required></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="Objective"
-                                                                class="col-sm-2 col-form-label">Course Objective</label>
-                                                            <div class="col-sm-10">
-                                                                <textarea class="form-control" id="Objective"
-                                                                    name="objective" rows="5"
-                                                                    placeholder="Course Objective" required></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <fieldset class="form-group">
-                                                            <div class="row">
-                                                                <legend class="col-form-label col-sm-2 pt-0"> Level </legend>
-                                                                <div class="col-sm-10">
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="level" id="gridRadios1" value="1"
-                                                                            checked>
-                                                                        <label class="form-check-label"
-                                                                            for="gridRadios1">
-                                                                            Easy
-                                                                        </label>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="level" id="gridRadios2" value="2">
-                                                                        <label class="form-check-label"
-                                                                            for="gridRadios2">
-                                                                            Medium
-                                                                        </label>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="level" id="gridRadios3" value="3">
-                                                                        <label class="form-check-label"
-                                                                            for="gridRadios3">
-                                                                            Hard
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </fieldset>
-                                                        <div class="form-group row">
-                                                            <label for="Price"
-                                                                class="col-sm-2 col-form-label">Price</label>
-                                                            <div class="col-sm-10">
-                                                                <input type="number" step="0.01" class="form-control"
-                                                                    name="price" id="Price" placeholder="Price"
-                                                                    required>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="catogory"
-                                                                class="col-sm-2 col-form-label">Category</label>
-                                                            <div class="col-sm-10">
-                                                                <select id="catogory" name="catogory"
-                                                                    class="form-control" required>
-                                                                    <c:forEach items="${category}" var="category"
-                                                                        varStatus="loop">
-                                                                        <option value="${category.id}">${category.name}
-                                                                        </option>
-                                                                    </c:forEach>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <label for="multiple-select"
-                                                                class="col-sm-2 col-form-label">Instructor</label>
-                                                            <div class="col-sm-10">
-                                                                <label>
-                                                                    <input mbsc-input id="my-input" data-dropdown="true"
-                                                                        data-tags="true" />
-                                                                </label>
-                                                                <select id="multiple-select" multiple name="instructor"
-                                                                    required>
-                                                                    <c:forEach items="${listInstructor}"
-                                                                        var="instructor" varStatus="loop">
-                                                                        <option value="${instructor.id}">
-                                                                            ${instructor.name}</option>
-                                                                    </c:forEach>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row">
-                                                            <div class="col-sm-10">
-                                                                <button type="submit"
-                                                                    class="btn btn-primary">Create</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-5">
-                                                        <label class="form-label" for="customFile">Upload image
-                                                            cover</label>
-                                                        <div
-                                                            class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
-                                                            <input id="upload" type="file" onchange="readURL(this);"
-                                                                accept="image/*" class="form-control border-0"
-                                                                name="images" required>
-                                                        </div>
-                                                        <div class="image-area mt-4">
-                                                            <img id="imageResult"
-                                                                src="https://bootstrapious.com/i/snippets/sn-img-upload/image.svg"
-                                                                alt=""
-                                                                class="img-fluid rounded shadow-sm mx-auto d-block"
-                                                                style="max-height: 350px">
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-
-                                            </form>
-                                        </div>
-                                        <!-- /.container-fluid -->
-
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-7 col-md-12">
+                            <form action="course-info" method="POST" enctype="multipart/form-data">
+                                <div class="contact-area-wrapper">
+                                    <div class="section-title mb-50">
+                                        <h2>Step 1</h2>
+                                    </div>
                                 </div>
-        
-            <!-- User Profile End-->
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <h4><label for="courseName">Course Name:</label></h4>
+                                        <div class="contact-from-input mb-20">
+                                            <input id="courseName" name="courseName" type="text" placeholder="Course Name" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <h4><label for="price">Price:</label></h4>
+                                        <div class="contact-from-input mb-20">
+                                            <input id="price" name="price" type="number" placeholder="Price" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <div class="contact-select">
+                                            <h4><label for="category">Choose a category:</label></h4>
+                                            <select id="category" name="category" class="mb-20" required>
+                                                <c:forEach var="category" items="<%=categoryList%>">
+                                                    <option value="${category}">${category}</option>
+                                                </c:forEach>
+                                                <option value="Others">Others</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- Cover Image Upload -->
+                                    <div class="col-xl-6">
+                                        <div class="contact-from-input mb-20">
+                                            <h4><label for="coverImage">Cover Image:</label></h4>
+                                            <input id="coverImage" name="coverImage" type="file" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-6">
+                                        <div class="contact-select">
+                                            <h4><label for="language">Choose a language:</label></h4>
+                                            <select id="language" name="language" class="mb-20">
+                                                <c:forEach var="language" items="<%=languageList%>">
+                                                    <option value="${language}">${language}</option>
+                                                </c:forEach>
+                                                <option value="Others">Others</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-6">
+                                        <div class="contact-select">
+                                            <h4><label for="level">Choose a level:</label></h4>
+                                            <select id="level" name="level" class="mb-20">
+                                                <c:forEach var="level" items="<%=levelList%>">
+                                                    <option value="${level}">${level}</option>
+                                                </c:forEach>
+                                                <option value="Others">Others</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-12">
+                                        <div class="contact-from-input mb-20">
+                                            <h4><label for="description">Description:</label></h4>
+                                            <textarea id="description" placeholder="Description" name="description"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-12">
+                                        <div class="contact-from-input mb-20">
+                                            <h4><label for="requirements">Requirements (optional): </label></h4>
+                                            <textarea id="requirements" placeholder="Course Requirements" name="requirements"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="colxl-2 ">
+                                        <div class="sing-buttom mb-20">
+                                            <button type="submit" class="sing-btn">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
 
         </main>
 
@@ -186,40 +138,6 @@
 
         <!-- JS here -->
         <%@ include file="../template/script.jsp" %>
-
-        <script>
-            function changeAva() {
-                const fileInput = document.getElementById('avatarUpload');
-                const avatarImage = document.getElementById('avatarImage');
-                const file = fileInput.files[0];
-
-                if (file) {
-                    // Update the avatar preview
-                    avatarImage.src = window.URL.createObjectURL(file);
-
-                    // Prepare form data
-                    const formData = new FormData();
-                    formData.append('avatar', file);
-
-                    // Send the file to the server
-                    fetch('${pageContext.request.contextPath}/uploadAvatar', {
-                        method: 'POST',
-                        body: formData
-                    })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    console.log('Avatar uploaded successfully');
-                                } else {
-                                    console.error('Error uploading avatar');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            });
-                }
-            }
-        </script>
     </body>
 
 </html>

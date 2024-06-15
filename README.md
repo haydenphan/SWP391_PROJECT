@@ -1,1 +1,1 @@
-# SWP391_PROJECT
+load list course len, view code, truy van certificate, thieu form nen chua dinh hinh dc code,cai ispublic course can sua lai them 1 thuoc tinh la pending, khi instructor up course len thi no set la pending, ad duyet xong thi no published, con ad cancel thi no cancel

@@ -18,7 +18,7 @@ public class CategoryDAO extends DAO<Category> {
         throw new UnsupportedOperationException("Insert operation is not supported.");
     }
 
-    public static ArrayList<Category> selectAllWithSubCategories() throws Exception {
+    public static ArrayList<Category> selectAllWithSubCategories() {
         ArrayList<Category> categories = new ArrayList<>();
         String sql = "SELECT c.CategoryID, c.CategoryName AS CategoryName, sc.SubCategoryID, sc.SubCategoryName AS SubCategoryName "
                 + "FROM Categories c "
@@ -46,6 +46,8 @@ public class CategoryDAO extends DAO<Category> {
 
         } catch (SQLException | ClassNotFoundException e) {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return categories;
@@ -79,6 +81,22 @@ public class CategoryDAO extends DAO<Category> {
 
         return id;
     }
+    
+    public static ArrayList<String> getAllCategoryName() throws Exception {
+        ArrayList<String> list = new ArrayList<>();
+        String sql = "SELECT CategoryName FROM Categories";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    list.add(rs.getString("CategoryName"));
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return list;
+    }
 
     public static String getCategoryBySubcategory(int subID) throws Exception {
         String categoryName = null;
@@ -100,7 +118,26 @@ public class CategoryDAO extends DAO<Category> {
 
         return categoryName;
     }
+    
+      public static String getCategoryNameById(int categoryId) throws Exception {
+        String categoryName = null;
+        String sql = "SELECT CategoryName FROM Categories WHERE CategoryID = ?";
 
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); 
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, categoryId);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    categoryName = rs.getString("CategoryName");
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return categoryName;
+    }
+      
     public static void main(String[] args) throws Exception {
         CategoryDAO categoryDAO = new CategoryDAO();
         ArrayList<Category> categories = categoryDAO.selectAllWithSubCategories();
@@ -108,6 +145,6 @@ public class CategoryDAO extends DAO<Category> {
             System.out.println(category);
         }
 
-        System.out.println(CategoryDAO.getCategoryBySubcategory(1));
+        System.out.println(CategoryDAO.getCategoryNameById(1));
     }
 }

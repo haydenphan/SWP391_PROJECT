@@ -26,46 +26,47 @@ public class LoginGoogleServlet extends HttpServlet {
             RequestDispatcher dis = request.getRequestDispatcher("/pages/home.jsp");
             dis.forward(request, response);
         } else {
-            try {
-                String accessToken = GoogleUtils.getToken(code);
-                User googleUser = GoogleUtils.getUserInfo(accessToken);
-                request.setAttribute("pojo", googleUser);
-
-                UserDAO userDAO = new UserDAO();
-
-                if ("register".equals(state)) {
-                    boolean emailExists = userDAO.checkExistedEmail(googleUser.getEmail());
-                    if (emailExists) {
-                        request.setAttribute("error", "Email already exists. Please login.");
-                        RequestDispatcher dis = request.getRequestDispatcher("/errors/errorAlert.jsp");
-                        dis.forward(request, response);
-                    } else {
-                        RequestDispatcher dis = request.getRequestDispatcher("pages/google.jsp");
-                        dis.forward(request, response);
-                    }
-                } else {
-                    User existingUser = userDAO.checkExistedGGAccount(googleUser);
-                    int role = existingUser.getRole();
-                    if (existingUser != null) {
-                        request.getSession().setAttribute("user", existingUser);
-                        if (role == 1) {
-                            response.sendRedirect(request.getContextPath() + "/pages/user-profile.jsp");
-                        }
-                        response.sendRedirect(request.getContextPath() + "/pages/lecturer-profile.jsp");
-                    } else {
-                        request.setAttribute("error", "User not found. Please register.");
-                        RequestDispatcher dis = request.getRequestDispatcher("/errors/errorAlert.jsp");
-                        dis.forward(request, response);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                request.setAttribute("error", "Error: " + e.getMessage());
-                RequestDispatcher dis = request.getRequestDispatcher("/errors/errorAlert.jsp");
-                dis.forward(request, response);
-            } catch (Exception ex) {
-                java.util.logging.Logger.getLogger(LoginGoogleServlet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            }
+//            try {
+//                String accessToken = GoogleUtils.getToken(code);
+//                User googleUser = GoogleUtils.getUserInfo(accessToken);
+//                request.setAttribute("pojo", googleUser);
+//
+//                UserDAO userDAO = new UserDAO();
+//
+//                if ("register".equals(state)) {
+//                    boolean emailExists = userDAO.checkExistedEmail(googleUser.getEmail());
+//                    if (emailExists) {
+//                        request.setAttribute("error", "Email already exists. Please login.");
+//                        RequestDispatcher dis = request.getRequestDispatcher("/errors/errorAlert.jsp");
+//                        dis.forward(request, response);
+//                    } else {
+//                        RequestDispatcher dis = request.getRequestDispatcher("pages/google.jsp");
+//                        dis.forward(request, response);
+//                    }
+//                } else {
+//                    User existingUser = userDAO.checkExistedGGAccount(googleUser);
+//                    
+//                    if (existingUser != null) {
+//                        int role = existingUser.getRole();
+//                        request.getSession().setAttribute("user", existingUser);
+//                        if (role == 1) {
+//                            response.sendRedirect(request.getContextPath() + "/pages/user-profile.jsp");
+//                        }
+//                        response.sendRedirect(request.getContextPath() + "/pages/instructor-profile.jsp");
+//                    } else {
+//                        request.setAttribute("error", "User not found. Please register.");
+//                        RequestDispatcher dis = request.getRequestDispatcher("/errors/errorAlert.jsp");
+//                        dis.forward(request, response);
+//                    }
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                request.setAttribute("error", "Error: " + e.getMessage());
+//                RequestDispatcher dis = request.getRequestDispatcher("/errors/errorAlert.jsp");
+//                dis.forward(request, response);
+//            } catch (Exception ex) {
+//                java.util.logging.Logger.getLogger(LoginGoogleServlet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//            }
         }
     }
 

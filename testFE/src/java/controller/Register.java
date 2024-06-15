@@ -93,7 +93,7 @@ public class Register extends HttpServlet {
         if (user.getRole() == 1) {
             url = "/${pageContext.request.contextPath}/../pages/user-profile.jsp";
         } else {
-            url = "/${pageContext.request.contextPath}/../pages/lecturer-profile.jsp";
+            url = "/${pageContext.request.contextPath}/../pages/instructor-profile.jsp";
         }
         
         RequestDispatcher rd = getServletContext().getRequestDispatcher(url);

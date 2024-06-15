@@ -12,7 +12,7 @@
                     <p>Take your learning organization to the next level. to the next level. Who'll
                         share their knowledge to people around the world.</p>
                     <div class="hero-btn">
-                        <a class="edu-btn" href="${pageContext.request.contextPath}/get-course-info">View all course</a>
+                        <a class="edu-btn" href="${pageContext.request.contextPath}/CourseList">View all course</a>
                     </div>
                 </div>
             </div>

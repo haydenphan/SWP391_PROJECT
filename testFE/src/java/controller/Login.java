@@ -54,11 +54,11 @@ public class Login extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("user", res);
             System.out.println(res.getRole());
-            if (res.getRole() == 1) {
-                url = "/pages/user-profile.jsp";
-            } else {
-                url = "/pages/lecturer-profile.jsp";
-            }
+            url = switch (res.getRole()) {
+                case 1 -> "/pages/user-profile.jsp";
+                case 2 -> "/pages/instructor-profile.jsp";
+                default -> "/admin/adminHome.jsp";
+            };
             
         } else {
             request.setAttribute("baoLoi", "Tên đăng nhập hoặc mật khẩu không đúng!");
