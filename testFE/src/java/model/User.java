@@ -152,6 +152,6 @@ public class User {
     }
     
     public String getRoleName() {
-        return (this.roleID == 1? "Learner" : "Lecturer");
+        return (this.roleID == 1? "Learner" : "Instructor");
     }
 }
