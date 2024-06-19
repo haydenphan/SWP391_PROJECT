@@ -13,8 +13,19 @@
         <location>/errors/404Page.jsp</location>
     </error-page>
     
-    <!--    <error-page>
+    <!-- Uncomment this if you have a 500 error page -->
+    <!-- <error-page>
         <error-code>500</error-code>
         <location>/errors/500Page.jsp</location>
-    </error-page>-->
+    </error-page> -->
+    
+    <servlet>
+        <servlet-name>DownloadServlet</servlet-name>
+        <servlet-class>controller.DownloadServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DownloadServlet</servlet-name>
+        <url-pattern>/download</url-pattern>
+    </servlet-mapping>
+
 </web-app>

@@ -13,7 +13,7 @@ public class JDBC {
         String port = "1433";
         String IP = "169.254.157.38";
         String ServerName = "LAPTOP-DVKPB8S9";
-        String DBName = "OnlineLearningV3";
+        String DBName = "OnlineLearningV2";
         String driverClass = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 
         String dbURL = "jdbc:sqlserver://" + ServerName + ";databaseName=" + DBName + ";encrypt=false;trustServerCertificate=false;loginTimeout=30";

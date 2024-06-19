@@ -8,7 +8,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             function deleteOrder(courseID) {
-                var contextPath = '<%= request.getContextPath() %>';
+                var contextPath = '<%= request.getContextPath()%>';
                 var url = contextPath + "/Cart/remove-from-cart?CourseID=" + courseID;
                 $.ajax({
                     url: url,
@@ -27,14 +27,14 @@
             $(document).ready(function () {
                 $("#cancelOrderBtn").click(function () {
                     if (confirm("Are you sure you want to delete all courses in cart?")) {
-                        var contextPath = '<%= request.getContextPath() %>';
+                        var contextPath = '<%= request.getContextPath()%>';
                         var url = contextPath + "/Cart/cancelcart";
                         $.ajax({
                             url: url,
                             type: "get",
                             success: function (responseData) {
                                 alert("Courses have been deleted.");
-                                window.location.href = contextPath + "/get-course-info";
+                                window.location.href = contextPath + "/CourseList";
                             },
                             error: function () {
                                 alert('Failed to delete all courses');
@@ -61,7 +61,7 @@
                             <div class="course-title-breadcrumb">
                                 <nav>
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="<%= request.getContextPath() %>/pages/home.jsp">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="<%= request.getContextPath()%>/pages/home.jsp">Home</a></li>
                                         <li class="breadcrumb-item active" aria-current="page">Cart</li>
                                     </ol>
                                 </nav>
@@ -86,7 +86,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% 
+                                        <%
                                             HashMap<Integer, ProductCart> cart = (HashMap<Integer, ProductCart>) request.getAttribute("cart");
                                             double total = 0;
                                             if (cart != null && !cart.isEmpty()) {
@@ -95,32 +95,32 @@
                                                     double itemTotal = course.getPrice();
                                                     total += itemTotal;
                                         %>
-                                        <tr id="product-row-<%= course.getCourseID() %>">
+                                        <tr id="product-row-<%= course.getCourseID()%>">
                                             <td class="product-thumbnail">
-                                                <a href="<%= request.getContextPath() %>/course-details.jsp?CourseID=<%= course.getCourseID() %>">
-                                                    <img src="<%= course.getImageURL() %>" alt="">
+                                                <a href="<%= request.getContextPath()%>/course-details.jsp?CourseID=<%= course.getCourseID()%>">
+                                                    <img src="<%= course.getImageURL()%>" alt="">
                                                 </a>
                                             </td>
                                             <td class="product-name">
-                                                <a href="<%= request.getContextPath() %>/course-details.jsp?CourseID=<%= course.getCourseID() %>"><%= course.getCourseName() %></a>
+                                                <a href="<%= request.getContextPath()%>/course-details.jsp?CourseID=<%= course.getCourseID()%>"><%= course.getCourseName()%></a>
                                             </td>
                                             <td class="product-price">
-                                                <span class="amount">$<%= course.getPrice() %></span>
+                                                <span class="amount">$<%= course.getPrice()%></span>
                                             </td>
                                             <td class="product-remove">
-                                                <a href="javascript:void(0);" onclick="deleteOrder(<%= course.getCourseID() %>)">
+                                                <a href="javascript:void(0);" onclick="deleteOrder(<%= course.getCourseID()%>)">
                                                     <i class="fa fa-times"></i>
                                                 </a>
                                             </td>
                                         </tr>
-                                        <% 
-                                                }
-                                            } else {
+                                        <%
+                                            }
+                                        } else {
                                         %>
                                         <tr>
                                             <td colspan="4">Your cart is empty.</td>
                                         </tr>
-                                        <% 
+                                        <%
                                             }
                                         %>
                                     </tbody>
@@ -147,7 +147,7 @@
                                     <div class="cart-page-total">
                                         <h2>Cart totals</h2>
                                         <ul class="mb-20">
-                                            <li>Total <span id="total">$<%= total %></span></li>
+                                            <li>Total <span id="total">$<%= total%></span></li>
                                         </ul>
                                         <button id="proceedToCheckoutBtn" class="edu-border-btn">Proceed to checkout</button>
 
@@ -161,12 +161,12 @@
             <script>
                 $(document).ready(function () {
                     $("#proceedToCheckoutBtn").click(function () {
-                        var cartIsEmpty = <%= cart == null || cart.isEmpty() %>;
+                        var cartIsEmpty = <%= cart == null || cart.isEmpty()%>;
                         if (cartIsEmpty) {
                             alert("Please add product to cart before checkout");
                         } else {
-                            var contextPath = '<%= request.getContextPath() %>';
-                            window.location.href = contextPath + "/pages/checkout.jsp?total=<%= total %>";
+                            var contextPath = '<%= request.getContextPath()%>';
+                            window.location.href = contextPath + "/pages/checkout.jsp?total=<%= total%>";
                         }
                     });
                 });

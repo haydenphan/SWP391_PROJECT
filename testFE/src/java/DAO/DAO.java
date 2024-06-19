@@ -1,7 +1,6 @@
 package DAO;
 
 import java.util.ArrayList;
-import org.apache.tomcat.jakartaee.commons.lang3.tuple.Pair;
 
 public abstract class DAO<T> {
 

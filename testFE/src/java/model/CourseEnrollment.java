@@ -4,18 +4,18 @@ import java.time.LocalDateTime;
 
 public class CourseEnrollment {
     private int id; // ID column, auto-increment
-    private String userID;
-    private String courseID;
+    private int userID;
+    private int courseID;
     private LocalDateTime enrollmentDate;
 
-    public CourseEnrollment(int id, String userID, String courseID, LocalDateTime enrollmentDate) {
+    public CourseEnrollment(int id, int userID, int courseID, LocalDateTime enrollmentDate) {
         this.id = id;
         this.userID = userID;
         this.courseID = courseID;
         this.enrollmentDate = enrollmentDate;
     }
 
-    public CourseEnrollment(String userID, String courseID, LocalDateTime enrollmentDate) {
+    public CourseEnrollment(int userID, int courseID, LocalDateTime enrollmentDate) {
         this.userID = userID;
         this.courseID = courseID;
         this.enrollmentDate = enrollmentDate;
@@ -30,19 +30,19 @@ public class CourseEnrollment {
         this.id = id;
     }
 
-    public String getUserID() {
+    public int getUserID() {
         return userID;
     }
 
-    public void setUserID(String userID) {
+    public void setUserID(int userID) {
         this.userID = userID;
     }
 
-    public String getCourseID() {
+    public int getCourseID() {
         return courseID;
     }
 
-    public void setCourseID(String courseID) {
+    public void setCourseID(int courseID) {
         this.courseID = courseID;
     }
 

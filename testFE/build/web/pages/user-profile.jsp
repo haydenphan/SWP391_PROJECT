@@ -2,6 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="model.*" %>
+<%@ page import="DAO.*" %>
+<%@ page import="java.util.*" %>
+
 <!doctype html>
 <html class="no-js" lang="zxx">
 
@@ -23,18 +26,22 @@
         <%@ include file="../template/header.jsp" %>
 
         <main>
+            <%
+                int learnerID = ((User)session.getAttribute("user")).getUserID();
+                courses = CourseEnrollmentDAO.getCoursesByUserID(learnerID);
+            %>
+            
             <!-- hero-area -->
             <jsp:include page="../template/heroArea.jsp">
                 <jsp:param name="title" value="My profile" />
             </jsp:include>
-
 
             <!-- User Profile Start-->
             <div class="course-details-area pt-120 pb-100">
                 <div class="container">
                     <div class="student-profile-author pb-30">
                         <div class="student-profile-author-img">
-                            <img style="width: 200px; height: 200px" id="avatarImage" src="<%=user.getAvatar()%>" alt="img not found" />
+                            <img style="width: 200px; height: 200px" id="avatarImage" src="${user.getAvatar()}" alt="img not found" />
                             <input type="file" id="avatarUpload" style="display: none;" onchange="changeAva();">
                             <label for="avatarUpload" style="cursor: pointer;">
                                 <span style="
@@ -73,7 +80,7 @@
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="contact-tab" data-bs-toggle="tab"
-                                                data-bs-target="#contact" type="button" role="tab" aria-controls="contact"
+                                                data-bs-target="#courses" type="button" role="tab" aria-controls="courses"
                                                 aria-selected="false"><i class="fas fa-graduation-cap"></i> Enrolled
                                             Courses</button>
                                     </li>
@@ -158,8 +165,15 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                                        <h4 class='mb-25'>Enrolled Courses</h4>
+                                    <div class="tab-pane fade" id="courses" role="tabpanel" aria-labelledby="contact-tab">
+                                        <h4 class='mb-25'>My Enrolled Courses</h4>
+                                        
+                                        <div class="row">
+                                            <c:forEach var="course" items="<%=courses%>">
+                                                <c:set var="currentCourse" value="${course}" scope="request" />
+                                                <jsp:include page="../template/course/learnerCourseComponent.jsp" />
+                                            </c:forEach>
+                                        </div>
 
                                     </div>
                                     <div class="tab-pane fade" id="wishlist" role="tabpanel" aria-labelledby="wishlist-tab">
