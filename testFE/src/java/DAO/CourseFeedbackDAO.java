@@ -72,7 +72,7 @@ public class CourseFeedbackDAO extends DAO<CourseFeedback> {
 
     @Override
     public int insert(CourseFeedback feedback) {
-       int result = 0;
+        int result = 0;
         String sql = "INSERT INTO CourseFeedback (CourseID, StudentID, FeedbackText, Rating, FeedbackDate) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
@@ -91,7 +91,47 @@ public class CourseFeedbackDAO extends DAO<CourseFeedback> {
             Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return result; 
+        return result;
+    }
+
+    public int update(CourseFeedback feedback) {
+        int result = 0;
+        String sql = "UPDATE CourseFeedback SET CourseID = ?, StudentID = ?, FeedbackText = ?, Rating = ?, FeedbackDate = ? WHERE FeedbackID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setString(1, feedback.getCourseID());
+            st.setInt(2, feedback.getUserID());
+            st.setString(3, feedback.getComment());
+            st.setInt(4, feedback.getRating());
+            st.setTimestamp(5, Timestamp.valueOf(feedback.getFeedbackDate()));
+            st.setInt(6, feedback.getFeedbackID());
+
+            result = st.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return result;
+    }
+
+    public int delete(int feedbackID) {
+        int result = 0;
+        String sql = "DELETE FROM CourseFeedback WHERE FeedbackID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, feedbackID);
+            result = st.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return result;
     }
 
     public static void main(String[] args) {
@@ -132,4 +172,58 @@ public class CourseFeedbackDAO extends DAO<CourseFeedback> {
             System.out.println("Failed to insert feedback.");
         }
     }
+
+    public CourseFeedback getFeedbackForCourseByLearner(String courseID, int userID) {
+        CourseFeedback feedback = null;
+        String sql = "SELECT * FROM CourseFeedback WHERE CourseID = ? AND StudentID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setString(1, courseID);
+            st.setInt(2, userID);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    feedback = new CourseFeedback();
+                    feedback.setFeedbackID(rs.getInt("FeedbackID"));
+                    feedback.setCourseID(rs.getString("CourseID"));
+                    feedback.setUserID(rs.getInt("StudentID"));
+                    feedback.setRating(rs.getInt("Rating"));
+                    feedback.setComment(rs.getString("FeedbackText"));
+                    feedback.setFeedbackDate(rs.getTimestamp("FeedbackDate").toLocalDateTime());
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return feedback;
+    }
+
+    public CourseFeedback getFeedbackByID(int feedbackID) {
+        CourseFeedback feedback = null;
+        String sql = "SELECT * FROM CourseFeedback WHERE FeedbackID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, feedbackID);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    feedback = new CourseFeedback();
+                    feedback.setFeedbackID(rs.getInt("FeedbackID"));
+                    feedback.setCourseID(rs.getString("CourseID"));
+                    feedback.setComment(rs.getString("Comment"));
+                    feedback.setRating(rs.getInt("Rating"));
+                    feedback.setFeedbackDate(rs.getTimestamp("FeedbackDate").toLocalDateTime());
+                    feedback.setUserID(rs.getInt("UserID"));
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return feedback;
+    }
+
 }

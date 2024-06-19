@@ -659,13 +659,11 @@
                                 %>
                                 <div class="col-xl-12">
                                     <div class="course-review-btn">
-                                        <a id="show-review-box" class="edu-btn" href="javascript:void(0)">Write a Review</a>
+                                        <a id="show-review-box" class="edu-btn" href="javascript:void(0)">
+                                            <%= (boolean)request.getAttribute("hasFeedbacked") ? "Edit Feedback" : "Write a Review" %>
+                                        </a>
                                         <div id="review-box" class="review-comment mt-45">
-                                            <div class="comment-title mb-20">
-                                                <p>
-                                                    leave your rating and comment
-                                                </p>
-                                            </div>
+                                            
                                             <div class="comment-rating mb-20">
                                                 <span>Overall ratings</span>
                                                 <ul id="star-rating" class="rating">
@@ -680,6 +678,13 @@
                                                 <form id="feedbackForm" action="courseFeedbacks" method="Post">
                                                     <input type="hidden" id="rating" name="rating" value="1">
                                                     <input type="hidden" id="courseID" name="courseID" value="<%= request.getParameter("id") %>">
+                                                    <%
+                                                        if ((boolean)request.getAttribute("hasFeedbacked")) {
+                                                    %>
+                                                        <input type="hidden" name="_method" value="PUT">
+                                                    <%
+                                                        }
+                                                    %>
                                                     <div class="row">
                                                         <div class="col-xxl-12">
                                                             <textarea id="content" name="content" placeholder="Your review" class="comment-input comment-textarea mb-20"></textarea>

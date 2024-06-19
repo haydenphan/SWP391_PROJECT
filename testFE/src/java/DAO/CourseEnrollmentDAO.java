@@ -129,7 +129,7 @@ public class CourseEnrollmentDAO {
 
         // Example usage
         int learnerID = 1; // Replace with actual learner ID
-        int lecturerID = 2; // Replace with actual lecturer ID
+        int lecturerID = 1; // Replace with actual lecturer ID
         boolean isEnrolled = dao.isLearnerEnrolledInInstructorCourse(learnerID, lecturerID);
         System.out.println("Is Learner Enrolled: " + isEnrolled);
     }

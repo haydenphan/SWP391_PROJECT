@@ -28,15 +28,17 @@ public class InstructorProfileViewServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         CourseEnrollmentDAO ceDAO = new CourseEnrollmentDAO();
-//        User user = new User();
+//        user = new User();
 //        user.setUserID(1);
         String instructorID = request.getParameter("id");
         boolean hasEnrolled = user!=null && ceDAO.isLearnerEnrolledInInstructorCourse(user.getUserID(), Integer.parseInt(instructorID));
         FeedbackStatistics instStats = new FeedbackStatistics();
         InstructorFeedbackDAO instFbDAO = new InstructorFeedbackDAO();
         instStats.setNumberOfStarRatingList(instFbDAO.getStarRatingsCount(instructorID));
+        boolean hasFeedbacked = user != null && instFbDAO.getFeedbackForInstructorByLearner(Integer.parseInt(instructorID), user.getUserID()) != null;
         request.setAttribute("instStats", instStats);
         request.setAttribute("hasEnrolled", hasEnrolled);
+        request.setAttribute("hasFeedbacked", hasFeedbacked);
         request.getRequestDispatcher("/pages/instructor-profile-view.jsp").forward(request, response);
     }
 
