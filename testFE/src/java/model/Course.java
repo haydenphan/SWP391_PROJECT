@@ -26,7 +26,6 @@ public class Course {
     private String LevelName;
     private String imageURL;
     private double averageRating;
-    private String categoryName;
     private List<Integer> NumberOfStarRatingList = new ArrayList<>();
 
     public double avgRatingDisplay(int places){
@@ -63,14 +62,6 @@ public class Course {
 
     public String getImageURL() {
         return imageURL;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
     }
 
     public void setImageURL(String imageURL) {

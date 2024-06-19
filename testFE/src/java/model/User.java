@@ -151,7 +151,7 @@ public class User {
         return "User{" + "userID=" + userID + ", userName=" + userName + ", passwordHash=" + passwordHash + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", roleID=" + roleID + ", registrationDate=" + registrationDate + ", isActive=" + isActive + ", avatar=" + avatar + ", bio=" + bio + ", storedSalt=" + storedSalt + '}';
     }
     
-    public String getRoleName() {
-        return (this.roleID == 1? "Learner" : "Instructor");
+     public String getRoleName() {
+        return (this.roleID == 1 ? "Learner" : (this.roleID == 2 ? "Instructor" : "Admin"));
     }
 }

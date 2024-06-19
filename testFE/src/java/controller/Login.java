@@ -57,7 +57,7 @@ public class Login extends HttpServlet {
             url = switch (res.getRole()) {
                 case 1 -> "/pages/user-profile.jsp";
                 case 2 -> "/pages/instructor-profile.jsp";
-                default -> "/admin/adminHome.jsp";
+                default -> "/AdminHome";
             };
             
         } else {
