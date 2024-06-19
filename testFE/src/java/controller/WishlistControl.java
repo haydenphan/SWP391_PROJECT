@@ -1,8 +1,10 @@
-package controller.Wishlist;
+package controller;
 
 import DAO.CourseDAO;
 import model.Course;
-import model.ProductCart;
+import model.User;
+import model.Cart;
+import model.CartDetails;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,27 +13,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet(name = "WishlistControl", urlPatterns = {"/Wishlist/*"})
 public class WishlistControl extends HttpServlet {
-
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet CartControl</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet CartControl at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -46,20 +32,6 @@ public class WishlistControl extends HttpServlet {
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
-    }
-
-    private void showWishlist(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        HashMap<Integer, ProductCart> wishlist = (HashMap<Integer, ProductCart>) session.getAttribute("wishlist");
-
-        if (wishlist == null) {
-            wishlist = new HashMap<>();
-            session.setAttribute("wishlist", wishlist);
-        }
-
-        request.setAttribute("wishlist", wishlist); // Change "cart" to "wishlist"
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/pages/wishlist.jsp");
-        requestDispatcher.forward(request, response);
     }
 
     @Override
@@ -81,11 +53,24 @@ public class WishlistControl extends HttpServlet {
         }
     }
 
-    private void addToWishlist(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    private void showWishlist(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        if (session.getAttribute("user") == null) {
-            // User not logged in, redirect to login page
+        Cart wishlist = (Cart) session.getAttribute("wishlist");
+
+        if (wishlist == null) {
+            wishlist = new Cart();
+            session.setAttribute("wishlist", wishlist);
+        }
+
+        request.setAttribute("wishlist", wishlist);
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/pages/wishlist.jsp");
+        requestDispatcher.forward(request, response);
+    }
+
+    private void addToWishlist(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
             response.sendRedirect(request.getContextPath() + "/dang-nhap");
             return;
         }
@@ -93,33 +78,60 @@ public class WishlistControl extends HttpServlet {
         int courseID = Integer.parseInt(request.getParameter("CourseID"));
         Course course = CourseDAO.getCoursesByIDForCart(courseID);
 
-        ProductCart productCart;
-        HashMap<Integer, ProductCart> wishlist = (HashMap<Integer, ProductCart>) session.getAttribute("wishlist");
-        if (wishlist == null) {
-            wishlist = new HashMap<>();
+        if (course != null) {
+            Cart wishlist = (Cart) session.getAttribute("wishlist");
+            if (wishlist == null) {
+                wishlist = new Cart();
+                session.setAttribute("wishlist", wishlist);
+            }
+
+            List<CartDetails> cartDetailsList = wishlist.getCartDetails();
+            if (cartDetailsList == null) {
+                cartDetailsList = new ArrayList<>();
+                wishlist.setCartDetails(cartDetailsList);
+            }
+
+            boolean found = false;
+            for (CartDetails item : cartDetailsList) {
+                if (item.getCourse().getCourseID() == courseID) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                CartDetails cartDetails = new CartDetails(wishlist, course, course.getPrice());
+                cartDetailsList.add(cartDetails);
+            }
         }
-        productCart = new ProductCart(course, 1);
-        wishlist.put(courseID, productCart);
-        session.setAttribute("wishlist", wishlist);
+
         response.sendRedirect(request.getContextPath() + "/Wishlist/");
     }
 
     private void removeFromWishlist(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        int CourseID = Integer.parseInt(request.getParameter("CourseID"));
-        HashMap<Integer, ProductCart> wishlist = (HashMap<Integer, ProductCart>) session.getAttribute("wishlist");
-
-        if (wishlist != null && wishlist.containsKey(CourseID)) {
-            wishlist.remove(CourseID);
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/dang-nhap");
+            return;
         }
 
-        session.setAttribute("wishlist", wishlist);
+        int courseID = Integer.parseInt(request.getParameter("CourseID"));
+        Cart wishlist = (Cart) session.getAttribute("wishlist");
+
+        if (wishlist != null) {
+            List<CartDetails> cartDetailsList = wishlist.getCartDetails();
+            if (cartDetailsList != null) {
+                cartDetailsList.removeIf(item -> item.getCourse().getCourseID() == courseID);
+            }
+        }
+
         response.setContentType("text/plain");
         response.getWriter().write("Success");
     }
 
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "WishlistControl Servlet";
     }
 }

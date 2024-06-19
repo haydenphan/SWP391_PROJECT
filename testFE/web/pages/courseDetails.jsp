@@ -837,7 +837,7 @@
                                         </ul>
                                     </div>
                                     <div class="button-container" style="display: flex; justify-content: flex-start;">
-                                        <form style="width: 50%" action="${pageContext.request.contextPath}/Cart/add-to-cart" method="POST">
+                                        <form style="width: 50%" action="${pageContext.request.contextPath}/Cart/add-to-cart" method="GET">
                                             <div class="video-wishlist" style="margin-right: 10px">
                                                 <input type="hidden" name="CourseID" value="${course.getCourseID()}">
                                                 <button type="submit" class="video-cart-btn"><i class="fal fa-shopping-cart"></i> Add to cart</button>

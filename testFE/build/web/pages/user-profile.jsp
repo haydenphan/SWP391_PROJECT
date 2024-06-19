@@ -5,7 +5,6 @@
 <!doctype html>
 <html class="no-js" lang="zxx">
 
-
     <head>
         <%-- HEAD --%>
         <%@ include file="../template/head.jsp" %>
@@ -27,7 +26,6 @@
             <jsp:include page="../template/heroArea.jsp">
                 <jsp:param name="title" value="My profile" />
             </jsp:include>
-
 
             <!-- User Profile Start-->
             <div class="course-details-area pt-120 pb-100">
@@ -93,24 +91,17 @@
                                                 class="fas fa-cubes"></i> My Quiz Attempts</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="history-tab" data-bs-toggle="tab"
-                                                data-bs-target="#history" type="button" role="tab" aria-controls="history"
-                                                aria-selected="false"><i class="fas fa-cart-plus"></i> Order
-                                            History</button>
+                                        <a class="nav-link" id="history-tab" href="#history" data-bs-toggle="tab" role="tab" aria-controls="history" aria-selected="false"><i class="fas fa-cart-plus"></i> Order History</a>
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="ques-tab" data-bs-toggle="tab" data-bs-target="#ques"
                                                 type="button" role="tab" aria-controls="ques" aria-selected="false"><i
-                                                class="fas fa-fist-raised"></i> Question &
-                                            Answer</button>
+                                                class="fas fa-fist-raised"></i> Question & Answer</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="setting-tab" data-bs-toggle="tab"
                                                 data-bs-target="#setting" type="button" role="tab" aria-controls="setting"
-                                                aria-selected="false"><i class="fas fa-cog"></i> Settings</button>
-                                    </li>
-
-                                </ul>
+                                                aria-selected="false"><i class="fas fa-cog"></i> Settings</ul>
                             </div>
                         </div>
                         <div class="col-xl-9 col-lg-8">
@@ -119,7 +110,6 @@
                                     <div class="tab-pane fade show active" id="home" role="tabpanel"
                                          aria-labelledby="home-tab">
                                         <h4 class='mb-25'>Dashboard</h4>
-
                                     </div>
                                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                                         <h4 class='mb-25'>My Profile</h4>
@@ -160,22 +150,40 @@
                                     </div>
                                     <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                                         <h4 class='mb-25'>Enrolled Courses</h4>
-
                                     </div>
                                     <div class="tab-pane fade" id="wishlist" role="tabpanel" aria-labelledby="wishlist-tab">
                                         <h4 class='mb-25'>Wishlist</h4>
-
                                     </div>
                                     <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                                         <h4 class='mb-25'>Reviews</h4>
-
                                     </div>
                                     <div class="tab-pane fade" id="quiz" role="tabpanel" aria-labelledby="quiz-tab">
                                         <p>No quiz attempts yet.</p>
                                     </div>
                                     <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
                                         <h4 class='mb-25'>Order History</h4>
-
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product Name</th>
+                                                    <th>Amount</th>
+                                                    <th>Date</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <c:forEach var="transaction" items="${transactions}">
+                                                    <c:forEach var="details" items="${transaction.transactionDetails}">
+                                                        <tr>
+                                                            <td>${details.course.courseName}</td>
+                                                            <td>${details.price}</td>
+                                                            <td>${transaction.transactionDate}</td>
+                                                            <td>${transaction.status}</td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                </c:forEach>
+                                            </tbody>
+                                        </table>
                                     </div>
                                     <div class="tab-pane fade" id="ques" role="tabpanel" aria-labelledby="ques-tab">
                                         <p>No question completed yet.</p>
@@ -245,7 +253,6 @@
                                                                 </div>
                                                             </div>
                                                         </form>
-
                                                     </div>
                                                 </div>
                                                 <div class="tab-pane fade" id="password" role="tabpanel"
@@ -275,8 +282,7 @@
                                                             </div>
                                                             <div class="col-sm-12">
                                                                 <div class="cont-btn mb-20 mt-10">
-                                                                    <button type='submit' class="cont-btn">Update
-                                                                        Profile</button>
+                                                                    <button type='submit' class="cont-btn">Update Profile</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -314,8 +320,7 @@
                                                                 </div>
                                                                 <div class="col-sm-12 ">
                                                                     <div class="cont-btn mb-20 mt-10">
-                                                                        <button type='button' class="cont-btn">Update
-                                                                            Profile</button>
+                                                                        <button type='button' class="cont-btn">Update Profile</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -376,6 +381,7 @@
                             });
                 }
             }
+
         </script>
     </body>
 

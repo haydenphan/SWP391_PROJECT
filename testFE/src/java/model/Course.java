@@ -201,6 +201,11 @@ public class Course {
     public Course() {
     }
 
+    public Course(int CourseID) {
+        this.CourseID = CourseID;
+    }
+    
+
     public Course(int courseID, String CourseName, String Description, int CreatedBy, LocalDateTime CreatedDate, boolean IsPublished, int SubcategoryID, int TotalEnrolled, LocalDateTime LastUpdate, String Requirements) {
         this.CourseID = courseID;
         this.CourseName = CourseName;

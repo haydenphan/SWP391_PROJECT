@@ -1,9 +1,8 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="java.util.HashMap" %>
-<%@ page import="model.ProductCart" %>
+<%@ page import="java.util.List" %>
+<%@ page import="model.CartDetails" %>
 <%@ page import="model.Course" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html class="no-js" lang="zxx">
     <head>
@@ -46,28 +45,6 @@
                 </div>
             </div>
 
-            <section class="coupon-area pt-100 pb-30">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="coupon-accordion">
-                                <h3>Have a coupon? <span id="showcoupon">Click here to enter your code</span></h3>
-                                <div id="checkout_coupon" class="coupon-checkout-content" style="display:none;">
-                                    <div class="coupon-info">
-                                        <form action="#">
-                                            <p class="checkout-coupon">
-                                                <input type="text" placeholder="Coupon Code">
-                                                <button class="edu-btn" type="submit">Apply Coupon</button>
-                                            </p>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <section class="checkout-area pb-70">
                 <div class="container">
                     <form id="checkout-form" action="<%= request.getContextPath() %>/process_checkout" method="post">
@@ -109,32 +86,22 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <%
-                                                HashMap<Integer, ProductCart> cart = (HashMap<Integer, ProductCart>) session.getAttribute("cart");
-                                                double total = 0;
-                                                if (cart != null && !cart.isEmpty()) {
-                                                    for (ProductCart item : cart.values()) {
-                                                        Course course = item.getCourse();
-                                                        double itemTotal = course.getPrice();
-                                                        total += itemTotal;
-                                                %>
-                                                <tr id="product-row-<%= course.getCourseID() %>">
-                                                    <td class="product-name">
-                                                        <a href="<%= request.getContextPath() %>/Cart-order.jsp?CourseID=<%= course.getCourseID() %>"><%= course.getCourseName() %></a>
-                                                    </td>
-                                                    <td class="product-unitprice">
-                                                        <span class="amount">$<%= course.getPrice() %></span>
-                                                    </td>
-                                                </tr>
-                                                <%
-                                                        }
-                                                    }
-                                                %>
+                                                <c:forEach var="item" items="${sessionScope.cartDetails}">
+                                                    <c:set var="course" value="${item.course}" />
+                                                    <tr id="product-row-${course.courseID}">
+                                                        <td class="product-name">
+                                                            <a href="<%= request.getContextPath() %>/course-details.jsp?CourseID=${course.courseID}">${course.courseName}</a>
+                                                        </td>
+                                                        <td class="product-unitprice">
+                                                            <span class="amount">$${item.price}</span>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
                                             </tbody>
                                             <tfoot>
                                                 <tr class="order-total" style="color: #005C78; font-family: fantasy">
                                                     <th>Order Total</th>
-                                                    <th>$<%= total %></th>
+                                                    <th>$${sessionScope.total}</th>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -172,14 +139,8 @@
         <%@ include file="../template/script.jsp" %>
 
         <script>
-            document.getElementById('showlogin').addEventListener('click', function () {
-                document.getElementById('checkout-login').style.display = 'block';
-            });
             document.getElementById('showcoupon').addEventListener('click', function () {
                 document.getElementById('checkout_coupon').style.display = 'block';
-            });
-            document.getElementById('cbox').addEventListener('change', function () {
-                document.getElementById('cbox_info').style.display = this.checked ? 'block' : 'none';
             });
         </script>
     </body>

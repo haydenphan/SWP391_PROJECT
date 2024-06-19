@@ -207,7 +207,7 @@
                                                     </g>
                                                 </svg>
                                                 <span class="item-number">
-                                                    ${cart != null && !cart.isEmpty() ? cart.size() : 0}
+                                                    ${cartDetails != null && !cartDetails.isEmpty() ? cartDetails.size() : 0}
                                                 </span>
                                             </div>
                                         </a>

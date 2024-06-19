@@ -132,6 +132,11 @@ public class User {
         
     }
 
+    public User(int userID) {
+        this.userID = userID;
+    }
+    
+
     public User(String userName, String passwordHash, String firstName, String lastName, String email, int roleID, LocalDateTime registrationDate, boolean isActive, String avatar, String bio, byte[] storedSalt) {
         this.userName = userName;
         this.passwordHash = passwordHash;

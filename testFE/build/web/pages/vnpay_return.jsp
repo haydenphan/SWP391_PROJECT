@@ -1,17 +1,8 @@
-<%@page import="java.net.URLEncoder"%>
-<%@page import="java.nio.charset.StandardCharsets"%>
-<%@page import="controller.Config"%>
-<%@page import="model.ProductCart"%>
-<%@page import="model.Course"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-
-<%@page import="java.util.Iterator"%>
-<%@page import="java.util.Collections"%>
-<%@page import="java.util.List"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.Enumeration"%>
-<%@page import="java.util.Map"%>
-<%@page import="java.util.HashMap"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List"%>
+<%@ page import="model.Cart"%>
+<%@ page import="model.CartDetails"%>
+<%@ page import="model.Course"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -62,55 +53,34 @@
     </head>
     <body>
         <%
-            // Begin process return from VNPAY
-            Map<String, String> fields = new HashMap<>();
-            for (Enumeration<String> params = request.getParameterNames(); params.hasMoreElements();) {
-                String fieldName = params.nextElement();
-                String fieldValue = request.getParameter(fieldName);
-                if (fieldValue != null && fieldValue.length() > 0) {
-                    fields.put(fieldName, fieldValue);
-                }
-            }
-
-            String vnp_SecureHash = request.getParameter("vnp_SecureHash");
-            if (fields.containsKey("vnp_SecureHashType")) {
-                fields.remove("vnp_SecureHashType");
-            }
-            if (fields.containsKey("vnp_SecureHash")) {
-                fields.remove("vnp_SecureHash");
-            }
-            
-            // Sort the field names
-            List<String> fieldNames = new ArrayList<>(fields.keySet());
-            Collections.sort(fieldNames);
-            
-            // Build the data string to be hashed
-            StringBuilder hashData = new StringBuilder();
-            for (String fieldName : fieldNames) {
-                String fieldValue = fields.get(fieldName);
-                if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                    if (hashData.length() > 0) {
-                        hashData.append('&');
-                    }
-                    hashData.append(fieldName).append('=').append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-                }
-            }
-            
-            String signValue = Config.hmacSHA512(Config.secretKey, hashData.toString());
-
             // Retrieve product information from session
-            HashMap<Integer, ProductCart> cart = (HashMap<Integer, ProductCart>) session.getAttribute("cart");
+            Cart cart = (Cart) session.getAttribute("cart");
             StringBuilder productDescription = new StringBuilder();
             if (cart != null && !cart.isEmpty()) {
-                for (ProductCart item : cart.values()) {
+                for (CartDetails item : cart.getCartDetails()) {
                     Course course = item.getCourse();
                     productDescription.append(course.getCourseName()).append(" - $").append(course.getPrice()).append("<br>");
                 }
             } else {
                 productDescription.append("No products found in session.");
             }
+
+            // Retrieve parameters from the request
+            String vnp_TxnRef = request.getParameter("vnp_TxnRef");
+            String vnp_Amount = request.getParameter("vnp_Amount");
+            String vnp_ResponseCode = request.getParameter("vnp_ResponseCode");
+            String vnp_TransactionNo = request.getParameter("vnp_TransactionNo");
+            String vnp_BankCode = request.getParameter("vnp_BankCode");
+            String vnp_PayDate = request.getParameter("vnp_PayDate");
+            String vnp_SecureHash = request.getParameter("vnp_SecureHash");
+
+            String status;
+            if ("00".equals(vnp_ResponseCode)) {
+                status = "Completed";
+            } else {
+                status = "Failed";
+            }
         %>
-        <!-- Begin display -->
         <div class="container">
             <div class="header clearfix">
                 <h3 class="text-muted">PAYMENT RESULTS</h3>
@@ -118,11 +88,11 @@
             <div class="table-responsive">
                 <div class="form-group">
                     <label>Payment transaction code:</label>
-                    <p><%=request.getParameter("vnp_TxnRef")%></p>
+                    <p><%= vnp_TxnRef %></p>
                 </div>    
                 <div class="form-group">
                     <label>Amount:</label>
-                    <p><%=request.getParameter("vnp_Amount")%></p>
+                    <p><%= vnp_Amount %></p>
                 </div>  
                 <div class="form-group">
                     <label>Transaction description: </label>
@@ -130,37 +100,35 @@
                 </div> 
                 <div class="form-group">
                     <label>Payment error code:</label>
-                    <p><%=request.getParameter("vnp_ResponseCode")%></p>
+                    <p><%= vnp_ResponseCode %></p>
                 </div> 
                 <div class="form-group">
                     <label>Transaction code at CTT VNPAY-QR:</label>
-                    <p><%=request.getParameter("vnp_TransactionNo")%></p>
+                    <p><%= vnp_TransactionNo %></p>
                 </div> 
                 <div class="form-group">
                     <label>Payment bank code:</label>
-                    <p><%=request.getParameter("vnp_BankCode")%></p>
+                    <p><%= vnp_BankCode %></p>
                 </div> 
                 <div class="form-group">
                     <label>Payment time:</label>
-                    <p><%=request.getParameter("vnp_PayDate")%></p>
+                    <p><%= vnp_PayDate %></p>
                 </div> 
                 <div class="form-group">
                     <label>Transaction status:</label>
-                    <p>
-                        <%
-                            if (signValue.equals(vnp_SecureHash)) {
-                                if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
-                                    out.print("Completed");
-                                } else {
-                                    out.print("Failed");
-                                }
-                            } else {
-                                out.print("Invalid signature");
-                            }
-                        %>
-                    </p>
+                    <p><%= status %></p>
                 </div> 
             </div>
+            <form action="${pageContext.request.contextPath}/transactionservlet" method="post">
+                <input type="hidden" name="vnp_TxnRef" value="<%= vnp_TxnRef %>">
+                <input type="hidden" name="vnp_Amount" value="<%= vnp_Amount %>">
+                <input type="hidden" name="vnp_ResponseCode" value="<%= vnp_ResponseCode %>">
+                <input type="hidden" name="vnp_TransactionNo" value="<%= vnp_TransactionNo %>">
+                <input type="hidden" name="vnp_BankCode" value="<%= vnp_BankCode %>">
+                <input type="hidden" name="vnp_PayDate" value="<%= vnp_PayDate %>">
+                <input type="hidden" name="status" value="<%= status %>">
+                <button type="submit" class="btn btn-primary">Confirm and Save</button>
+            </form>
             <footer class="footer">
                 <p>&copy; VNPAY 2020</p>
             </footer>

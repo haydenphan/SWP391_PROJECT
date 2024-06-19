@@ -10,7 +10,7 @@
 
     // Check if total is not null
     if (total != null) {
-        amountInVND = Math.round(total * 23000 * 100); // Convert USD to VND (assuming 1 USD = 23000 VND) and multiply by 100 for smallest currency unit
+        amountInVND = Math.round(total * 25450 * 100); // Convert USD to VND (assuming 1 USD = 23000 VND) and multiply by 100 for smallest currency unit
     }
 %>
 <!DOCTYPE html>
@@ -120,4 +120,3 @@
         </script>
     </body>
 </html>
-    

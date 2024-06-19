@@ -4,32 +4,26 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.Course;
 import model.Transaction;
-import model.TransactionItem;
-import model.User;
+import model.TransactionDetails;
 
-/**
- * DAO class for handling transactions.
- */
 public class TransactionDAO {
 
-    /**
-     * Inserts a transaction along with its items.
-     *
-     * @param transaction the transaction to insert
-     * @param items the items of the transaction
-     * @return true if the transaction and items were inserted successfully,
-     * false otherwise
-     */
-    public boolean insertTransaction(Transaction transaction, List<TransactionItem> items) throws Exception {
+    public boolean insertTransaction(Transaction transaction, List<TransactionDetails> items) throws Exception {
         String transactionSql = "INSERT INTO Transactions (UserID, Amount, TransactionDate, Status) VALUES (?, ?, ?, ?)";
-        String transactionItemSql = "INSERT INTO TransactionItems (TransactionID, CourseID, Price) VALUES (?, ?, ?)";
+        String transactionItemSql = "INSERT INTO TransactionDetails (TransactionID, CourseID, Price) VALUES (?, ?, ?)";
 
-        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement transactionStmt = con.prepareStatement(transactionSql, PreparedStatement.RETURN_GENERATED_KEYS); PreparedStatement transactionItemStmt = con.prepareStatement(transactionItemSql)) {
+        Connection con = null;
+        try {
+            con = JDBC.getConnectionWithSqlJdbc();
+            PreparedStatement transactionStmt = con.prepareStatement(transactionSql, PreparedStatement.RETURN_GENERATED_KEYS);
+            PreparedStatement transactionItemStmt = con.prepareStatement(transactionItemSql);
 
             con.setAutoCommit(false);
 
@@ -48,9 +42,9 @@ public class TransactionDAO {
             }
 
             // Insert transaction items
-            for (TransactionItem item : items) {
+            for (TransactionDetails item : items) {
                 transactionItemStmt.setInt(1, transactionID);
-                transactionItemStmt.setInt(2, item.getCourse().getCourseID());
+                transactionItemStmt.setInt(2, item.getCourseID().getCourseID());
                 transactionItemStmt.setDouble(3, item.getPrice());
                 transactionItemStmt.addBatch();
             }
@@ -61,53 +55,94 @@ public class TransactionDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            try (Connection con = JDBC.getConnectionWithSqlJdbc()) {
-                if (con != null && !con.getAutoCommit()) {
+            if (con != null) {
+                try {
                     con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
                 }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
             }
             return false;
+        } finally {
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+    }
+
+    public List<Transaction> getTransactionsByUserID(int userID) throws Exception {
+        String sql = "SELECT t.TransactionID, t.Amount, t.TransactionDate, t.Status, c.CourseID, c.CourseName, ti.Price "
+                + "FROM Transactions t "
+                + "JOIN TransactionDetails ti ON t.TransactionID = ti.TransactionID "
+                + "JOIN Courses c ON ti.CourseID = c.CourseID "
+                + "WHERE t.UserID = ?";
+        Map<Integer, Transaction> transactionMap = new HashMap<>();
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, userID);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int transactionID = rs.getInt("TransactionID");
+                double amount = rs.getDouble("Amount");
+                Date transactionDate = rs.getTimestamp("TransactionDate");
+                String status = rs.getString("Status");
+                int courseID = rs.getInt("CourseID");
+                String courseName = rs.getString("CourseName");
+                double price = rs.getDouble("Price");
+
+                // Create the Course object
+                Course course = new Course();
+                course.setCourseID(courseID);
+                course.setCourseName(courseName);
+
+                // Create the TransactionDetails object
+                TransactionDetails transactionDetails = new TransactionDetails(course, price);
+
+                // Check if the Transaction already exists in the map
+                Transaction transaction = transactionMap.get(transactionID);
+                if (transaction == null) {
+                    // Create a new Transaction object
+                    transaction = new Transaction(transactionID, amount, transactionDate, status);
+                    transactionMap.put(transactionID, transaction);
+                }
+
+                // Add TransactionDetails to Transaction
+                transaction.addTransactionDetail(transactionDetails);
+            }
+        }
+
+        // Convert the map values to a list
+        return new ArrayList<>(transactionMap.values());
     }
 
     public static void main(String[] args) {
         try {
-            // Mock user
-            User user = new User();
-            user.setUserID(2); // Set a valid user ID
-
-            // Mock courses
-            Course course1 = new Course();
-            course1.setCourseID(4); // Set a valid course ID
-            course1.setCourseName("Sample Course 1");
-            course1.setPrice(100.0);
-
-            Course course2 = new Course();
-            course2.setCourseID(5); // Set a valid course ID
-            course2.setCourseName("Sample Course 2");
-            course2.setPrice(150.0);
-
-            // Mock transaction
-            double amount = 250.0;
-            Date transactionDate = new Date(); // Current date and time
-            String status = "Completed"; // Ensure this matches the allowed values
-
-            Transaction transaction = new Transaction(0, user, amount, transactionDate, status);
-
-            // Mock transaction items
-            TransactionItem item1 = new TransactionItem(course1, course1.getPrice());
-            TransactionItem item2 = new TransactionItem(course2, course2.getPrice());
-            List<TransactionItem> items = Arrays.asList(item1, item2);
-
-            // Test insert transaction
             TransactionDAO transactionDAO = new TransactionDAO();
-            boolean result = transactionDAO.insertTransaction(transaction, items);
-            if (result) {
-                System.out.println("Transaction inserted successfully");
-            } else {
-                System.out.println("Failed to insert transaction");
+            int testUserID = 2; // Change this to an existing user ID in your database
+
+            List<Transaction> transactions = transactionDAO.getTransactionsByUserID(testUserID);
+
+            // Print out the transactions
+            for (Transaction transaction : transactions) {
+                System.out.println("Transaction ID: " + transaction.getTransactionID());
+                System.out.println("Amount: " + transaction.getAmount());
+                System.out.println("Transaction Date: " + transaction.getTransactionDate());
+                System.out.println("Status: " + transaction.getStatus());
+
+                System.out.println("Transaction Details:");
+                transaction.getTransactionDetails().forEach(detail -> {
+                    System.out.println(" - Course ID: " + detail.getCourseID().getCourseID());
+                    System.out.println(" - Course Name: " + detail.getCourseID().getCourseName());
+                    System.out.println(" - Price: " + detail.getPrice());
+                });
+
+                System.out.println("-------------");
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -12,6 +12,14 @@
         <error-code>404</error-code>
         <location>/errors/404Page.jsp</location>
     </error-page>
+    <servlet>
+        <servlet-name>TransactionServlet</servlet-name>
+        <servlet-class>controller.TransactionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TransactionServlet</servlet-name>
+        <url-pattern>/transactionservlet</url-pattern>
+    </servlet-mapping>
     
     <!--    <error-page>
         <error-code>500</error-code>

@@ -187,7 +187,7 @@ public class CourseDAO extends DAO<Course> {
 
         return course;
     }
-    
+
     public static User getInstructor(int id) {
         String sql = "SELECT * FROM Users WHERE UserID = ?";
         User instructor = null;
@@ -517,7 +517,7 @@ public class CourseDAO extends DAO<Course> {
                     course.setCourseID(rs.getInt("CourseID"));
                     course.setCourseName(rs.getString("CourseName"));
                     course.setPrice(rs.getDouble("Price"));
-                    course.setImageURL(null);
+                    course.setImageURL(rs.getString("ImageURL")); // Assuming you have an ImageURL field in the table
                 }
             }
 

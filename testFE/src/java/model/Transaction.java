@@ -4,18 +4,22 @@
  */
 package model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
  * @author Thunguyet
  */
 public class Transaction {
+
     private int TransactionID;
     private User UserID;
     private double Amount;
     private Date TransactionDate;
     private String Status;
+    private List<TransactionDetails> transactionDetails;
 
     public Transaction(int TransactionID, User UserID, double Amount, Date TransactionDate, String Status) {
         this.TransactionID = TransactionID;
@@ -23,8 +27,18 @@ public class Transaction {
         this.Amount = Amount;
         this.TransactionDate = TransactionDate;
         this.Status = Status;
+        this.transactionDetails = new ArrayList<>();
     }
 
+    public Transaction(int TransactionID, double Amount, Date TransactionDate, String Status) {
+        this.TransactionID = TransactionID;
+        this.Amount = Amount;
+        this.TransactionDate = TransactionDate;
+        this.Status = Status;
+        this.transactionDetails = new ArrayList<>();
+    }
+
+    // Getters and Setters
     public int getTransactionID() {
         return TransactionID;
     }
@@ -65,10 +79,16 @@ public class Transaction {
         this.Status = Status;
     }
 
+    public void addTransactionDetail(TransactionDetails transactionDetail) {
+        this.transactionDetails.add(transactionDetail);
+    }
+
+    public List<TransactionDetails> getTransactionDetails() {
+        return transactionDetails;
+    }
+
     @Override
     public String toString() {
         return "Transaction{" + "TransactionID=" + TransactionID + ", UserID=" + UserID + ", Amount=" + Amount + ", TransactionDate=" + TransactionDate + ", Status=" + Status + '}';
     }
-
-    
 }
