@@ -50,7 +50,7 @@ public class LoginGoogleServlet extends HttpServlet {
                         int role = existingUser.getRole();
                         request.getSession().setAttribute("user", existingUser);
                         if (role == 1) {
-                            response.sendRedirect(request.getContextPath() + "/pages/user-profile.jsp");
+                            response.sendRedirect(request.getContextPath() + "/pages/home.jsp");
                         }
                         response.sendRedirect(request.getContextPath() + "/pages/instructor-profile.jsp");
                     } else {

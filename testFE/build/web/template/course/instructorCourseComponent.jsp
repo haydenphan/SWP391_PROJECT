@@ -68,9 +68,8 @@
                 </span>
             </div>
             <div class="course-deteals-btn">
-                <a href="../view-section-servlet?courseId=<%= currentCourse.getCourseID()%>">
-                    <span class="me-2">View Details</span>
-                    <i class="far fa-arrow-right"></i>
+                <a href="${pageContext.request.contextPath}/edit-course-servlet?courseId=<%= currentCourse.getCourseID()%>">
+                    <span class="me-2">Edit</span>
                 </a>
             </div>
         </div>

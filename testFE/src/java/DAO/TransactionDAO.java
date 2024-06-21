@@ -4,34 +4,24 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.Course;
 import model.Transaction;
-import model.TransactionItem;
+import model.TransactionDetails;
 import model.User;
 
-/**
- * DAO class for handling transactions.
- */
 public class TransactionDAO {
 
-    /**
-     * Inserts a transaction along with its items.
-     *
-     * @param transaction the transaction to insert
-     * @param items the items of the transaction
-     * @return true if the transaction and items were inserted successfully,
-     * false otherwise
-     */
-    public boolean insertTransaction(Transaction transaction, List<TransactionItem> items) throws Exception {
+    public int insertTransaction(Transaction transaction) throws Exception {
         String transactionSql = "INSERT INTO Transactions (UserID, Amount, TransactionDate, Status) VALUES (?, ?, ?, ?)";
-        String transactionItemSql = "INSERT INTO TransactionItems (TransactionID, CourseID, Price) VALUES (?, ?, ?)";
-
-        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement transactionStmt = con.prepareStatement(transactionSql, PreparedStatement.RETURN_GENERATED_KEYS); PreparedStatement transactionItemStmt = con.prepareStatement(transactionItemSql)) {
-
-            con.setAutoCommit(false);
+        Connection con = null;
+        try {
+            con = JDBC.getConnectionWithSqlJdbc();
+            PreparedStatement transactionStmt = con.prepareStatement(transactionSql, PreparedStatement.RETURN_GENERATED_KEYS);
 
             // Insert transaction
             transactionStmt.setInt(1, transaction.getUserID().getUserID());
@@ -42,17 +32,45 @@ public class TransactionDAO {
 
             // Get the generated transaction ID
             ResultSet rs = transactionStmt.getGeneratedKeys();
-            int transactionID = 0;
             if (rs.next()) {
-                transactionID = rs.getInt(1);
+                return rs.getInt(1);
             }
 
+            return 0; // Return 0 if no ID was generated
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception("Transaction insertion failed", e);
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public boolean insertTransactionDetails(int transactionID, List<TransactionDetails> items) throws Exception {
+        String transactionItemSql = "INSERT INTO TransactionDetails (TransactionID, CourseID, Price) VALUES (?, ?, ?)";
+        Connection con = null;
+        try {
+            con = JDBC.getConnectionWithSqlJdbc();
+            PreparedStatement transactionItemStmt = con.prepareStatement(transactionItemSql);
+
+            con.setAutoCommit(false);
+
             // Insert transaction items
-            for (TransactionItem item : items) {
-                transactionItemStmt.setInt(1, transactionID);
-                transactionItemStmt.setInt(2, item.getCourse().getCourseID());
-                transactionItemStmt.setDouble(3, item.getPrice());
-                transactionItemStmt.addBatch();
+            for (TransactionDetails item : items) {
+                if (item.getCourseID() != null) { // Check if course is not null
+                    transactionItemStmt.setInt(1, transactionID);
+                    transactionItemStmt.setInt(2, item.getCourseID().getCourseID());
+                    transactionItemStmt.setDouble(3, item.getPrice());
+                    transactionItemStmt.addBatch();
+                } else {
+                    System.out.println("Course is null for item: " + item);
+                }
             }
             transactionItemStmt.executeBatch();
 
@@ -61,56 +79,112 @@ public class TransactionDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            try (Connection con = JDBC.getConnectionWithSqlJdbc()) {
-                if (con != null && !con.getAutoCommit()) {
+            if (con != null) {
+                try {
                     con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
                 }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
             }
-            return false;
+            throw new Exception("Transaction details insertion failed", e);
+        } finally {
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            // Mock user
-            User user = new User();
-            user.setUserID(2); // Set a valid user ID
+    public List<Transaction> getTransactionsByUserID(int userID) throws Exception {
+        String sql = "SELECT t.TransactionID, t.Amount, t.TransactionDate, t.Status, c.CourseID, c.CourseName, ti.Price, t.UserID "
+                + "FROM Transactions t "
+                + "JOIN TransactionDetails ti ON t.TransactionID = ti.TransactionID "
+                + "JOIN Courses c ON ti.CourseID = c.CourseID "
+                + "WHERE t.UserID = ?";
+        Map<Integer, Transaction> transactionMap = new HashMap<>();
 
-            // Mock courses
-            Course course1 = new Course();
-            course1.setCourseID(4); // Set a valid course ID
-            course1.setCourseName("Sample Course 1");
-            course1.setPrice(100.0);
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, userID);
+            ResultSet rs = stmt.executeQuery();
 
-            Course course2 = new Course();
-            course2.setCourseID(5); // Set a valid course ID
-            course2.setCourseName("Sample Course 2");
-            course2.setPrice(150.0);
+            while (rs.next()) {
+                int transactionID = rs.getInt("TransactionID");
+                double amount = rs.getDouble("Amount");
+                Date transactionDate = rs.getTimestamp("TransactionDate");
+                String status = rs.getString("Status");
+                int courseID = rs.getInt("CourseID");
+                String courseName = rs.getString("CourseName");
+                double price = rs.getDouble("Price");
 
-            // Mock transaction
-            double amount = 250.0;
-            Date transactionDate = new Date(); // Current date and time
-            String status = "Completed"; // Ensure this matches the allowed values
+                // Create the Course object
+                Course course = new Course();
+                course.setCourseID(courseID);
+                course.setCourseName(courseName);
 
-            Transaction transaction = new Transaction(0, user, amount, transactionDate, status);
+                // Create the TransactionDetails object
+                TransactionDetails transactionDetails = new TransactionDetails(course, price);
 
-            // Mock transaction items
-            TransactionItem item1 = new TransactionItem(course1, course1.getPrice());
-            TransactionItem item2 = new TransactionItem(course2, course2.getPrice());
-            List<TransactionItem> items = Arrays.asList(item1, item2);
+                // Check if the Transaction already exists in the map
+                Transaction transaction = transactionMap.get(transactionID);
+                if (transaction == null) {
+                    // Create a new Transaction object
+                    UserDAO dao = new UserDAO();
+                    transaction = new Transaction(transactionID, dao.getUserByID(userID), amount, transactionDate, status);
+                    transactionMap.put(transactionID, transaction);
+                }
 
-            // Test insert transaction
-            TransactionDAO transactionDAO = new TransactionDAO();
-            boolean result = transactionDAO.insertTransaction(transaction, items);
-            if (result) {
-                System.out.println("Transaction inserted successfully");
-            } else {
-                System.out.println("Failed to insert transaction");
+                // Add TransactionDetails to Transaction
+                transaction.addTransactionDetail(transactionDetails);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+
+        // Convert the map values to a list
+        return new ArrayList<>(transactionMap.values());
+    }
+
+    public static void main(String[] args) throws Exception {
+        TransactionDAO transactionDAO = new TransactionDAO();
+
+        // Create a mock user
+        User user = new User();
+        user.setUserID(1); // Set this to a valid user ID in your database
+
+        // Create a mock transaction
+        Transaction transaction = new Transaction();
+        transaction.setUserID(user);
+        transaction.setAmount(100.0);
+        transaction.setTransactionDate(new Date());
+        transaction.setStatus("Completed");
+
+        // Insert the transaction
+        int transactionID = transactionDAO.insertTransaction(transaction);
+        if (transactionID > 0) {
+            System.out.println("Transaction inserted successfully with ID: " + transactionID);
+
+            // Create a list of transaction details
+            List<TransactionDetails> items = new ArrayList<>();
+            Course course1 = CourseDAO.getCoursesByID(3);
+            System.out.println(course1);
+
+            if (course1 != null) {
+                items.add(new TransactionDetails(course1, 50.0));
+            } else {
+                System.out.println("Course with ID 3 not found.");
+            }
+
+            // Insert the transaction details
+            boolean result = transactionDAO.insertTransactionDetails(transactionID, items);
+            if (result) {
+                System.out.println("Transaction details inserted successfully");
+            } else {
+                System.out.println("Transaction details insertion failed");
+            }
+        } else {
+            System.out.println("Transaction insertion failed");
         }
     }
 }

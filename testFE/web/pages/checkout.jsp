@@ -1,6 +1,7 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="java.util.HashMap" %>
-<%@ page import="model.ProductCart" %>
+<%@ page import="java.util.List" %>
+<%@ page import="model.Cart" %>
+<%@ page import="model.CartDetails" %>
 <%@ page import="model.Course" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -79,19 +80,19 @@
                                         <div class="col-md-6">
                                             <div class="checkout-form-list">
                                                 <label class="required">First Name</label>
-                                                <input type="text" name="firstName" value="${user != null ? user.firstName : ''}" required>
+                                                <input type="text" name="firstName" value="${user != null ? user.getFirstName() : ''}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="checkout-form-list">
                                                 <label class="required">Last Name</label>
-                                                <input type="text" name="lastName" value="${user != null ? user.lastName : ''}" required>
+                                                <input type="text" name="lastName" value="${user != null ? user.getLastName() : ''}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="checkout-form-list" style="width: 150%">
                                                 <label class="required">Email Address</label>
-                                                <input type="email" name="email" value="${user != null ? user.email : ''}" required>
+                                                <input type="email" name="email" value="${user != null ? user.getEmail() : ''}" required>
                                             </div>
                                         </div>
                                     </div>
@@ -110,12 +111,12 @@
                                             </thead>
                                             <tbody>
                                                 <%
-                                                    HashMap<Integer, ProductCart> cart = (HashMap<Integer, ProductCart>) session.getAttribute("cart");
+                                                    Cart cart = (Cart) session.getAttribute("cart");
                                                     double total = 0;
                                                     if (cart != null && !cart.isEmpty()) {
-                                                        for (ProductCart item : cart.values()) {
+                                                        for (CartDetails item : cart.getCartDetails()) {
                                                             Course course = item.getCourse();
-                                                            double itemTotal = course.getPrice();
+                                                            double itemTotal = item.getPrice();
                                                             total += itemTotal;
                                                 %>
                                                 <tr id="product-row-<%= course.getCourseID()%>">
@@ -123,7 +124,7 @@
                                                         <a href="<%= request.getContextPath()%>/Cart-order.jsp?CourseID=<%= course.getCourseID()%>"><%= course.getCourseName()%></a>
                                                     </td>
                                                     <td class="product-unitprice">
-                                                        <span class="amount">$<%= course.getPrice()%></span>
+                                                        <span class="amount">$<%= item.getPrice()%></span>
                                                     </td>
                                                 </tr>
                                                 <%

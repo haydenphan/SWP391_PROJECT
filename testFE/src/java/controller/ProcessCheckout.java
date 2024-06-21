@@ -2,15 +2,16 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.Cart;
+import model.CartDetails;
 import model.Course;
-import model.ProductCart;
 
 /**
  *
@@ -36,7 +37,6 @@ public class ProcessCheckout extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -48,7 +48,6 @@ public class ProcessCheckout extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //processRequest(request, response);
         response.sendRedirect(request.getContextPath() + "/pages/checkout.jsp");
     }
 
@@ -63,18 +62,19 @@ public class ProcessCheckout extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //processRequest(request, response);
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
 
-        HashMap<Integer, ProductCart> cart = (HashMap<Integer, ProductCart>) session.getAttribute("cart");
+        Cart cart = (Cart) session.getAttribute("cart");
         double total = 0;
         if (cart != null && !cart.isEmpty()) {
-            for (ProductCart item : cart.values()) {
+            for (CartDetails item : cart.getCartDetails()) {
                 Course course = item.getCourse();
-                double itemTotal = course.getPrice();
+                double itemTotal = item.getPrice();
                 total += itemTotal;
             }
         }
@@ -98,5 +98,4 @@ public class ProcessCheckout extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

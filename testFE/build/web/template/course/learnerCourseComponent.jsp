@@ -23,6 +23,7 @@
         overflow: hidden; /* Hide overflow to ensure no extra parts of the image are shown */
     }
 </style>
+
 <div class="col-xl-6 col-lg-6 col-md-6 col-md-6">
     <div class="eduman-course-main-wrapper mb-30">
         <div class="eduman-course-img w-img">
@@ -61,19 +62,20 @@
             </div>
         </div>
         <div class="eduman-course-footer">
-<!--            <div class="course-lessson-svg">
-                <span class="course-link-color-<%= currentCourse.IsPublished() ? "1" : "5"%>">
-                    <%= currentCourse.IsPublished() ? "Published" : "Pending"%>
-                </span>
-            </div>-->
-                    
+            <!--            <div class="course-lessson-svg">
+                            <span class="course-link-color-<%= currentCourse.IsPublished() ? "1" : "5"%>">
+            <%= currentCourse.IsPublished() ? "Published" : "Pending"%>
+        </span>
+    </div>-->
+
             <div class="course-lessson-svg">
 
-            <div class="course-deteals-btn">
-                <a href="${pageContext.request.contextPath}/view-section-servlet?courseId=<%= currentCourse.getCourseID()%>">
-                    <span class="me-2">View Details</span>
-                    <i class="far fa-arrow-right"></i>
-                </a>
+                <div class="course-deteals-btn">
+                    <a href="${pageContext.request.contextPath}/view-section-servlet?courseId=<%= currentCourse.getCourseID()%>">
+                        <span class="me-2">View Details</span>
+                        <i class="far fa-arrow-right"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

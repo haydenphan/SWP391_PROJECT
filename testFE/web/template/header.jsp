@@ -6,11 +6,11 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 
-<% 
-           // String userName = (String)request.getAttribute("UserName");
-            User user = (User)session.getAttribute("user");
-            int role = (user != null) ? user.getRole() : 0;
-            request.setAttribute("role", role);
+<%
+    // String userName = (String)request.getAttribute("UserName");
+    User user = (User) session.getAttribute("user");
+    int role = (user != null) ? user.getRole() : 0;
+    request.setAttribute("role", role);
 %>
 
 <c:choose>
@@ -207,7 +207,7 @@
                                                     </g>
                                                 </svg>
                                                 <span class="item-number">
-                                                    ${cart != null && !cart.isEmpty() ? cart.size() : 0}
+                                                    ${cartDetails != null && !cartDetails.isEmpty() ? cartDetails.size() : 0}
                                                 </span>
                                             </div>
                                         </a>
@@ -229,8 +229,8 @@
                                            <% if (role == 2) { %>
                                            ${pageContext.request.contextPath}/pages/instructor-profile.jsp
                                            <% } else if (role == 1) { %>
-                                           ${pageContext.request.contextPath}/pages/user-profile.jsp"
-                                           <% } %>
+                                           ${pageContext.request.contextPath}/user-profile"
+                                           <% }%>
 
                                            " 
                                            class="user-avatar-btn">

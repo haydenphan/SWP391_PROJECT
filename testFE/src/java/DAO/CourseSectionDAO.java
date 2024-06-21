@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.CourseSection;
+import model.SectionLecture;
 
 public class CourseSectionDAO extends DAO<CourseSection> {
 
     @Override
     public int insert(CourseSection courseSection) {
         String sql = "INSERT INTO CourseSections (CourseID, SectionName, SectionOrder, CreatedDate) VALUES (?, ?, ?, ?)";
-        try (Connection con = JDBC.getConnectionWithSqlJdbc();
-             PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, courseSection.getCourseID());
             ps.setString(2, courseSection.getSectionName());
@@ -46,9 +46,8 @@ public class CourseSectionDAO extends DAO<CourseSection> {
     public static List<CourseSection> getCourseSections(int courseId) {
         List<CourseSection> courseSections = new ArrayList<>();
         String sql = "SELECT * FROM CourseSections WHERE CourseID = ? ORDER BY SectionOrder";
-        
-        try (Connection con = JDBC.getConnectionWithSqlJdbc();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, courseId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -59,7 +58,7 @@ public class CourseSectionDAO extends DAO<CourseSection> {
                     courseSection.setSectionName(rs.getString("SectionName"));
                     courseSection.setSectionOrder(rs.getInt("SectionOrder"));
                     courseSection.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
-
+                    courseSection.setLectures(SectionLectureDAO.getLecturesBySectionId(courseSection.getSectionID()));
                     courseSections.add(courseSection);
                 }
             }

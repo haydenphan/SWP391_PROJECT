@@ -1,9 +1,10 @@
-<%@page import="java.net.URLEncoder"%>
-<%@page import="java.nio.charset.StandardCharsets"%>
-<%@page import="config.VNPayConfig"%>
-<%@page import="model.ProductCart"%>
-<%@page import="model.Course"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.net.URLEncoder"%>
+<%@ page import="java.nio.charset.StandardCharsets"%>
+<%@ page import="config.VNPayConfig"%>
+<%@ page import="model.Cart"%>
+<%@ page import="model.CartDetails"%>
+<%@ page import="model.Course"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.Collections"%>
@@ -97,10 +98,10 @@
 
             String signValue = VNPayConfig.hmacSHA512(VNPayConfig.secretKey, hashData.toString());
             // Retrieve product information from session
-            HashMap<Integer, ProductCart> cart = (HashMap<Integer, ProductCart>) session.getAttribute("cart");
+            Cart cart = (Cart) session.getAttribute("cart");
             StringBuilder productDescription = new StringBuilder();
             if (cart != null && !cart.isEmpty()) {
-                for (ProductCart item : cart.values()) {
+                for (CartDetails item : cart.getCartDetails()) {
                     Course course = item.getCourse();
                     productDescription.append(course.getCourseName()).append(" - $").append(course.getPrice()).append("<br>");
                 }

@@ -23,6 +23,11 @@ public class SectionLecture {
         this.lectureURL = lectureURL;
         this.createdDate = createdDate;
     }
+    
+    public String getMaterialURL() {
+        if("Document".equals(this.lectureType)) return this.getLectureURL();
+        return null;
+    }
 
     // Getters and Setters
     public int getLectureID() {

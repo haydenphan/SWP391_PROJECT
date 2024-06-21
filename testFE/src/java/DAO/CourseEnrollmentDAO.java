@@ -189,16 +189,16 @@ public class CourseEnrollmentDAO {
     }
 
     public static void main(String[] args) {
-        CourseEnrollmentDAO dao = new CourseEnrollmentDAO();
+//        CourseEnrollmentDAO dao = new CourseEnrollmentDAO();
 
         // Check if user is enrolled in course
 //        boolean isEnrolled = dao.isUserEnrolledInCourse(1, 1);
 //        System.out.println("Is user enrolled in course: " + isEnrolled);
-        List<Course> courses = getCoursesByUserID(2);
+        List<Course> courses = CourseEnrollmentDAO.getCoursesByUserID(6);
         for (Course course : courses) {
             System.out.println(course.toString());
         }
-        boolean isEnrolled = dao.isLearnerEnrolledInInstructorCourse(2, 3);
-        System.out.println("Is user enrolled in course: " + isEnrolled);
+//        boolean isEnrolled = dao.isLearnerEnrolledInInstructorCourse(2, 3);
+//        System.out.println("Is user enrolled in course: " + isEnrolled);
     }
 }

@@ -155,7 +155,7 @@ public class CourseDAO extends DAO<Course> {
 
         return courses;
     }
-    
+
     public static List<Course> getAllPendingCourses() {
         List<Course> courses = new ArrayList<>();
         String sql = "SELECT * "
@@ -209,11 +209,15 @@ public class CourseDAO extends DAO<Course> {
                     course.setCourseName(rs.getString("CourseName"));
                     course.setDescription(rs.getString("Description"));
                     course.setCreatedBy(rs.getInt("CreatedBy"));
-                    course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
+                    course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime()); // Correct conversion from java.sql.Date to LocalDate
                     course.setIsPublished(rs.getBoolean("IsPublished"));
                     course.setSubcategoryID(rs.getInt("SubcategoryID"));
+                    course.setLevelID(rs.getInt("LevelID"));
+                    course.setLanguageID(rs.getInt("LanguageID"));
+                    course.setPrice(rs.getInt("Price"));
+                    course.setImageURL(rs.getString("ImageURL"));
                     course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
-                    course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime());
+                    course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime()); // Correct conversion from java.sql.Date to LocalDate
                     course.setRequirements(rs.getString("Requirements"));
                 }
             }
@@ -227,7 +231,7 @@ public class CourseDAO extends DAO<Course> {
 
         return course;
     }
-    
+
     public static User getInstructor(int id) {
         String sql = "SELECT * FROM Users WHERE UserID = ?";
         User instructor = null;
@@ -633,27 +637,24 @@ public class CourseDAO extends DAO<Course> {
         int totalFeedbacks = getTotalFeedbacksForCourse(courseID);
         return (int) Math.ceil((double) totalFeedbacks / entriesPerPage);
     }
-    
+
     public static boolean updateTotalEnrolled(int courseID) {
         String sql = "UPDATE Courses SET TotalEnrolled = TotalEnrolled + 1 WHERE CourseID = ?";
-        
-        try (Connection con = JDBC.getConnectionWithSqlJdbc();
-             PreparedStatement st = con.prepareStatement(sql)) {
-            
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+
             st.setInt(1, courseID);
             int rowsUpdated = st.executeUpdate();
-            
+
             return rowsUpdated > 0;
         } catch (SQLException | ClassNotFoundException e) {
             Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, e);
         } catch (Exception ex) {
             Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return false;
     }
-    
-    
 
     public static void main(String[] args) {
         CourseDAO dao = new CourseDAO();
