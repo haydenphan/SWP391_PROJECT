@@ -1,6 +1,7 @@
 package controller;
 
 import DAO.CourseSectionDAO;
+import DAO.LectureMaterialDAO;
 import DAO.SectionLectureDAO;
 import model.CourseSection;
 import model.SectionLecture;
@@ -18,6 +19,7 @@ import javax.servlet.http.Part;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Map;
+import model.LectureMaterial;
 import org.apache.commons.io.IOUtils;
 
 @WebServlet(name = "SectionLectureServlet", urlPatterns = {"/section-lecture-servlet"})
@@ -121,28 +123,22 @@ public class SectionLectureServlet extends HttpServlet {
                     String videoUrl = uploadFileToCloudinary(videoPart);
                     String materialUrl = uploadFileToCloudinary(materialPart);
 
-                    // Validate lecture type values before inserting
-                    String videoLectureType = "Video";
-                    String materialLectureType = "Document";
-
                     System.out.println("Inserting Video Lecture: " + lectureTitle + " with URL: " + videoUrl);
                     SectionLecture sectionLecture = new SectionLecture();
                     sectionLecture.setSectionID(sectionId);
                     sectionLecture.setLectureName(lectureTitle);
-                    sectionLecture.setLectureType(videoLectureType);
                     sectionLecture.setLectureURL(videoUrl);
                     sectionLecture.setCreatedDate(createdDate);
-                    sectionLectureDAO.insert(sectionLecture);
+                    sectionLecture.setLectureID(sectionLectureDAO.insert(sectionLecture));
 
                     if (materialUrl != null) {
                         System.out.println("Inserting Material Lecture: " + lectureTitle + " with URL: " + materialUrl);
-                        SectionLecture materialLecture = new SectionLecture();
-                        materialLecture.setSectionID(sectionId);
-                        materialLecture.setLectureName(lectureTitle + " - Material");
-                        materialLecture.setLectureType(materialLectureType);
-                        materialLecture.setLectureURL(materialUrl);
-                        materialLecture.setCreatedDate(createdDate);
-                        sectionLectureDAO.insert(materialLecture);
+                        LectureMaterial materialLecture = new LectureMaterial();
+                        materialLecture.setLectureId(sectionLecture.getLectureID());
+                        materialLecture.setLectureMaterialUrl(materialUrl);
+                        System.out.println(materialLecture.toString());
+                        LectureMaterialDAO dao = new LectureMaterialDAO();
+                        dao.insert(materialLecture);
                     }
                 }
             }

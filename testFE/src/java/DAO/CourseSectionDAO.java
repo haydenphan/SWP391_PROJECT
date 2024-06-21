@@ -70,4 +70,38 @@ public class CourseSectionDAO extends DAO<CourseSection> {
 
         return courseSections;
     }
+
+    public boolean updateSection(CourseSection courseSection) {
+        String sql = "UPDATE CourseSections SET SectionName = ?, SectionOrder = ?, CreatedDate = ? WHERE SectionID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, courseSection.getSectionName());
+            ps.setInt(2, courseSection.getSectionOrder());
+            ps.setObject(3, courseSection.getCreatedDate());
+            ps.setInt(4, courseSection.getSectionID());
+
+            int rowsUpdated = ps.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseSectionDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseSectionDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return false;
+    }
+
+    public int delete(int sectionId) throws Exception {
+        String sql = "DELETE FROM CourseSections WHERE SectionID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, sectionId);
+            return ps.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CourseSectionDAO.class.getName()).log(Level.SEVERE, null, e);
+            return -1; // Return -1 in case of error
+        }
+    }
+
 }

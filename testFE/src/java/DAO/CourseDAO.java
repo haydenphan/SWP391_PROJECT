@@ -656,6 +656,30 @@ public class CourseDAO extends DAO<Course> {
         return false;
     }
 
+    public static boolean updateCourse(Course course) {
+        String sql = "UPDATE Courses SET CourseName = ?, Description = ?, Price = ?, ImageURL = ?, LastUpdate = ? WHERE CourseID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+
+            st.setString(1, course.getCourseName());
+            st.setString(2, course.getDescription());
+            st.setDouble(3, course.getPrice());
+            st.setString(4, course.getImageURL());
+            st.setTimestamp(5, Timestamp.valueOf(course.getLastUpdate()));
+            st.setInt(6, course.getCourseID());
+
+            int rowsUpdated = st.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return false;
+    }
+
     public static void main(String[] args) {
         CourseDAO dao = new CourseDAO();
 //        List<Course> list = dao.getFilteredCourses(null, null, null, null, null, null, null);
