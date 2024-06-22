@@ -71,7 +71,7 @@ public class CourseSectionDAO extends DAO<CourseSection> {
         return courseSections;
     }
 
-    public boolean updateSection(CourseSection courseSection) {
+    public static boolean updateSection(CourseSection courseSection) {
         String sql = "UPDATE CourseSections SET SectionName = ?, SectionOrder = ?, CreatedDate = ? WHERE SectionID = ?";
 
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -92,16 +92,39 @@ public class CourseSectionDAO extends DAO<CourseSection> {
 
         return false;
     }
-
-    public int delete(int sectionId) throws Exception {
-        String sql = "DELETE FROM CourseSections WHERE SectionID = ?";
+//
+//    public int delete(int sectionId) throws Exception {
+//        String sql = "DELETE FROM CourseSections WHERE SectionID = ?";
+//        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+//            ps.setInt(1, sectionId);
+//            return ps.executeUpdate();
+//        } catch (SQLException | ClassNotFoundException e) {
+//            Logger.getLogger(CourseSectionDAO.class.getName()).log(Level.SEVERE, null, e);
+//            return -1; // Return -1 in case of error
+//        }
+//    }
+    public static CourseSection getSectionById(int sectionId) {
+        String sql = "SELECT * FROM CourseSections WHERE SectionID = ?";
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, sectionId);
-            return ps.executeUpdate();
-        } catch (SQLException | ClassNotFoundException e) {
-            Logger.getLogger(CourseSectionDAO.class.getName()).log(Level.SEVERE, null, e);
-            return -1; // Return -1 in case of error
-        }
-    }
 
+            ps.setInt(1, sectionId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    CourseSection courseSection = new CourseSection();
+                    courseSection.setSectionID(rs.getInt("SectionID"));
+                    courseSection.setCourseID(rs.getInt("CourseID"));
+                    courseSection.setSectionName(rs.getString("SectionName"));
+                    courseSection.setSectionOrder(rs.getInt("SectionOrder"));
+                    courseSection.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
+                    courseSection.setLectures(SectionLectureDAO.getLecturesBySectionId(courseSection.getSectionID()));
+                    return courseSection;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(CourseSectionDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 }

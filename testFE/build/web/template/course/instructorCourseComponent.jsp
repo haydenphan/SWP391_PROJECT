@@ -22,14 +22,42 @@
     .eduman-course-img {
         overflow: hidden; /* Hide overflow to ensure no extra parts of the image are shown */
     }
+
+    .course-menu {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .dropdown-toggle::after {
+        display: none; /* Remove the default arrow */
+    }
+
+    .course-menu .fas {
+        color: black; /* Set the icon color to black */
+    }
+
+    .dropdown-menu .dropdown-item:hover {
+        background-color: #2467EC;
+        color: white;
+    }
 </style>
 
 <div class="col-xl-6 col-lg-6 col-md-6 col-md-6">
-    <div class="eduman-course-main-wrapper mb-30">
-        <div class="eduman-course-img w-img">
+    <div class="eduman-course-main-wrapper mb-30 position-relative">
+        <div class="eduman-course-img w-img position-relative">
             <a href="course-details.html">
                 <img class="fixed-size-img" src="<%= currentCourse.getImageURL()%>" alt="course-img">
             </a>
+            <div class="dropdown course-menu">
+                <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div style="padding: 0px" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/edit-course-info-servlet?courseId=<%= currentCourse.getCourseID()%>">Edit Course Info</a>
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/course-section-servlet?courseId=<%= currentCourse.getCourseID()%>">Manage Course Details</a>
+                </div>
+            </div>
         </div>
         <div class="eduman-course-wraper">
             <div class="eduman-course-heading">
@@ -65,11 +93,21 @@
             <div class="course-lessson-svg">
                 <span class="course-link-color-<%= currentCourse.IsPublished() ? "1" : "5"%>">
                     <%= currentCourse.IsPublished() ? "Published" : "Pending"%>
+
                 </span>
+                <% if (!currentCourse.IsPublished()) {%>
+                <div style="margin: 10px 0px" class="course-deteals-btn">
+                    <a href="${pageContext.request.contextPath}/course-approval-servlet/request?courseId=<%= currentCourse.getCourseID()%>&instructorId=<%=user.getUserID()%>">
+                        <i class="fas fa-paper-plane"></i>
+                        <span class="me-2">Publication Request</span>
+                    </a>
+                </div>
+                <% }%>
             </div>
             <div class="course-deteals-btn">
-                <a href="${pageContext.request.contextPath}/edit-course-servlet?courseId=<%= currentCourse.getCourseID()%>">
-                    <span class="me-2">Edit</span>
+                <a href="${pageContext.request.contextPath}/view-section-servlet?courseId=<%= currentCourse.getCourseID()%>">
+                    <i class="fas fa-eye"></i>
+                    <span class="me-2">View</span>
                 </a>
             </div>
         </div>

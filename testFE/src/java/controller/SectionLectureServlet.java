@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Map;
 import model.LectureMaterial;
 import org.apache.commons.io.IOUtils;
@@ -45,10 +46,6 @@ public class SectionLectureServlet extends HttpServlet {
         String courseIdStr = request.getParameter("courseId");
         String sectionCountStr = request.getParameter("sectionCount");
 
-        // Log received parameters
-        System.out.println("courseId: " + courseIdStr);
-        System.out.println("sectionCount: " + sectionCountStr);
-
         if (courseIdStr == null || courseIdStr.isEmpty() || sectionCountStr == null || sectionCountStr.isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid courseId or sectionCount");
             return;
@@ -67,10 +64,10 @@ public class SectionLectureServlet extends HttpServlet {
 
         CourseSectionDAO courseSectionDAO = new CourseSectionDAO();
         SectionLectureDAO sectionLectureDAO = new SectionLectureDAO();
+        LectureMaterialDAO lectureMaterialDAO = new LectureMaterialDAO();
 
         for (int i = 1; i <= sectionCount; i++) {
             String sectionTitle = request.getParameter("sectionTitle" + i);
-            System.out.println("sectionTitle" + i + ": " + sectionTitle); // Log sectionTitle
             if (sectionTitle == null || sectionTitle.isEmpty()) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid sectionTitle for section " + i);
                 return;
@@ -88,7 +85,6 @@ public class SectionLectureServlet extends HttpServlet {
 
             if (sectionId > 0) {
                 String lectureCountStr = request.getParameter("lectureCount" + i);
-                System.out.println("lectureCount" + i + ": " + lectureCountStr); // Log lectureCount
 
                 if (lectureCountStr == null || lectureCountStr.isEmpty()) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid lectureCount for section " + i);
@@ -107,44 +103,43 @@ public class SectionLectureServlet extends HttpServlet {
                 for (int j = 1; j <= lectureCount; j++) {
                     String lectureTitle = request.getParameter("lectureTitle" + i + "_" + j);
                     Part videoPart = request.getPart("lectureVideo" + i + "_" + j);
-                    Part materialPart = request.getPart("lectureMaterial" + i + "_" + j);
-
-                    // Check file sizes before uploading
-                    if (videoPart.getSize() > MAX_FILE_SIZE) {
-                        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Video file size too large for lecture " + j);
-                        return;
-                    }
-
-                    if (materialPart != null && materialPart.getSize() > MAX_FILE_SIZE) {
-                        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Material file size too large for lecture " + j);
-                        return;
-                    }
-
-                    String videoUrl = uploadFileToCloudinary(videoPart);
-                    String materialUrl = uploadFileToCloudinary(materialPart);
-
-                    System.out.println("Inserting Video Lecture: " + lectureTitle + " with URL: " + videoUrl);
-                    SectionLecture sectionLecture = new SectionLecture();
-                    sectionLecture.setSectionID(sectionId);
-                    sectionLecture.setLectureName(lectureTitle);
-                    sectionLecture.setLectureURL(videoUrl);
-                    sectionLecture.setCreatedDate(createdDate);
-                    sectionLecture.setLectureID(sectionLectureDAO.insert(sectionLecture));
-
-                    if (materialUrl != null) {
-                        System.out.println("Inserting Material Lecture: " + lectureTitle + " with URL: " + materialUrl);
-                        LectureMaterial materialLecture = new LectureMaterial();
-                        materialLecture.setLectureId(sectionLecture.getLectureID());
-                        materialLecture.setLectureMaterialUrl(materialUrl);
-                        System.out.println(materialLecture.toString());
-                        LectureMaterialDAO dao = new LectureMaterialDAO();
-                        dao.insert(materialLecture);
-                    }
+                    Collection<Part> materialParts = request.getParts();
+                    processLecture(sectionId, lectureTitle, videoPart, materialParts, i, j, createdDate, sectionLectureDAO, lectureMaterialDAO);
                 }
             }
         }
 
         response.sendRedirect("success.jsp");
+    }
+
+    private void processLecture(int sectionId, String lectureTitle, Part videoPart, Collection<Part> materialParts, int sectionIndex, int lectureIndex, LocalDateTime createdDate, SectionLectureDAO sectionLectureDAO, LectureMaterialDAO lectureMaterialDAO) throws IOException, ServletException {
+        if (videoPart.getSize() > MAX_FILE_SIZE) {
+            throw new ServletException("Video file size too large for lecture " + lectureIndex);
+        }
+
+        String videoUrl = uploadFileToCloudinary(videoPart);
+
+        SectionLecture sectionLecture = new SectionLecture();
+        sectionLecture.setSectionID(sectionId);
+        sectionLecture.setLectureName(lectureTitle);
+        sectionLecture.setLectureURL(videoUrl);
+        sectionLecture.setCreatedDate(createdDate);
+        int lectureId = sectionLectureDAO.insert(sectionLecture);
+
+        for (Part materialPart : materialParts) {
+            if (materialPart.getName().startsWith("lectureMaterial" + sectionIndex + "_" + lectureIndex) && materialPart.getSize() > 0) {
+                if (materialPart.getSize() > MAX_FILE_SIZE) {
+                    throw new ServletException("Material file size too large for lecture " + lectureIndex);
+                }
+
+                String materialUrl = uploadFileToCloudinary(materialPart);
+
+                LectureMaterial materialLecture = new LectureMaterial();
+                materialLecture.setLectureId(lectureId);
+                materialLecture.setLectureMaterialUrl(materialUrl);
+                lectureMaterialDAO.insert(materialLecture);
+            }
+        }
     }
 
     private String uploadFileToCloudinary(Part filePart) throws IOException {
@@ -162,9 +157,12 @@ public class SectionLectureServlet extends HttpServlet {
 
     private String getResourceType(String extension) {
         return switch (extension) {
-            case "jpg", "jpeg", "png", "gif", "mp4", "avi", "mov" -> "auto";
-            case "docx" -> "raw";
-            default -> "raw";
+            case "jpg", "jpeg", "png", "gif", "mp4", "avi", "mov" ->
+                "auto";
+            case "docx" ->
+                "raw";
+            default ->
+                "raw";
         };
     }
 

@@ -109,24 +109,23 @@
                                     <div class="lecture">
                                         <h6>${lecture.lectureName}</h6>
                                         <div>
-                                            <c:choose>
-                                                <c:when test="${lecture.lectureType == 'Video'}">
-                                                    <a href="javascript:void(0)" 
-                                                       onclick="loadVideo('${lecture.lectureURL}', '${lecture.lectureName}', '${lecture.lectureType}')">
-                                                        View Video
-                                                    </a>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <c:set var="fileExtension" value="${custom:substringAfterLast(lecture.lectureURL, '.')}"/>
-                                                    <c:set var="fileName" value="${lecture.lectureName}.${fileExtension}"/>
-                                                    <c:set var="encodedFileName" value="${fn:escapeXml(fileName)}"/>
-                                                    <c:set var="encodedFileUrl" value="${fn:escapeXml(lecture.lectureURL)}"/>
-                                                    <a href="${pageContext.request.contextPath}/download?fileUrl=${encodedFileUrl}&fileName=${encodedFileName}">
-                                                        Download Materials
-                                                    </a>
+                                            <a href="javascript:void(0)" 
+                                               onclick="loadVideo('${lecture.lectureURL}', '${lecture.lectureName}')">
+                                                View Video
+                                            </a>
+                                            <br/>
 
-                                                </c:otherwise>
-                                            </c:choose>
+                                            <c:forEach var="material" items="${lecture.lectureMaterials}">
+                                                <c:set var="fileExtension" value="${custom:substringAfterLast(material.lectureMaterialUrl   , '.')}"/>
+                                                <c:set var="fileName" value="${lecture.lectureName}.${fileExtension}"/>
+                                                <c:set var="encodedFileName" value="${fn:escapeXml(fileName)}"/>
+                                                <c:set var="encodedFileUrl" value="${fn:escapeXml(lecture.lectureURL)}"/>
+                                                <a href="${pageContext.request.contextPath}/download?fileUrl=${encodedFileUrl}&fileName=${encodedFileName}">
+                                                    Download Materials
+                                                </a>
+                                                <br/>
+                                            </c:forEach>
+
                                         </div>
                                     </div>
                                 </c:forEach>
@@ -159,17 +158,16 @@
             });
 
             // Function to load video based on selected lecture
-            function loadVideo(videoURL, title, type) {
+            function loadVideo(videoURL, title) {
                 console.log('Loading video with URL:', videoURL);
                 console.log('Title:', title);
-                console.log('Type:', type);
 
                 if (window.videoElement && window.sourceElement) {
                     window.sourceElement.src = videoURL;
                     window.videoElement.load(); // Reload the video element with the new source
 
                     document.getElementById('video-title').innerText = title;
-                    document.getElementById('video-description').innerText = type === "Video" ? "Video Description" : "Material Description";
+                    document.getElementById('video-description').innerText = "Video Description";
 
                     console.log('Video source updated to:', videoURL);
                 } else {

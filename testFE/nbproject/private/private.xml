@@ -3,19 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/testFE/web/pages/editCourse.jsp</file>
-            <file>file:/D:/testFE/src/java/controller/CourseAddingServlet.java</file>
-            <file>file:/D:/testFE/src/java/model/SectionLecture.java</file>
+            <file>file:/D:/testFE/src/java/model/InstructorCertificates.java</file>
+            <file>file:/D:/testFE/web/template/course/instructorCourseComponent.jsp</file>
+            <file>file:/D:/testFE/web/pages/courseApproval.jsp</file>
+            <file>file:/D:/testFE/src/java/controller/CourseApprovalServlet.java</file>
+            <file>file:/D:/testFE/src/java/DAO/InstructorCertificatesDAO.java</file>
             <file>file:/D:/testFE/src/java/DAO/CourseSectionDAO.java</file>
-            <file>file:/D:/testFE/web/pages/createCourse2.jsp</file>
-            <file>file:/D:/testFE/src/java/DAO/CourseDAO.java</file>
-            <file>file:/D:/testFE/src/java/controller/EditCourseServlet.java</file>
-            <file>file:/D:/testFE/web/pages/createCourse.jsp</file>
-            <file>file:/D:/testFE/src/java/model/LectureMaterial.java</file>
-            <file>file:/D:/testFE/web/pages/testSection.jsp</file>
-            <file>file:/D:/testFE/src/java/controller/SectionLectureServlet.java</file>
-            <file>file:/D:/testFE/src/java/DAO/LectureMaterialDAO.java</file>
-            <file>file:/D:/testFE/src/java/DAO/SectionLectureDAO.java</file>
+            <file>file:/D:/testFE/src/java/model/Course.java</file>
+            <file>file:/D:/testFE/src/java/DAO/UserDAO.java</file>
         </group>
     </open-files>
 </project-private>
