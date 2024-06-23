@@ -1,2 +1,0 @@
-control.ForgotPasswordControl
-control.ForgotPasswordControl$1
