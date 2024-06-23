@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+    <welcome-file-list>
+        <welcome-file>pages/home.jsp</welcome-file>
+    </welcome-file-list>
+    
+    <error-page>
+        <error-code>404</error-code>
+        <location>/errors/404Page.jsp</location>
+    </error-page>
+    
+    <!-- Uncomment this if you have a 500 error page -->
+    <!-- <error-page>
+        <error-code>500</error-code>
+        <location>/errors/500Page.jsp</location>
+    </error-page> -->
+    
+    <servlet>
+        <servlet-name>DownloadServlet</servlet-name>
+        <servlet-class>controller.DownloadServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DownloadServlet</servlet-name>
+        <url-pattern>/download</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>TransactionServlet</servlet-name>
+        <servlet-class>controller.TransactionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TransactionServlet</servlet-name>
+        <url-pattern>/transactionservlet</url-pattern>
+    </servlet-mapping>
+</web-app>
