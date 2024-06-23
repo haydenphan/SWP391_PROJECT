@@ -100,9 +100,9 @@
                 </a>
             </div>
             <div class="course-deteals-btn">
-                <a href="${pageContext.request.contextPath}/view-section-servlet?courseId=<%= currentSection.getCourseID()%>">
-                    <i class="fas fa-eye"></i>
-                    <span class="me-2">View Details</span>
+                <a href="${pageContext.request.contextPath}/pages/quizManagement.jsp?sectionId=<%= currentSection.getSectionID()%>">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span class="me-2">Manage Quiz</span>
                 </a>
             </div>
         </div>

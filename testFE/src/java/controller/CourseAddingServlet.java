@@ -93,6 +93,7 @@ public class CourseAddingServlet extends HttpServlet {
                 course.setPrice(price);
                 course.setAverageRating(0);
                 course.setCreatedBy(((User) session.getAttribute("user")).getUserID());
+                System.out.println("User ID: " + course.getCreatedBy());
                 LocalDateTime now = LocalDateTime.now();
                 course.setCreatedDate(now);
                 course.setImageURL(coverImageUrl);

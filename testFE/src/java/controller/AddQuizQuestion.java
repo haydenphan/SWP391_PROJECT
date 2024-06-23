@@ -3,100 +3,66 @@ package controller;
 import DAO.QuizAnswerDAO;
 import DAO.QuizQuestionDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.QuizAnswer;
+import model.QuizQuestion;
 
 @WebServlet(urlPatterns = {"/addquestion"})
 public class AddQuizQuestion extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AddQuizQuestion</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet AddQuizQuestion at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int quizID = Integer.parseInt(request.getParameter("quizID"));
-        int questionID = Integer.parseInt(request.getParameter("questionID"));
-        String questionText = request.getParameter("questionText");
-        String questionType = request.getParameter("questionType");
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        
+        int quizID = Integer.parseInt(request.getParameter("quizId"));
 
-        // Add question to database
-        QuizQuestionDAO.addQuizQuestion(quizID, questionText, questionType);
+        // Loop through each question
+        int questionCount = 1;
+        while (request.getParameter("questionText" + questionCount) != null) {
+            String questionText = request.getParameter("questionText" + questionCount);
+            String questionType = request.getParameter("questionType" + questionCount);
 
-        // Process answers
-        int answerCount = 1;
-        while (request.getParameter("AnswerText" + answerCount) != null) {
-            String answerText = request.getParameter("AnswerText" + answerCount);
-            boolean isCorrect = Boolean.parseBoolean(request.getParameter("isCorrect" + answerCount));
+            // Add question to database and get the generated question ID
+            QuizQuestion question = new QuizQuestion();
+            question.setQuizID(quizID);
+            question.setQuestionText(questionText);
+            question.setQuestionType(questionType);
+            int questionID = QuizQuestionDAO.addQuizQuestion(question);
 
-            // Add answer to database
-            QuizAnswerDAO.addQuizAnswer(questionID, answerText, isCorrect);
+            // Process answers for the current question
+            int answerCount = 1;
+            while (request.getParameter("answerText" + questionCount + "_" + answerCount) != null) {
+                String answerText = request.getParameter("answerText" + questionCount + "_" + answerCount);
+                boolean isCorrect = request.getParameter("isCorrect" + questionCount + "_" + answerCount) != null;
 
-            answerCount++;
+                // Add answer to database
+                QuizAnswer answer = new QuizAnswer();
+                answer.setQuestionID(questionID);
+                answer.setAnswerText(answerText);
+                answer.setCorrect(isCorrect);
+                QuizAnswerDAO.addQuizAnswer(answer);
+                answerCount++;
+            }
+
+            questionCount++;
         }
 
         // Redirect or forward as needed
-        response.sendRedirect(request.getContextPath() + "/pages/quizzQuestion.jsp");
+        request.setAttribute("quizId", quizID);
+        RequestDispatcher dis = request.getRequestDispatcher("/pages/quizPreviews.jsp");
+        dis.forward(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Servlet to add quiz questions and their answers.";
+    }
 }

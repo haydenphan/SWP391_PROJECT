@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class Quiz {
     private int quizId;
-    private int lectureId;
+    private int sectionId;
     private String quizName;
     private  boolean isGraded;           
     private LocalDateTime createdDate;
@@ -13,8 +13,8 @@ public class Quiz {
     public Quiz() {}
 
     // Parameterized constructor
-    public Quiz(int lectureId, String quizName, boolean isGraded, LocalDateTime createdDate) {
-        this.lectureId = lectureId;
+    public Quiz(int sectionId, String quizName, boolean isGraded, LocalDateTime createdDate) {
+        this.sectionId = sectionId;
         this.quizName = quizName;
         this.isGraded = isGraded;
         this.createdDate = createdDate;
@@ -29,12 +29,12 @@ public class Quiz {
         this.quizId = quizId;
     }
 
-    public int getLectureId() {
-        return lectureId;
+    public int getSectionId() {
+        return sectionId;
     }
 
-    public void setLectureId(int lectureId) {
-        this.lectureId = lectureId;
+    public void setSectionId(int sectionId) {
+        this.sectionId = sectionId;
     }
 
     public String getQuizName() {
@@ -65,7 +65,7 @@ public class Quiz {
     public String toString() {
         return "Quiz{" +
                 "quizId=" + quizId +
-                ", lectureId=" + lectureId +
+                ", sectionId=" + sectionId +
                 ", quizName='" + quizName + '\'' +
                 ", isGraded=" + isGraded +
                 ", createdDate=" + createdDate +
