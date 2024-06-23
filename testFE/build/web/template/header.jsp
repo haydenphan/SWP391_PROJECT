@@ -5,12 +5,13 @@
 <%@ page import="DAO.*" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
-
-<%
-    // String userName = (String)request.getAttribute("UserName");
-    User user = (User) session.getAttribute("user");
-    int role = (user != null) ? user.getRole() : 0;
-    request.setAttribute("role", role);
+<script src="<c:url value='/js/notifications.js'/>"></script>
+<link rel="stylesheet" href="<c:url value='/css/notifications.css'/>">
+<% 
+           // String userName = (String)request.getAttribute("UserName");
+            User user = (User)session.getAttribute("user");
+            int role = (user != null) ? user.getRole() : 0;
+            request.setAttribute("role", role);
 %>
 
 <c:choose>
@@ -187,6 +188,15 @@
                                     </div>
                                 </form>
                             </div>
+                            <div class="notification-bell">
+                                <i class="fa fa-bell" onclick="toggleNotificationPopup()"></i>
+                                <div class="notification-popup" id="notificationPopup">
+                                    <div class="notification-header">Notifications</div>
+                                    <div id="notification-list"></div>
+                                    <div id="load-all" class="load-all" onclick="toggleLoadAll()">Load All</div>
+                                    <!-- Notifications will be dynamically added here -->
+                                </div>
+                            </div>
                             <c:choose>
                                 <c:when test="${role == 1}">
                                     <div class="cart-wrapper mr-30">
@@ -207,7 +217,7 @@
                                                     </g>
                                                 </svg>
                                                 <span class="item-number">
-                                                    ${cartDetails != null && !cartDetails.isEmpty() ? cartDetails.size() : 0}
+                                                    ${cart != null && !cart.isEmpty() ? cart.size() : 0}
                                                 </span>
                                             </div>
                                         </a>
@@ -229,8 +239,8 @@
                                            <% if (role == 2) { %>
                                            ${pageContext.request.contextPath}/pages/instructor-profile.jsp
                                            <% } else if (role == 1) { %>
-                                           ${pageContext.request.contextPath}/user-profile"
-                                           <% }%>
+                                           ${pageContext.request.contextPath}/pages/user-profile.jsp"
+                                           <% } %>
 
                                            " 
                                            class="user-avatar-btn">

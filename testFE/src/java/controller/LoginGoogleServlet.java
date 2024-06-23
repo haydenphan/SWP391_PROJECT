@@ -1,16 +1,16 @@
 package controller;
 
 import DAO.UserDAO;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import utils.GoogleUtils;
 import model.User;
 
 import java.io.IOException;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "LoginGoogleServlet", urlPatterns = {"/loginByGG"})
 public class LoginGoogleServlet extends HttpServlet {
@@ -50,7 +50,7 @@ public class LoginGoogleServlet extends HttpServlet {
                         int role = existingUser.getRole();
                         request.getSession().setAttribute("user", existingUser);
                         if (role == 1) {
-                            response.sendRedirect(request.getContextPath() + "/pages/home.jsp");
+                            response.sendRedirect(request.getContextPath() + "/pages/user-profile.jsp");
                         }
                         response.sendRedirect(request.getContextPath() + "/pages/instructor-profile.jsp");
                     } else {

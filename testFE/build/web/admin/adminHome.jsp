@@ -7,22 +7,22 @@
 <%@ page import="java.util.List" %>
 <!doctype html>
 <html class="no-js" lang="zxx">
-    <%
-        // String userName = (String)request.getAttribute("UserName");
-        User user = (User) session.getAttribute("user");
-        int role = (user != null) ? user.getRole() : 0;
+    <% 
+           // String userName = (String)request.getAttribute("UserName");
+            User user = (User)session.getAttribute("user");
+            int role = (user != null) ? user.getRole() : 0;
     %>
 
     <head>
         <%-- HEAD --%>
-
+        
         <!-- Vendors Style-->
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/vendors_css.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/vendors_css.css">
 
-        <!-- Style-->
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/horizontal-menu.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/style.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/skin_color.css">
+	<!-- Style-->
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/horizontal-menu.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/style.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/skin_color.css">
         <%@ include file="../template/head.jsp" %>
     </head>
 
@@ -50,11 +50,11 @@
                                         <nav id="mobile-menu">
                                             <ul>
                                                 <li class="menu-item-has-children"><a href="index.jsp">Dashboard</a>
-
+                                                    
                                                 </li>
                                                 <li class="menu-item-has-children"><a href="#">Course</a>
                                                     <ul class="sub-menu">
-                                                        <li><a href="${pageContext.request.contextPath}/AdminCourse">Pending Courses</a></li>
+                                                        <li><a href="${pageContext.request.contextPath}/admin/pendingCourseList.jsp">Pending Courses</a></li>
                                                         <!--                                       
                                                                                                <li><a href="course-2.jsp">Course 2</a></li>
                                                                                                <li><a href="course-3.jsp">Course 3</a></li>

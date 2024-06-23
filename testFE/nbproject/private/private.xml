@@ -3,19 +3,52 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/testFE/web/pages/editCourse.jsp</file>
-            <file>file:/D:/testFE/src/java/controller/CourseAddingServlet.java</file>
-            <file>file:/D:/testFE/src/java/model/SectionLecture.java</file>
-            <file>file:/D:/testFE/src/java/DAO/CourseSectionDAO.java</file>
-            <file>file:/D:/testFE/web/pages/createCourse2.jsp</file>
-            <file>file:/D:/testFE/src/java/DAO/CourseDAO.java</file>
-            <file>file:/D:/testFE/src/java/controller/EditCourseServlet.java</file>
-            <file>file:/D:/testFE/web/pages/createCourse.jsp</file>
-            <file>file:/D:/testFE/src/java/model/LectureMaterial.java</file>
-            <file>file:/D:/testFE/web/pages/testSection.jsp</file>
-            <file>file:/D:/testFE/src/java/controller/SectionLectureServlet.java</file>
-            <file>file:/D:/testFE/src/java/DAO/LectureMaterialDAO.java</file>
-            <file>file:/D:/testFE/src/java/DAO/SectionLectureDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/pages/home.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/Course.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/utils/NumberUtils.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/CourseEnrollmentDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/Language.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/UserDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/Login.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/Level.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/CourseFeedbackServlet.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/LoginGoogleServlet.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/NotificationServlet.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/CourseAddingServlet.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/CourseListServlet.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/pages/login.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/RoleDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/css/notifications.css</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/template/header.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/utils/LocalDateTimeAdapter.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/pages/courseDetails.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/AddQuiz.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/pages/courseList.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/CourseEnrollment.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/NotificationDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/LevelDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/HomeServlet.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/CourseFeedbackDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/CourseDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/ValidateRegisterInfo.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/CartDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/VnpayQuery.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/JDBC.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/utils/CustomFunctions.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/ChangePassword.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/User.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/template/course/courseComponent.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/utils/TimeUtils.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/LocalDateTimeAdapter.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/template/head.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/CourseFeedback.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/model/Notification.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/pages/cartOrder.jsp</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/UserProfileServlet.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/LanguageDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/DAO/CategoryDAO.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/src/java/controller/CourseDetailServlet.java</file>
+            <file>file:/C:/Users/khoiv/OneDrive/Documents/NetBeansProjects/LOCAL_SWP391_PROJECT/testFE/web/js/notifications.js</file>
         </group>
     </open-files>
 </project-private>

@@ -2,9 +2,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="model.*" %>
-<%@ page import="DAO.*" %>
-<%@ page import="java.util.*" %>
-
 <!doctype html>
 <html class="no-js" lang="zxx">
 
@@ -12,7 +9,6 @@
     <head>
         <%-- HEAD --%>
         <%@ include file="../template/head.jsp" %>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
 
     <body>
@@ -27,22 +23,18 @@
         <%@ include file="../template/header.jsp" %>
 
         <main>
-            <%
-                int learnerID = ((User) session.getAttribute("user")).getUserID();
-                courses = CourseEnrollmentDAO.getCoursesByUserID(learnerID);
-            %>
-
             <!-- hero-area -->
             <jsp:include page="../template/heroArea.jsp">
                 <jsp:param name="title" value="My profile" />
             </jsp:include>
+
 
             <!-- User Profile Start-->
             <div class="course-details-area pt-120 pb-100">
                 <div class="container">
                     <div class="student-profile-author pb-30">
                         <div class="student-profile-author-img">
-                            <img style="width: 200px; height: 200px" id="avatarImage" src="${user.getAvatar()}" alt="img not found" />
+                            <img style="width: 200px; height: 200px" id="avatarImage" src="<%=user.getAvatar()%>" alt="img not found" />
                             <input type="file" id="avatarUpload" style="display: none;" onchange="changeAva();">
                             <label for="avatarUpload" style="cursor: pointer;">
                                 <span style="
@@ -101,29 +93,33 @@
                                                 class="fas fa-cubes"></i> My Quiz Attempts</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" 
-                                                type="button" role="tab" aria-controls="history" aria-selected="false"><i 
-                                                class="fas fa-cart-plus"></i> Order History</a>
+                                        <button class="nav-link" id="history-tab" data-bs-toggle="tab"
+                                                data-bs-target="#history" type="button" role="tab" aria-controls="history"
+                                                aria-selected="false"><i class="fas fa-cart-plus"></i> Order
+                                            History</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="ques-tab" data-bs-toggle="tab" data-bs-target="#ques"
                                                 type="button" role="tab" aria-controls="ques" aria-selected="false"><i
-                                                class="fas fa-fist-raised"></i> Question & Answer</button>
+                                                class="fas fa-fist-raised"></i> Question &
+                                            Answer</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="setting-tab" data-bs-toggle="tab"
                                                 data-bs-target="#setting" type="button" role="tab" aria-controls="setting"
-                                                aria-selected="false"><i class="fas fa-cog"></i> Settings
+                                                aria-selected="false"><i class="fas fa-cog"></i> Settings</button>
+                                    </li>
+
                                 </ul>
                             </div>
                         </div>
-
                         <div class="col-xl-9 col-lg-8">
                             <div class="student-profile-content">
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane fade show active" id="home" role="tabpanel"
                                          aria-labelledby="home-tab">
                                         <h4 class='mb-25'>Dashboard</h4>
+
                                     </div>
                                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                                         <h4 class='mb-25'>My Profile</h4>
@@ -163,43 +159,24 @@
                                         </ul>
                                     </div>
                                     <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                                        <h4 class='mb-25'>My Enrolled Courses</h4>
+                                        <h4 class='mb-25'>Enrolled Courses</h4>
 
-                                        <div class="row">
-                                            <c:forEach var="course" items="<%=courses%>">
-                                                <c:set var="currentCourse" value="${course}" scope="request" />
-                                                <jsp:include page="../template/course/learnerCourseComponent.jsp" />
-                                            </c:forEach>
-                                        </div>
                                     </div>
-
                                     <div class="tab-pane fade" id="wishlist" role="tabpanel" aria-labelledby="wishlist-tab">
                                         <h4 class='mb-25'>Wishlist</h4>
+
                                     </div>
                                     <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                                         <h4 class='mb-25'>Reviews</h4>
+
                                     </div>
                                     <div class="tab-pane fade" id="quiz" role="tabpanel" aria-labelledby="quiz-tab">
                                         <p>No quiz attempts yet.</p>
                                     </div>
                                     <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
                                         <h4 class='mb-25'>Order History</h4>
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>Transaction ID</th>
-                                                    <th>Course Name</th>
-                                                    <th>Amount</th>
-                                                    <th>Date</th>
-                                                    <th>Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="transaction-list">
-                                                <!-- Transactions will be appended here by JavaScript -->
-                                            </tbody>
-                                        </table>
-                                    </div>
 
+                                    </div>
                                     <div class="tab-pane fade" id="ques" role="tabpanel" aria-labelledby="ques-tab">
                                         <p>No question completed yet.</p>
                                     </div>
@@ -268,6 +245,7 @@
                                                                 </div>
                                                             </div>
                                                         </form>
+
                                                     </div>
                                                 </div>
                                                 <div class="tab-pane fade" id="password" role="tabpanel"
@@ -297,7 +275,8 @@
                                                             </div>
                                                             <div class="col-sm-12">
                                                                 <div class="cont-btn mb-20 mt-10">
-                                                                    <button type='submit' class="cont-btn">Update Profile</button>
+                                                                    <button type='submit' class="cont-btn">Update
+                                                                        Profile</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -335,7 +314,8 @@
                                                                 </div>
                                                                 <div class="col-sm-12 ">
                                                                     <div class="cont-btn mb-20 mt-10">
-                                                                        <button type='button' class="cont-btn">Update Profile</button>
+                                                                        <button type='button' class="cont-btn">Update
+                                                                            Profile</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -365,40 +345,38 @@
         <%@ include file="../template/script.jsp" %>
 
         <script>
-            $(document).ready(function () {
-                $.ajax({
-                    url: '${pageContext.request.contextPath}/user-profile',
-                    type: 'GET',
-                    data: {action: 'getTransactions'},
-                    success: function (data) {
-                        var transactionList = $('#transaction-list');
-                        transactionList.empty(); // Clear any existing content
+            function changeAva() {
+                const fileInput = document.getElementById('avatarUpload');
+                const avatarImage = document.getElementById('avatarImage');
+                const file = fileInput.files[0];
 
-                        if (data.length === 0) {
-                            transactionList.append('<tr><td colspan="5">No transactions found.</td></tr>');
-                        } else {
-                            $.each(data, function (index, transaction) {
-                                $.each(transaction.transactionDetails, function (i, details) {
-                                    var row = '<tr>' +
-                                            '<td>' + transaction.TransactionID + '</td>' +
-                                            '<td>' + details.CourseID.CourseName + '</td>' +
-                                            '<td>' + details.Price + '</td>' +
-                                            '<td>' + transaction.TransactionDate + '</td>' +
-                                            '<td>' + transaction.Status + '</td>' +
-                                            '</tr>';
-                                    transactionList.append(row);
-                                });
+                if (file) {
+                    // Update the avatar preview
+                    avatarImage.src = window.URL.createObjectURL(file);
+
+                    // Prepare form data
+                    const formData = new FormData();
+                    formData.append('avatar', file);
+
+                    // Send the file to the server
+                    fetch('${pageContext.request.contextPath}/uploadAvatar', {
+                        method: 'POST',
+                        body: formData
+                    })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    console.log('Avatar uploaded successfully');
+                                } else {
+                                    console.error('Error uploading avatar');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
                             });
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error fetching transactions:', error);
-                        $('#transaction-list').append('<tr><td colspan="5">Error fetching transactions.</td></tr>');
-                    }
-                });
-            });
+                }
+            }
         </script>
-
     </body>
 
 </html>

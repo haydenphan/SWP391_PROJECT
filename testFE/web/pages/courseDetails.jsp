@@ -519,7 +519,7 @@
                                                 <div class="rating-point-wrapper text-center">
                                                     <h2>${course.averageRating}<i class="fas fa-star"></i></h2>
 
-                                                    <span> ${course.getTotalNumberOfRating()} Rating</span>
+                                                    <span> ${coStats.getTotalNumberOfRating()} Rating</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -536,12 +536,12 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(5)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${coStats.getPercentageOfNStarRating(5)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(5)}%</span>
+                                                            <span>${coStats.getPercentageOfNStarRating(5)}%</span>
                                                         </div>
                                                     </div>
                                                     <div class="rating-row mb-10">
@@ -554,12 +554,12 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(4)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${coStats.getPercentageOfNStarRating(4)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(4)}%</span>
+                                                            <span>${coStats.getPercentageOfNStarRating(4)}%</span>
                                                         </div>
                                                     </div>
                                                     <div class="rating-row mb-10">
@@ -572,12 +572,12 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(3)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${coStats.getPercentageOfNStarRating(3)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(3)}%</span>
+                                                            <span>${coStats.getPercentageOfNStarRating(3)}%</span>
                                                         </div>
                                                     </div>
                                                     <div class="rating-row mb-10">
@@ -590,12 +590,12 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(2)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${coStats.getPercentageOfNStarRating(2)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(2)}%</span>
+                                                            <span>${coStats.getPercentageOfNStarRating(2)}%</span>
                                                         </div>
                                                     </div>
                                                     <div class="rating-row mb-10">
@@ -608,12 +608,12 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(1)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${coStats.getPercentageOfNStarRating(1)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
                                                         <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(1)}%</span>
+                                                            <span>${coStats.getPercentageOfNStarRating(1)}%</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -649,65 +649,21 @@
                                                 complex concepts and ideas.</p>
                                         </div>
                                     </div>
-                                    <div class="course-review-item mb-30">
-                                        <div class="course-reviews-img">
-                                            <a href="#"><img src="${pageContext.request.contextPath}/img/course/course-reviews-2.png"
-                                                             alt="image not found"></a>
-                                        </div>
-                                        <div class="course-review-list">
-                                            <h5><a href="#">Samantha</a></h5>
-                                            <div class="course-start-icon">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>45 min ago</span>
-                                            </div>
-                                            <p>The course is good at explaining very basic intuition of the concepts. It
-                                                will get
-                                                you scratching the surface so to say. where this course is unique is the
-                                                implementation methods are so well defined Thank you to the team !.</p>
-                                        </div>
-                                    </div>
-                                    <div class="course-review-item mb-30">
-                                        <div class="course-reviews-img">
-                                            <a href="#"><img src="${pageContext.request.contextPath}/img/course/course-reviews-3.png"
-                                                             alt="image not found"></a>
-                                        </div>
-                                        <div class="course-review-list">
-                                            <h5><a href="#">Michell Mariya</a></h5>
-                                            <div class="course-start-icon">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>30 min ago</span>
-                                            </div>
-                                            <p>This course is amazing..!
-                                                I started this course as a beginner and learnt a lot. Instructors are great.
-                                                Query
-                                                handling can be improved.Overall very happy with the course.</p>
-                                        </div>
-                                    </div>
                                 </div>
                                 <button id="prevBtn" class="pagination-btn" onclick="prevPage()">Back</button>
                                 <button id="nextBtn" class="pagination-btn" onclick="nextPage()">Next</button>
 
 
-                                <%
-                                    if ((boolean) request.getAttribute("hasEnrolled")) {
+                                <%                                   
+                                    if ((boolean)request.getAttribute("hasEnrolled")) {
                                 %>
                                 <div class="col-xl-12">
                                     <div class="course-review-btn">
-                                        <a id="show-review-box" class="edu-btn" href="javascript:void(0)">Write a Review</a>
+                                        <a id="show-review-box" class="edu-btn" href="javascript:void(0)">
+                                            <%= (boolean)request.getAttribute("hasFeedbacked") ? "Edit Feedback" : "Write a Review" %>
+                                        </a>
                                         <div id="review-box" class="review-comment mt-45">
-                                            <div class="comment-title mb-20">
-                                                <p>
-                                                    leave your rating and comment
-                                                </p>
-                                            </div>
+                                            
                                             <div class="comment-rating mb-20">
                                                 <span>Overall ratings</span>
                                                 <ul id="star-rating" class="rating">
@@ -721,7 +677,14 @@
                                             <div class="comment-input-box mb-15">
                                                 <form id="feedbackForm" action="courseFeedbacks" method="Post">
                                                     <input type="hidden" id="rating" name="rating" value="1">
-                                                    <input type="hidden" id="courseID" name="courseID" value="<%= request.getParameter("id")%>">
+                                                    <input type="hidden" id="courseID" name="courseID" value="<%= request.getParameter("id") %>">
+                                                    <%
+                                                        if ((boolean)request.getAttribute("hasFeedbacked")) {
+                                                    %>
+                                                        <input type="hidden" name="_method" value="PUT">
+                                                    <%
+                                                        }
+                                                    %>
                                                     <div class="row">
                                                         <div class="col-xxl-12">
                                                             <textarea id="content" name="content" placeholder="Your review" class="comment-input comment-textarea mb-20"></textarea>
@@ -739,7 +702,7 @@
 
                                 </div>
                                 <%
-                                } else {
+                                    } else {
                                 %>
                                 <p>Only those enrolling in the course can leave their feedbacks</p>
                                 <%
@@ -837,7 +800,7 @@
                                         </ul>
                                     </div>
                                     <div class="button-container" style="display: flex; justify-content: flex-start;">
-                                        <form style="width: 50%" action="${pageContext.request.contextPath}/Cart/add-to-cart" method="GET">
+                                        <form style="width: 50%" action="${pageContext.request.contextPath}/Cart/add-to-cart" method="POST">
                                             <div class="video-wishlist" style="margin-right: 10px">
                                                 <input type="hidden" name="CourseID" value="${course.getCourseID()}">
                                                 <button type="submit" class="video-cart-btn"><i class="fal fa-shopping-cart"></i> Add to cart</button>

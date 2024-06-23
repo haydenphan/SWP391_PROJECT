@@ -26,36 +26,11 @@ public class Course {
     private String LevelName;
     private String imageURL;
     private double averageRating;
-    private List<Integer> NumberOfStarRatingList = new ArrayList<>();
 
-    public double avgRatingDisplay(int places) {
+    public double avgRatingDisplay(int places){
         return NumberUtils.round(averageRating, places);
     }
-
-    public List<Integer> getNumberOfStarRatingList() {
-        return NumberOfStarRatingList;
-    }
-
-    public void setNumberOfStarRatingList(List<Integer> NumberOfStarRatingList) {
-        this.NumberOfStarRatingList = NumberOfStarRatingList;
-    }
-
-    public Integer getTotalNumberOfRating() {
-        int sum = 0;
-        for (int i = 0; i < this.NumberOfStarRatingList.size(); i++) {
-            sum += this.NumberOfStarRatingList.get(i);
-        }
-        return sum;
-    }
-
-    public Integer getNumberOfNStarRating(int n) {
-        return NumberOfStarRatingList.get(n - 1);
-    }
-
-    public double getPercentageOfNStarRating(int n) {
-        return (double) this.getNumberOfNStarRating(n) / (double) this.getTotalNumberOfRating() * 100;
-    }
-
+    
     public double getAverageRating() {
         return averageRating;
     }
@@ -199,12 +174,10 @@ public class Course {
     public void setLevelName(String LevelName) {
         this.LevelName = LevelName;
     }
+    
+    
 
     public Course() {
-    }
-
-    public Course(int CourseID) {
-        this.CourseID = CourseID;
     }
 
     public Course(int courseID, String CourseName, String Description, int CreatedBy, LocalDateTime CreatedDate, boolean IsPublished, int SubcategoryID, int TotalEnrolled, LocalDateTime LastUpdate, String Requirements) {
@@ -220,7 +193,6 @@ public class Course {
         this.Requirements = Requirements;
     }
 // New method to get the list of requirements
-
     public List<String> getRequirementsList() {
         if (Requirements != null && !Requirements.isEmpty()) {
             return Arrays.asList(Requirements.split(",\\s*"));
@@ -228,7 +200,6 @@ public class Course {
             return Arrays.asList();
         }
     }
-
     @Override
     public String toString() {
         return "Course{" + "CourseID=" + CourseID + ", CourseName=" + CourseName + ", Description=" + Description + ", CreatedBy=" + CreatedBy + ", CreatedDate=" + CreatedDate + ", IsPublished=" + IsPublished + ", SubcategoryID=" + SubcategoryID + ", SubcategoryName=" + SubcategoryName + ", TotalEnrolled=" + TotalEnrolled + ", LastUpdate=" + LastUpdate + ", Requirements=" + Requirements + ", price=" + price + ", languageID=" + languageID + ", LanguageName=" + LanguageName + ", LevelID=" + LevelID + ", LevelName=" + LevelName + ", imageURL=" + imageURL + ", averageRating=" + averageRating + '}';

@@ -13,7 +13,7 @@
 <div class="col-xl-4 col-lg-6 col-md-6">
     <div class="course-wrapper-2 mb-30">
         <div class="student-course-img">
-            <img src="<%=currentCourse.getImageURL()%>" alt="course-img">
+            <img src="${pageContext.request.contextPath}/<%=currentCourse.getImageURL()%>" alt="course-img">
         </div>  
         <div class="course-cart">
             <div class="course-info-wrapper">
@@ -72,11 +72,12 @@
             </div>
             <div class="portfolio-user">
                 <div class="user-icon">
-                    <a href="instructor-profile.html"><i class="fas fa-user"></i>${CourseDAO.getInstructor(currentCourse.createdBy).getFirstName()} ${CourseDAO.getInstructor(currentCourse.createdBy).getLastName()}</a>
+                    <a href="instructor-profile.html"><i class="fas fa-user"></i>${currentCourse.createdBy}</a>
                 </div>
                 <div class="course-icon">
                     (${currentCourse.avgRatingDisplay(1)})
                     <i class="fas fa-star"></i>
+                    avg
                 </div>
             </div>
         </div>
