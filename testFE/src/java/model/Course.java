@@ -26,8 +26,17 @@ public class Course {
     private String LevelName;
     private String imageURL;
     private double averageRating;
+    private boolean isCancelled;
     private List<Integer> NumberOfStarRatingList = new ArrayList<>();
 
+    public boolean isIsCancelled() {
+        return isCancelled;
+    }
+
+    public void setIsCancelled(boolean isCancelled) {
+        this.isCancelled = isCancelled;
+    }
+    
     public double avgRatingDisplay(int places) {
         return NumberUtils.round(averageRating, places);
     }

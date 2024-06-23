@@ -3,12 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/testFE/web/pages/quizManagement.jsp</file>
-            <file>file:/D:/testFE/src/java/DAO/QuizAnswerDAO.java</file>
-            <file>file:/D:/testFE/src/java/controller/AddQuiz.java</file>
-            <file>file:/D:/testFE/src/java/DAO/QuizQuestionDAO.java</file>
-            <file>file:/D:/testFE/src/java/controller/ManageQuizServlet.java</file>
-            <file>file:/D:/testFE/web/pages/createQuiz.jsp</file>
+            <file>file:/D:/testFE/web/admin/pendingCourseList.jsp</file>
+            <file>file:/D:/testFE/src/java/controller/PendingCourseListServlet.java</file>
+            <file>file:/D:/testFE/web/template/course/pendingCourseComponent.jsp</file>
+            <file>file:/D:/testFE/web/admin/adminCourseDetail.jsp</file>
+            <file>file:/D:/testFE/src/java/DAO/CourseDAO.java</file>
+            <file>file:/D:/testFE/web/admin/adminCourseApproval.jsp</file>
         </group>
     </open-files>
 </project-private>

@@ -7,7 +7,7 @@
 <%@ page import="DAO.*" %>
 
 <%
-    Course currentCourse = (Course)request.getAttribute("currentCourse");
+    Course currentCourse = (Course) request.getAttribute("currentCourse");
 %>
 
 <div class="card-courses-list admin-courses">
@@ -60,10 +60,18 @@
                     ${currentCourse.description}
                 </p>	
             </div>
-            <div class="col-md-12">
-                <a href="#" class="btn blue outline radius-xl ">View details</a>
-                <a href="#" class="btn green radius-xl outline">Approve</a>
-                <a href="#" class="btn red outline radius-xl ">Cancel</a>
+                <div style="display: flex" class="col-md-12">
+                <button class="btn blue outline radius-xl ">View details</button>
+                <form style="margin: 0px 10px" id="approveForm${currentCourse.getCourseID()}" action="AdminCourseManage/approve" method="post">
+                    <input type="hidden" name="courseID" value="${currentCourse.getCourseID()}">
+                    <button class="btn green radius-xl outline" type="button" onclick="confirmApproval(${currentCourse.getCourseID()})">Approve</button>
+                </form>
+                
+                <form style="margin: 0px 10px" id="cancelForm${currentCourse.getCourseID()}" action="AdminCourseManage/cancel" method="post">
+                    <input type="hidden" name="courseID" value="${currentCourse.getCourseID()}">
+                    <button class="btn red outline radius-xl " type="button" onclick="confirmCancel(${currentCourse.getCourseID()})">Cancel</button>
+                </form>
+                
             </div>
         </div>
 
