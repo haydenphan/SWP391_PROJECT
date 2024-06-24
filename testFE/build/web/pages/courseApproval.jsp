@@ -7,6 +7,7 @@
 <%
     Course course = (Course) request.getAttribute("course");
     User instructor = (User) request.getAttribute("instructor");
+    InstructorCertificates certificate = (InstructorCertificates) request.getAttribute("certificate");
 %>
 
 <!DOCTYPE html>
@@ -33,6 +34,7 @@
                 border-top-right-radius: 15px;
                 padding: 1.5rem;
                 text-align: center;
+                position: relative;
             }
 
             .card-title {
@@ -80,10 +82,18 @@
 
             .btn-back {
                 border: none;
-                border-radius: 50%;
                 padding: 0.5rem;
                 font-size: 1.5rem;
                 transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+                position: absolute;
+                left: 10px;
+                top: 10px;
+                background-color: transparent;
+                color: white;
+            }
+
+            .btn-back:hover {
+                background-color: #1b53bb;
             }
 
             .container-full {
@@ -94,58 +104,120 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                gap: 1rem; /* Space between the buttons */
+                position: relative;
                 margin-top: 20px;
             }
-            
-        </style>
-    </head>
-    <body class="layout-top-nav light-skin theme-primary">
 
-        <div class="wrapper">
-            <div class="content-wrapper">
-                <div class="container-full">
-                    <section class="content">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="card-title">Publication Request Form</h5>
-                                        <p class="mb-0 card-subtitle text-light">Upload certificates and submit the information below.</p>
-                                    </div>
-                                    <div class="card-body p-4">
-                                        <form id="submitReviewForm" action="${pageContext.request.contextPath}/course-approval-servlet/submit" method="post" enctype="multipart/form-data">
-                                            <input type="hidden" name="courseId" value="<%= course.getCourseID()%>">
-                                            <input type="hidden" name="instructorId" value="<%= instructor.getUserID()%>">
+            .status-container {
+                margin-top: 30px;
+                padding: 20px;
+                border-radius: 10px;
+                background-color: #e6f0ff;
+                font-size: 1.2rem;
+                font-weight: bold;
+            }
 
-                                            <div class="form-group mb-4">
-                                                <label for="certificate">Upload Certificate:</label>
-                                                <input type="file" class="form-control-file" name="certificate" id="certificate" accept="image/*,application/pdf" required>
+            .status-pending {
+                color: #ff0000;
+            }
+
+            .status-cancelled {
+                color: #ff6347;
+            }
+
+            .delete-icon {
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                cursor: pointer;
+                padding: 0;
+                margin-left: 10px;
+            }
+
+            .delete-icon:hover {
+                color: #ff6347;
+            }
+
+            .viewcer:hover{
+                text-decoration: underline;
+            </style>
+        </head>
+        <body class="layout-top-nav light-skin theme-primary">
+
+            <div class="wrapper">
+                <div class="content-wrapper">
+                    <div class="container-full">
+                        <section class="content">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <button type="button" class="btn btn-back" onclick="window.location.href = '${pageContext.request.contextPath}/pages/instructor-profile.jsp';">
+                                                <i class="fas fa-arrow-left"></i>
+                                            </button>
+                                            <h5 class="card-title">Publication Request Form</h5>
+                                            <p class="mb-0 card-subtitle text-light">Upload certificates and submit the information below.</p>
+                                        </div>
+                                        <div class="card-body p-4">
+                                            <% if (certificate == null) {%>
+                                            <form id="submitReviewForm" action="${pageContext.request.contextPath}/course-approval-servlet/submit" method="post" enctype="multipart/form-data">
+                                                <input type="hidden" name="courseId" value="<%= course.getCourseID()%>">
+                                                <input type="hidden" name="instructorId" value="<%= instructor.getUserID()%>">
+
+                                                <div class="form-group mb-4">
+                                                    <label for="certificate">Upload Certificate:</label>
+                                                    <input type="file" class="form-control-file" name="certificate" id="certificate" accept="image/*,application/pdf" required>
+                                                </div>
+
+                                                <div class="btn-container">
+                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                </div>
+                                            </form>
+                                            <% } else {%>
+                                            <div class="mt-4">
+                                                <h4>Uploaded Certificate</h4>
+                                                <div style="display: flex;
+                                                    align-items: center;">
+                                                    <a class="viewcer" href="<%= certificate.getCertificateUrl()%>" target="_blank">View Certificate</a>
+                                                    <form id="deleteReviewForm" action="${pageContext.request.contextPath}/course-approval-servlet/delete" method="post">
+                                                        <input type="hidden" name="courseId" value="<%= course.getCourseID()%>">
+                                                        <input type="hidden" name="instructorId" value="<%= instructor.getUserID()%>">
+                                                        <button type="submit" class="delete-icon">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                <form id="updateReviewForm" action="${pageContext.request.contextPath}/course-approval-servlet/update" method="post" enctype="multipart/form-data" class="mt-2">
+                                                    <input type="hidden" name="courseId" value="<%= course.getCourseID()%>">
+                                                    <input type="hidden" name="instructorId" value="<%= instructor.getUserID()%>">
+                                                    <div class="form-group mb-4">
+                                                        <label for="certificate">Update Certificate:</label>
+                                                        <input type="file" class="form-control-file" name="certificate" id="certificate" accept="image/*,application/pdf" required>
+                                                    </div>
+                                                    <div class="btn-container">
+                                                        <button type="submit" class="btn btn-primary">Update</button>
+                                                    </div>
+                                                </form>
+
                                             </div>
+                                            <% }%>
 
-                                            <div class="btn-container">
-                                                <button type="button" class="btn btn-back" onclick="history.back()">
-                                                    <i class="fas fa-arrow-left"></i>
-                                                </button>
-                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            <%-- Display the current review status here if needed --%>
+                                            <div class="status-container">
+                                                <b>Current Status: <span class="<%= course.IsPublished() || !course.isIsCancelled() ? "status-pending" : "status-cancelled"%>"><%= course.IsPublished() || !course.isIsCancelled() ? "Pending" : "Cancelled"%></span></b>
                                             </div>
-                                        </form>
-
-                                        <%-- Display the current review status here if needed --%>
-                                        <h4>Status</h4>
-                                        <p>Current Status: <%= course.IsPublished() ? "Published" : "Pending"%></p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                    </section>
+                        </section>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <%-- BACK TO TOP --%>
-        <%@ include file="../template/backToTop.jsp" %>
+            <%-- BACK TO TOP --%>
+            <%@ include file="../template/backToTop.jsp" %>
 
-        <!-- JS here -->
-        <%@ include file="../template/script.jsp" %>
-    </body>
-</html>
+            <!-- JS here -->
+            <%@ include file="../template/script.jsp" %>
+        </body>
+    </html>

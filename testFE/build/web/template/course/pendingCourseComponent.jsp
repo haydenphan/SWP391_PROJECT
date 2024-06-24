@@ -2,12 +2,14 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ page import="model.Course" %>
+<%@ page import="model.*" %>
 <%@ page import="utils.NumberUtils" %>
 <%@ page import="DAO.*" %>
 
 <%
     Course currentCourse = (Course) request.getAttribute("currentCourse");
+    InstructorCertificatesDAO dao = new InstructorCertificatesDAO();
+    InstructorCertificates certificate = dao.getCertificateByCourseAndUser(currentCourse.getCourseID(), currentCourse.getCreatedBy());
 %>
 
 <div class="card-courses-list admin-courses">
@@ -60,18 +62,27 @@
                     ${currentCourse.description}
                 </p>	
             </div>
-                <div style="display: flex" class="col-md-12">
+            <div style="display: flex" class="col-md-12">
                 <button class="btn blue outline radius-xl ">View details</button>
                 <form style="margin: 0px 10px" id="approveForm${currentCourse.getCourseID()}" action="AdminCourseManage/approve" method="post">
                     <input type="hidden" name="courseID" value="${currentCourse.getCourseID()}">
                     <button class="btn green radius-xl outline" type="button" onclick="confirmApproval(${currentCourse.getCourseID()})">Approve</button>
                 </form>
-                
+
                 <form style="margin: 0px 10px" id="cancelForm${currentCourse.getCourseID()}" action="AdminCourseManage/cancel" method="post">
                     <input type="hidden" name="courseID" value="${currentCourse.getCourseID()}">
                     <button class="btn red outline radius-xl " type="button" onclick="confirmCancel(${currentCourse.getCourseID()})">Cancel</button>
                 </form>
-                
+
+            </div>
+            <div style="margin-top: 10px">
+                <% if (certificate == null) {%>
+
+                No credential available.
+
+                <% } else {%>
+                <a class="viewcer" href="<%= certificate.getCertificateUrl()%>" target="_blank">View Certificate</a>
+                <% }%>
             </div>
         </div>
 

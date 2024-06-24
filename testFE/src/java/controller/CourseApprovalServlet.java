@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -39,7 +41,7 @@ public class CourseApprovalServlet extends HttpServlet {
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         String actionString = request.getPathInfo();
         String url = "";
@@ -50,28 +52,58 @@ public class CourseApprovalServlet extends HttpServlet {
         User user = userDAO.getUserByID(instructorId);
         request.setAttribute("instructor", user);
         request.setAttribute("course", course);
+        InstructorCertificatesDAO certDAO = new InstructorCertificatesDAO();
+        InstructorCertificates cert = certDAO.getCertificateByCourseAndUser(courseId, instructorId);
+        request.setAttribute("certificate", cert);
+
         switch (actionString) {
             case "/request" -> {
                 url = "/pages/courseApproval.jsp";
             }
             case "/submit" -> {
-                System.out.println("1");
                 Part certificatePart = request.getPart("certificate");
 
                 try {
                     String certificateUrl = uploadToCloudinary(certificatePart);
                     InstructorCertificates t = new InstructorCertificates();
                     t.setUserID(instructorId);
+                    t.setCourseID(courseId);
                     t.setCertificateUrl(certificateUrl);
                     t.setUploadDate(LocalDateTime.now());
-                    InstructorCertificatesDAO dao = new InstructorCertificatesDAO();
-                    dao.insert(t);
+                    certDAO.insert(t);
                     request.setAttribute("message", "Submission successful!");
-                    url = "/pages/submissionSuccess.jsp";
+                    url = "/course-approval-servlet/request";
                 } catch (Exception e) {
                     e.printStackTrace();
                     request.setAttribute("error", "Submission failed!");
-                    url = "/pages/courseApproval.jsp";
+                    url = "/course-approval-servlet/request";
+                }
+            }
+            case "/update" -> {
+                Part certificatePart = request.getPart("certificate");
+
+                try {
+                    String certificateUrl = uploadToCloudinary(certificatePart);
+                    cert.setCertificateUrl(certificateUrl);
+                    cert.setUploadDate(LocalDateTime.now());
+                    certDAO.update(cert);
+                    request.setAttribute("message", "Update successful!");
+                    url = "/course-approval-servlet/request";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    request.setAttribute("error", "Update failed!");
+                    url = "/course-approval-servlet/request";
+                }
+            }
+            case "/delete" -> {
+                try {
+                    certDAO.delete(cert.getCertificateID());
+                    request.setAttribute("message", "Deletion successful!");
+                    url = "/course-approval-servlet/request";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    request.setAttribute("error", "Deletion failed!");
+                    url = "/course-approval-servlet/request";
                 }
             }
             default ->
@@ -92,13 +124,21 @@ public class CourseApprovalServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseApprovalServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseApprovalServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override

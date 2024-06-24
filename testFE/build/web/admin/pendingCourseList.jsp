@@ -45,6 +45,12 @@
                 }
             }
         </script>
+        
+        <style>
+            .viewcer:hover {
+                text-decoration: underline;
+            }
+        </style>
 
     </head>
 
