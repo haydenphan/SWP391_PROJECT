@@ -18,6 +18,7 @@
                                         <li class="menu-item-has-children"><a href="#">Course</a>
                                             <ul class="sub-menu">
                                                 <li><a href="${pageContext.request.contextPath}/pending-course-list">Pending Courses</a></li>
+                                                <li><a href="${pageContext.request.contextPath}/AdminCategory">Category Management</a></li>
                                                 <!--                                       
                                                                                        <li><a href="course-2.jsp">Course 2</a></li>
                                                                                        <li><a href="course-3.jsp">Course 3</a></li>
@@ -77,6 +78,22 @@
                     </div>
                     <div class="col-xl-5 col-lg-5 col-md-7 col-sm-3 col-3">
                         <div class="header-right d-flex align-items-center justify-content-end">
+
+                            <c:choose>
+                                <c:when test="${user != null}">
+                                    <div class="notification-bell">
+                                        <i class="fa fa-bell" onclick="toggleNotificationPopup()"></i>
+                                        <div class="notification-popup" id="notificationPopup">
+                                            <div class="notification-header">Notifications</div>
+                                            <div id="notification-list"></div>
+                                            <div id="load-all" class="load-all" onclick="toggleLoadAll()">Load All</div>
+                                            <!-- Notifications will be dynamically added here -->
+                                        </div>
+                                    </div>
+
+                                </c:when>
+                            </c:choose>
+
                             <!-- Display user avatar if logged in, otherwise display Sign In and Sign Up buttons -->
                             <c:choose>
                                 <c:when test="${user != null}">
@@ -93,7 +110,9 @@
 
 
                                     <div class="user-logout-wrapper mr-30">
-                                        <a href="${pageContext.request.contextPath}/LogoutServlet" class="user-logout-btn">Logout</a>
+                                        <a href="${pageContext.request.contextPath}/LogoutServlet" class="user-logout-btn">
+                                            <i class="fas fa-sign-out-alt"></i>
+                                        </a>
                                     </div>
 
                                 </c:when>
