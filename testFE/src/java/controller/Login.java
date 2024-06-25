@@ -49,13 +49,13 @@ public class Login extends HttpServlet {
 //        request.setAttribute("UserName", res.getUserName());
         String url = "";
 
-        if (res != null) {
+        if (res != null && res.isIsActive()) {
             // Tao session luu thong tin user 
             HttpSession session = request.getSession();
             session.setAttribute("user", res);
             System.out.println(res.getRole());
             url = switch (res.getRole()) {
-                case 1 -> "/user-profile";
+                case 1 -> "/pages/home.jsp";
                 case 2 -> "/pages/instructor-profile.jsp";
                 default -> "/admin/adminHome.jsp";
             };

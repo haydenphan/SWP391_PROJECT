@@ -46,7 +46,7 @@ public class LoginGoogleServlet extends HttpServlet {
                 } else {
                     User existingUser = userDAO.checkExistedGGAccount(googleUser);
                     
-                    if (existingUser != null) {
+                    if (existingUser != null && existingUser.isIsActive()) {
                         int role = existingUser.getRole();
                         request.getSession().setAttribute("user", existingUser);
                         if (role == 1) {

@@ -28,47 +28,48 @@
                                                                                        <li><a href="webinar-details.jsp">Webinar Details</a></li>-->
                                             </ul>
                                         </li>
-                                        <li class="menu-item-has-children"><a href="#!">Pages</a>
-                                            <!--                                    <ul class="sub-menu">
-                                                                                   <li><a href="about.jsp">About</a></li>
-                                                                                   <li class="menu-item-has-children"><a href="instructor.jsp">instructor</a>
-                                                                                      <ul class="sub-menu">
-                                                                                         <li><a href="instructor.jsp">instructor</a></li>
-                                                                                         <li><a href="instructor-profile.jsp">instructor profile</a></li>
-                                                                                         <li><a href="user-profile.jsp">Student profile</a></li>
-                                                                                         <li><a href="become-instructor.jsp">become instructor</a></li>
-                                                                                      </ul>
-                                                                                   </li>
-                                                                                   <li class="menu-item-has-children"><a href="zoom-class.jsp">zoom class</a>
-                                                                                      <ul class="sub-menu">
-                                                                                         <li><a href="zoom-class.jsp">zoom class</a></li>
-                                                                                         <li><a href="zoom-class-detalis.jsp">zoom class details</a></li>
-                                                                                      </ul>
-                                                                                   </li>
-                                                                                   <li class="menu-item-has-children"><a href="blog.jsp">blog</a>
-                                                                                      <ul class="sub-menu">
-                                                                                         <li><a href="blog.jsp">blog</a></li>
-                                                                                         <li><a href="blog-details.jsp">blog details</a></li>
-                                                                                      </ul>
-                                                                                   </li>
-                                                                                   <li class="menu-item-has-children"><a href="event.jsp">event</a>
-                                                                                      <ul class="sub-menu">
-                                                                                         <li><a href="event.jsp">event</a></li>
-                                                                                         <li><a href="event-details.jsp">event details</a></li>
-                                                                                      </ul>
-                                                                                   </li>
-                                                                                   <li class="menu-item-has-children"><a href="faq-page.jsp">FAQ page</a>
-                                                                                      <ul class="sub-menu">
-                                                                                         <li><a href="faq-page.jsp">FAQ page</a></li>
-                                                                                         <li><a href="faq-details.jsp">FAQ details</a></li>
-                                                                                      </ul>
-                                                                                   </li>
-                                                                                   <li><a href="membership.jsp">membership plan</a></li>
-                                                                                   <li><a href="login.jsp">SignIn</a></li>
-                                                                                   <li><a href="registration.jsp">Sign Up</a></li>
-                                                                                   <li><a href="404-page.jsp">404 page</a></li>
-                                                                                   <li><a href="contact.jsp">contact</a></li>
-                                                                                </ul>-->
+                                        <li class="menu-item-has-children"><a href="manageuser?action=viewList">Manage User</a></li>
+
+                                        <!--                                    <ul class="sub-menu">
+                                                                               <li><a href="about.jsp">About</a></li>
+                                                                               <li class="menu-item-has-children"><a href="instructor.jsp">instructor</a>
+                                                                                  <ul class="sub-menu">
+                                                                                     <li><a href="instructor.jsp">instructor</a></li>
+                                                                                     <li><a href="instructor-profile.jsp">instructor profile</a></li>
+                                                                                     <li><a href="user-profile.jsp">Student profile</a></li>
+                                                                                     <li><a href="become-instructor.jsp">become instructor</a></li>
+                                                                                  </ul>
+                                                                               </li>
+                                                                               <li class="menu-item-has-children"><a href="zoom-class.jsp">zoom class</a>
+                                                                                  <ul class="sub-menu">
+                                                                                     <li><a href="zoom-class.jsp">zoom class</a></li>
+                                                                                     <li><a href="zoom-class-detalis.jsp">zoom class details</a></li>
+                                                                                  </ul>
+                                                                               </li>
+                                                                               <li class="menu-item-has-children"><a href="blog.jsp">blog</a>
+                                                                                  <ul class="sub-menu">
+                                                                                     <li><a href="blog.jsp">blog</a></li>
+                                                                                     <li><a href="blog-details.jsp">blog details</a></li>
+                                                                                  </ul>
+                                                                               </li>
+                                                                               <li class="menu-item-has-children"><a href="event.jsp">event</a>
+                                                                                  <ul class="sub-menu">
+                                                                                     <li><a href="event.jsp">event</a></li>
+                                                                                     <li><a href="event-details.jsp">event details</a></li>
+                                                                                  </ul>
+                                                                               </li>
+                                                                               <li class="menu-item-has-children"><a href="faq-page.jsp">FAQ page</a>
+                                                                                  <ul class="sub-menu">
+                                                                                     <li><a href="faq-page.jsp">FAQ page</a></li>
+                                                                                     <li><a href="faq-details.jsp">FAQ details</a></li>
+                                                                                  </ul>
+                                                                               </li>
+                                                                               <li><a href="membership.jsp">membership plan</a></li>
+                                                                               <li><a href="login.jsp">SignIn</a></li>
+                                                                               <li><a href="registration.jsp">Sign Up</a></li>
+                                                                               <li><a href="404-page.jsp">404 page</a></li>
+                                                                               <li><a href="contact.jsp">contact</a></li>
+                                                                            </ul>-->
                                         </li>
                                     </ul>
                                 </nav>
