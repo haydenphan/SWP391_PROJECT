@@ -1,0 +1,293 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="DAO.*" %>
+
+<!doctype html>
+<html class="no-js" lang="zxx">
+
+
+    <head>
+        <%-- HEAD --%>
+        <%@ include file="../template/head.jsp" %>
+    </head>
+
+    <body>
+
+
+        <%-- SIDE TOGGLE --%>
+        <%@ include file="../template/sideToggle.jsp" %>
+
+        <%-- HEADER --%>
+        <%@ include file="../template/header.jsp" %>
+
+        <main>
+
+            <!-- hero-area -->
+            <jsp:include page="../template/heroArea.jsp">
+                <jsp:param name="title" value="Courses" />
+            </jsp:include>
+
+            <!-- course-bar up-area -->
+            <%@ include file="../template/course/courseBarUpArea.jsp" %>
+
+            <!-- course-content-start -->
+            <section class="course-content-area pb-90">
+                <div class="container">
+                    <div class="row mb-10">
+                        <div class="col-xl-3 col-lg-4 col-md-8">
+                            <div class="course-sidebar-widget mb-20">
+                                <div class="course-sidebar-info">
+                                    <h3 class="drop-btn">Ratings</h3>
+                                    <ul>
+                                        <li>
+                                            <div class="course-sidebar-list">
+                                                <input class="edu-check-box" type="radio" id="e-5" name="rating" value="5" onclick="onRatingChange(this.value)">
+                                                <label class="edu-check-star" for="e-25">
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+
+                                                </label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="course-sidebar-list">
+                                                <input class="edu-check-box" type="radio" id="e-4" name="rating" value="4" onclick="onRatingChange(this.value)">
+                                                <label class="edu-check-star" for="e-24">
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fal fa-star"></i>
+
+                                                </label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="course-sidebar-list">
+                                                <input class="edu-check-box" type="radio" id="e-3" name="rating" value="3" onclick="onRatingChange(this.value)">
+                                                <label class="edu-check-star" for="e-12">
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fal fa-star"></i>
+                                                    <i class="fal fa-star"></i>
+
+                                                </label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="course-sidebar-list">
+                                                <input class="edu-check-box" type="radio" id="e-2" name="rating" value="2" onclick="onRatingChange(this.value)">
+                                                <label class="edu-check-star" for="e-28">
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fal fa-star"></i>
+                                                    <i class="fal fa-star"></i>
+                                                    <i class="fal fa-star"></i>
+
+                                                </label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="course-sidebar-list">
+                                                <input class="edu-check-box" type="radio" id="e-1" name="rating" value="1" onclick="onRatingChange(this.value)">
+                                                <label class="edu-check-star" for="e-14">
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fal fa-star"></i>
+                                                    <i class="fal fa-star"></i>
+                                                    <i class="fal fa-star"></i>
+                                                    <i class="fal fa-star"></i>
+
+                                                </label>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="course-sidebar-widget mb-20">
+                                <div class="course-sidebar-info">
+                                    <h3 class="drop-btn">Price</h3>
+                                    <ul>
+                                        <li>
+                                            <div class="course-sidebar-list">
+                                                <input class="edu-check-box" type="radio" id="e-85" name="price" value="all" onclick="onPriceChange(this.value)">
+                                                <label class="edu-check-label" for="e-85">All</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="course-sidebar-list">
+                                                <input class="edu-check-box" type="radio" id="e-all" name="price" value="free" onclick="onPriceChange(this.value)">
+                                                <label class="edu-check-label" for="e-all">Free</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="course-sidebar-list">
+                                                <input class="edu-check-box" type="radio" id="f-all" name="price" value="paid" onclick="onPriceChange(this.value)">
+                                                <label class="edu-check-label" for="f-all">Paid</label>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="course-sidebar-widget mb-20">
+                                <div class="course-sidebar-info">
+                                    <h3 class="drop-btn">Level</h3>
+                                    <ul>
+                                        <c:forEach var="level" items="${courseLevels}">
+                                            <li>
+                                                <div class="course-sidebar-list">
+                                                    <input class="edu-check-box" type="checkbox" id="level-${level.levelId}" name="level" value="${level.levelId}" onclick="onLevelChange()">
+                                                    <label class="edu-check-label" for="level-${level.levelId}">${level.levelName}</label>
+                                                </div>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="course-sidebar-widget mb-20">
+                                <div class="course-sidebar-info">
+                                    <h3 class="drop-btn">Language</h3>
+                                    <ul>
+                                        <c:forEach var="language" items="${languages}">
+                                            <li>
+                                                <div class="course-sidebar-list">
+                                                    <input class="edu-check-box" type="checkbox" id="language-${language.languageId}" name="language" value="${language.languageId}" onclick="onLanguageChange()">
+                                                    <label class="edu-check-label" for="language-${language.languageId}">${language.languageName}</label>
+                                                </div>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-xl-9 col-lg-8 col-md-12">
+                            <div class="row">
+                                <c:forEach var="course" items="${courses}">
+                                    <c:set var="currentCourse" value="${course}" scope="request" />
+                                    <jsp:include page="../template/course/courseComponent.jsp" />
+                                </c:forEach>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            <!-- course-content-end -->
+
+        </main>
+
+        <%-- FOOTER --%>
+        <%@ include file="../template/footer.jsp" %>
+
+        <%-- BACK TO TOP --%>
+        <%@ include file="../template/backToTop.jsp" %>
+
+        <!-- JS here -->
+        <%@ include file="../template/script.jsp" %>
+        <script>
+            function getSelectedOptions() {
+                const params = new URLSearchParams();
+
+                // Get selected rating
+                const rating = document.querySelector('input[name="rating"]:checked');
+                if (rating) {
+                    params.append('rating', rating.value);
+                }
+
+                // Get selected price
+                const price = document.querySelector('input[name="price"]:checked');
+                if (price) {
+                    params.append('price', price.value);
+                }
+
+                // Get selected levels
+                document.querySelectorAll('input[name="level"]:checked').forEach(level => {
+                    params.append('level', level.value);
+                });
+
+                // Get selected languages
+                document.querySelectorAll('input[name="language"]:checked').forEach(language => {
+                    params.append('language', language.value);
+                });
+
+                return params.toString();
+            }
+
+            function redirectToCourseList() {
+                const queryString = getSelectedOptions();
+                console.log(queryString);
+                window.location.href = "/testFE/CourseList?" + queryString;
+            }
+
+// Function to handle change in rating selection
+            function onRatingChange() {
+                redirectToCourseList();
+            }
+
+// Function to handle change in price selection
+            function onPriceChange() {
+                redirectToCourseList();
+            }
+
+// Function to handle change in level selection
+            function onLevelChange() {
+                redirectToCourseList();
+            }
+
+// Function to handle change in language selection
+            function onLanguageChange() {
+                redirectToCourseList();
+            }
+
+// Event listener for changes in checkboxes and radio buttons
+            document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
+                input.addEventListener('change', redirectToCourseList);
+            });
+// Function to parse query parameters from URL
+            function parseQueryParams() {
+                const queryParams = new URLSearchParams(window.location.search);
+
+// Select rating
+                const rating = queryParams.get('rating');
+                if (rating) {
+                    const ratingInput = document.getElementById('e-' + rating);
+                    if (ratingInput) {
+                        ratingInput.checked = true;
+                    }
+                }
+
+                // Select price
+                const price = queryParams.get('price');
+                if (price) {
+                    document.querySelector("input[name=price][value=" + price + "]").checked = true;
+                }
+
+                // Select levels
+                const levels = queryParams.getAll('level');
+                levels.forEach(level => {
+                    const levelInput = document.getElementById('level-' + level);
+                    if (levelInput) {
+                        levelInput.checked = true;
+                    }
+                });
+
+                // Select languages
+                const languages = queryParams.getAll('language');
+                languages.forEach(language => {
+                    const languageInput = document.getElementById('language-' + language);
+                    if (languageInput) {
+                        languageInput.checked = true;
+                    }
+                });
+            }
+            // Parse query parameters on page load
+            parseQueryParams();
+        </script>
+    </body>
+
+</html>
