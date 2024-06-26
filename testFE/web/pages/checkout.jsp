@@ -1,16 +1,16 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List" %>
-<%@ page import="model.Cart" %>
-<%@ page import="model.CartDetails" %>
-<%@ page import="model.Course" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="model.ProductCart" %>
+<%@ page import="model.Course" %> <!-- Import ajouté pour la classe Course -->
+<%@ page import="java.util.List" %> <!-- Import ajouté pour la classe List -->
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html class="no-js" lang="zxx">
     <head>
         <%@ include file="../template/head.jsp" %>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <style>
+            <style>
             .required:after {
                 content: " *";
                 color: red;
@@ -71,7 +71,7 @@
 
             <section class="checkout-area pb-70">
                 <div class="container">
-                    <form id="checkout-form" action="<%= request.getContextPath()%>/process_checkout" method="post">
+                    <form id="checkout-form" action="process_checkout" method="post" onsubmit="return validateForm()">
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="checkbox-form">
@@ -80,19 +80,19 @@
                                         <div class="col-md-6">
                                             <div class="checkout-form-list">
                                                 <label class="required">First Name</label>
-                                                <input type="text" name="firstName" value="${user != null ? user.getFirstName() : ''}" required>
+                                                <input type="text" name="firstName" value="${user != null ? user.firstName : ''}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="checkout-form-list">
                                                 <label class="required">Last Name</label>
-                                                <input type="text" name="lastName" value="${user != null ? user.getLastName() : ''}" required>
+                                                <input type="text" name="lastName" value="${user != null ? user.lastName : ''}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="checkout-form-list" style="width: 150%">
                                                 <label class="required">Email Address</label>
-                                                <input type="email" name="email" value="${user != null ? user.getEmail() : ''}" required>
+                                                <input type="email" name="email" value="${user != null ? user.email : ''}" required>
                                             </div>
                                         </div>
                                     </div>
@@ -111,20 +111,20 @@
                                             </thead>
                                             <tbody>
                                                 <%
-                                                    Cart cart = (Cart) session.getAttribute("cart");
-                                                    double total = 0;
-                                                    if (cart != null && !cart.isEmpty()) {
-                                                        for (CartDetails item : cart.getCartDetails()) {
-                                                            Course course = item.getCourse();
-                                                            double itemTotal = item.getPrice();
-                                                            total += itemTotal;
+                                                HashMap<Integer, ProductCart> cart = (HashMap<Integer, ProductCart>) session.getAttribute("cart");
+                                                double total = 0;
+                                                if (cart != null && !cart.isEmpty()) {
+                                                    for (ProductCart item : cart.values()) {
+                                                        Course course = item.getCourse();
+                                                        double itemTotal = course.getPrice();
+                                                        total += itemTotal;
                                                 %>
-                                                <tr id="product-row-<%= course.getCourseID()%>">
+                                                <tr id="product-row-<%= course.getCourseID() %>">
                                                     <td class="product-name">
-                                                        <a href="<%= request.getContextPath()%>/Cart-order.jsp?CourseID=<%= course.getCourseID()%>"><%= course.getCourseName()%></a>
+                                                        <a href="<%= request.getContextPath() %>/Cart-order.jsp?CourseID=<%= course.getCourseID() %>"><%= course.getCourseName() %></a>
                                                     </td>
                                                     <td class="product-unitprice">
-                                                        <span class="amount">$<%= item.getPrice()%></span>
+                                                        <span class="amount">$<%= course.getPrice() %></span>
                                                     </td>
                                                 </tr>
                                                 <%
@@ -135,7 +135,7 @@
                                             <tfoot>
                                                 <tr class="order-total" style="color: #005C78; font-family: fantasy">
                                                     <th>Order Total</th>
-                                                    <th>$<%= total%></th>
+                                                    <th>$<%= total %></th>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -144,20 +144,20 @@
                                         <div class="payment-accordion">
                                             <div class="accordion" id="checkoutAccordion">
                                                 <div class="accordion-item">
-                                                    <h2 class="accordion-header" id="vnpay">
-                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#vnpayPayment" aria-expanded="false" aria-controls="vnpayPayment">
-                                                            VN Pay
-                                                        </button>
+                                                    <h2 class="accordion-header" id="paypal">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#paypalPayment" aria-expanded="false" aria-controls="paypalPayment">VN Pay</button>
                                                     </h2>
-                                                    <div id="vnpayPayment" class="accordion-collapse collapse" aria-labelledby="vnpay">
+                                                    <div id="paypalPayment" class="accordion-collapse collapse" aria-labelledby="paypal">
                                                         <div class="accordion-body">
                                                             Pay via VNPay; you can pay with your credit card if you don't have a VNPay account.
-                                                            <button class="edu-btn" type="submit">Pay with VNPay</button>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!-- Add other payment methods here if needed -->
                                             </div>
+                                        </div>
+                                        <div class="order-button-payment mt-20">
+                                            <button class="edu-btn" type="submit">Payment</button>
+<!--                                            <button class="edu-btn" id="cancelOrderBtn">Cancel Order</button>-->
                                         </div>
                                     </div>
                                 </div>
@@ -182,6 +182,21 @@
             document.getElementById('cbox').addEventListener('change', function () {
                 document.getElementById('cbox_info').style.display = this.checked ? 'block' : 'none';
             });
+
+//            function validateForm() {
+//                var requiredFields = document.querySelectorAll('.required input, .required select');
+//                var valid = true;
+//
+//                requiredFields.forEach(function (field) {
+//                    if (!field.value) {
+//                        field.style.borderColor = 'red';
+//                        valid = false;
+//                    } else {
+//                        field.style.borderColor = '';
+//                    }
+//                });
+//                return valid;
+//            }
         </script>
     </body>
 </html>

@@ -1,27 +1,21 @@
 package controller;
 
 import DAO.CourseSectionDAO;
-import DAO.LectureMaterialDAO;
 import DAO.SectionLectureDAO;
 import model.CourseSection;
 import model.SectionLecture;
-import config.CloudinaryConfig;
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Map;
-import model.LectureMaterial;
-import org.apache.commons.io.IOUtils;
 
 @WebServlet(name = "SectionLectureServlet", urlPatterns = {"/section-lecture-servlet"})
 @MultipartConfig(
@@ -31,13 +25,7 @@ import org.apache.commons.io.IOUtils;
 )
 public class SectionLectureServlet extends HttpServlet {
 
-    private Cloudinary cloudinary;
-    private static final long MAX_FILE_SIZE = 10485760; // 10MB in bytes
-
-    @Override
-    public void init() {
-        this.cloudinary = CloudinaryConfig.getCloudinary();
-    }
+    private static final String UPLOAD_DIR = "uploads/coursematerials";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -45,6 +33,10 @@ public class SectionLectureServlet extends HttpServlet {
 
         String courseIdStr = request.getParameter("courseId");
         String sectionCountStr = request.getParameter("sectionCount");
+
+        // Log received parameters
+        System.out.println("courseId: " + courseIdStr);
+        System.out.println("sectionCount: " + sectionCountStr);
 
         if (courseIdStr == null || courseIdStr.isEmpty() || sectionCountStr == null || sectionCountStr.isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid courseId or sectionCount");
@@ -64,10 +56,10 @@ public class SectionLectureServlet extends HttpServlet {
 
         CourseSectionDAO courseSectionDAO = new CourseSectionDAO();
         SectionLectureDAO sectionLectureDAO = new SectionLectureDAO();
-        LectureMaterialDAO lectureMaterialDAO = new LectureMaterialDAO();
 
         for (int i = 1; i <= sectionCount; i++) {
             String sectionTitle = request.getParameter("sectionTitle" + i);
+            System.out.println("sectionTitle" + i + ": " + sectionTitle); // Log sectionTitle
             if (sectionTitle == null || sectionTitle.isEmpty()) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid sectionTitle for section " + i);
                 return;
@@ -85,6 +77,7 @@ public class SectionLectureServlet extends HttpServlet {
 
             if (sectionId > 0) {
                 String lectureCountStr = request.getParameter("lectureCount" + i);
+                System.out.println("lectureCount" + i + ": " + lectureCountStr); // Log lectureCount
 
                 if (lectureCountStr == null || lectureCountStr.isEmpty()) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid lectureCount for section " + i);
@@ -103,67 +96,27 @@ public class SectionLectureServlet extends HttpServlet {
                 for (int j = 1; j <= lectureCount; j++) {
                     String lectureTitle = request.getParameter("lectureTitle" + i + "_" + j);
                     Part videoPart = request.getPart("lectureVideo" + i + "_" + j);
-                    Collection<Part> materialParts = request.getParts();
-                    processLecture(sectionId, lectureTitle, videoPart, materialParts, i, j, createdDate, sectionLectureDAO, lectureMaterialDAO);
+                    Part materialPart = request.getPart("lectureMaterial" + i + "_" + j);
+
+                    String videoFileName = Paths.get(videoPart.getSubmittedFileName()).getFileName().toString();
+                    String materialFileName = Paths.get(materialPart.getSubmittedFileName()).getFileName().toString();
+
+                    String videoFilePath = saveFile(videoPart, videoFileName);
+                    String materialFilePath = saveFile(materialPart, materialFileName);
+
+                    SectionLecture sectionLecture = new SectionLecture();
+                    sectionLecture.setSectionID(sectionId);
+                    sectionLecture.setLectureName(lectureTitle);
+                    sectionLecture.setLectureType("Video");
+                    sectionLecture.setLectureURL(videoFilePath);
+                    sectionLecture.setCreatedDate(createdDate);
+
+                    sectionLectureDAO.insert(sectionLecture);
                 }
             }
         }
 
         response.sendRedirect("success.jsp");
-    }
-
-    private void processLecture(int sectionId, String lectureTitle, Part videoPart, Collection<Part> materialParts, int sectionIndex, int lectureIndex, LocalDateTime createdDate, SectionLectureDAO sectionLectureDAO, LectureMaterialDAO lectureMaterialDAO) throws IOException, ServletException {
-        if (videoPart.getSize() > MAX_FILE_SIZE) {
-            throw new ServletException("Video file size too large for lecture " + lectureIndex);
-        }
-
-        String videoUrl = uploadFileToCloudinary(videoPart);
-
-        SectionLecture sectionLecture = new SectionLecture();
-        sectionLecture.setSectionID(sectionId);
-        sectionLecture.setLectureName(lectureTitle);
-        sectionLecture.setLectureURL(videoUrl);
-        sectionLecture.setCreatedDate(createdDate);
-        int lectureId = sectionLectureDAO.insert(sectionLecture);
-
-        for (Part materialPart : materialParts) {
-            if (materialPart.getName().startsWith("lectureMaterial" + sectionIndex + "_" + lectureIndex) && materialPart.getSize() > 0) {
-                if (materialPart.getSize() > MAX_FILE_SIZE) {
-                    throw new ServletException("Material file size too large for lecture " + lectureIndex);
-                }
-
-                String materialUrl = uploadFileToCloudinary(materialPart);
-
-                LectureMaterial materialLecture = new LectureMaterial();
-                materialLecture.setLectureId(lectureId);
-                materialLecture.setLectureMaterialUrl(materialUrl);
-                lectureMaterialDAO.insert(materialLecture);
-            }
-        }
-    }
-
-    private String uploadFileToCloudinary(Part filePart) throws IOException {
-        byte[] fileContent = IOUtils.toByteArray(filePart.getInputStream());
-        String fileName = filePart.getSubmittedFileName();
-        String extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
-        String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
-
-        Map uploadResult = cloudinary.uploader().upload(fileContent, ObjectUtils.asMap(
-                "resource_type", getResourceType(extension),
-                "public_id", baseName + "." + extension
-        ));
-        return uploadResult.get("secure_url").toString();
-    }
-
-    private String getResourceType(String extension) {
-        return switch (extension) {
-            case "jpg", "jpeg", "png", "gif", "mp4", "avi", "mov" ->
-                "auto";
-            case "docx" ->
-                "raw";
-            default ->
-                "raw";
-        };
     }
 
     @Override
@@ -181,5 +134,18 @@ public class SectionLectureServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
+    }
+
+    private String saveFile(Part filePart, String fileName) throws IOException {
+        String applicationPath = getServletContext().getRealPath("");
+        String uploadFilePath = applicationPath + File.separator + UPLOAD_DIR;
+        File uploadDir = new File(uploadFilePath);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+
+        String filePath = uploadFilePath + File.separator + fileName;
+        filePart.write(filePath);
+        return UPLOAD_DIR + "/" + fileName;
     }
 }

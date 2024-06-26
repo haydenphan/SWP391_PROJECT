@@ -14,14 +14,15 @@ public class SectionLectureDAO extends DAO<SectionLecture> {
 
     @Override
     public int insert(SectionLecture lecture) {
-        String sql = "INSERT INTO Lectures (SectionID, LectureName, LectureURL, CreatedDate) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Lectures (SectionID, LectureName, LectureType, LectureURL, CreatedDate) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, lecture.getSectionID());
             ps.setString(2, lecture.getLectureName());
-            ps.setString(3, lecture.getLectureURL());
-            ps.setObject(4, lecture.getCreatedDate());
+            ps.setString(3, lecture.getLectureType());
+            ps.setString(4, lecture.getLectureURL());
+            ps.setObject(5, lecture.getCreatedDate());
 
             int affectedRows = ps.executeUpdate();
 
@@ -29,7 +30,7 @@ public class SectionLectureDAO extends DAO<SectionLecture> {
                 throw new SQLException("Inserting lecture failed, no rows affected.");
             }
 
-            try (ResultSet rs = ps.getGeneratedKeys()) {
+            try (var rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     return rs.getInt(1); // Return the generated LectureID
                 } else {
@@ -41,15 +42,16 @@ public class SectionLectureDAO extends DAO<SectionLecture> {
             return -1; // Return -1 in case of error
         } catch (Exception ex) {
             Logger.getLogger(SectionLectureDAO.class.getName()).log(Level.SEVERE, null, ex);
-            return -1; // Return -1 in case of error
         }
+        return 1;
     }
 
     public static List<SectionLecture> getLecturesBySectionId(int sectionId) {
         List<SectionLecture> lectures = new ArrayList<>();
         String sql = "SELECT * FROM Lectures WHERE SectionID = ? ORDER BY CreatedDate";
 
-        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = JDBC.getConnectionWithSqlJdbc();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, sectionId);
 
@@ -59,10 +61,10 @@ public class SectionLectureDAO extends DAO<SectionLecture> {
                     lecture.setLectureID(rs.getInt("LectureID"));
                     lecture.setSectionID(rs.getInt("SectionID"));
                     lecture.setLectureName(rs.getString("LectureName"));
+                    lecture.setLectureType(rs.getString("LectureType"));
                     lecture.setLectureURL(rs.getString("LectureURL"));
                     lecture.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
-                    LectureMaterialDAO dao = new LectureMaterialDAO();
-                    lecture.setLectureMaterials(dao.getLectureMaterialsByLectureID(lecture.getLectureID()));
+
                     lectures.add(lecture);
                 }
             }
@@ -73,38 +75,5 @@ public class SectionLectureDAO extends DAO<SectionLecture> {
         }
 
         return lectures;
-    }
-
-    public boolean updateLecture(SectionLecture lecture) {
-        String sql = "UPDATE Lectures SET SectionID = ?, LectureName = ?, LectureURL = ? WHERE LectureID = ?";
-
-        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, lecture.getSectionID());
-            ps.setString(2, lecture.getLectureName());
-            ps.setString(3, lecture.getLectureURL());
-            ps.setInt(4, lecture.getLectureID());
-
-            int rowsUpdated = ps.executeUpdate();
-            return rowsUpdated > 0;
-        } catch (SQLException | ClassNotFoundException e) {
-            System.err.println("Error! " + e.getMessage());
-            Logger.getLogger(SectionLectureDAO.class.getName()).log(Level.SEVERE, null, e);
-        } catch (Exception ex) {
-            Logger.getLogger(SectionLectureDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return false;
-    }
-
-    public int delete(int lectureId) throws Exception {
-        String sql = "DELETE FROM Lectures WHERE LectureID = ?";
-        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, lectureId);
-            return ps.executeUpdate();
-        } catch (SQLException | ClassNotFoundException e) {
-            Logger.getLogger(SectionLectureDAO.class.getName()).log(Level.SEVERE, null, e);
-            return -1; // Return -1 in case of error
-        }
     }
 }

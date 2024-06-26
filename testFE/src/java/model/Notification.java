@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Notification {
-
     private int id;
     private int userId;
     private String message;
@@ -92,19 +91,20 @@ public class Notification {
     public void setIsRead(boolean isRead) {
         this.isRead = isRead;
     }
-
+    
     // toString method
     @Override
     public String toString() {
-        return "Notification{"
-                + "id=" + id
-                + ", userId='" + userId + '\''
-                + ", message='" + message + '\''
-                + ", type='" + type + '\''
-                + ", timeStamp=" + timeStamp
-                + ", target='" + target + '\''
-                + ", targetId='" + targetId + '\''
-                + ", isRead=" + isRead
-                + '}';
+        return "Notification{" +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
+                ", message='" + message + '\'' +
+                ", type='" + type + '\'' +
+                ", timeStamp=" + timeStamp +
+                ", target='" + target + '\'' +
+                ", targetId='" + targetId + '\'' +
+                ", isRead=" + isRead +
+                '}';
     }
 }
+

@@ -143,6 +143,75 @@ public class InstructorFeedbackDAO extends DAO<InstructorFeedback> {
         return result;
     }
 
+    public int delete(int feedbackID) {
+        int result = 0;
+        String sql = "DELETE FROM InstructorFeedback WHERE FeedbackID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, feedbackID);
+            result = st.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(InstructorFeedbackDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(InstructorFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return result;
+    }
+
+    public int update(InstructorFeedback feedback) {
+        int result = 0;
+        String sql = "UPDATE InstructorFeedback SET InstructorID = ?, LearnerID = ?, Comment = ?, Rating = ?, FeedbackDate = ? WHERE FeedbackID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, feedback.getInstructorID());
+            st.setInt(2, feedback.getLearner().getUserID());
+            st.setString(3, feedback.getComment());
+            st.setInt(4, feedback.getRating());
+            st.setTimestamp(5, Timestamp.valueOf(feedback.getFeedbackDate()));
+            st.setInt(6, feedback.getFeedbackID());
+
+            result = st.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(InstructorFeedbackDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(InstructorFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return result;
+    }
+
+    public InstructorFeedback getFeedbackByID(int feedbackID) {
+        InstructorFeedback feedback = null;
+        String sql = "SELECT * FROM InstructorFeedback WHERE FeedbackID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, feedbackID);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    feedback = new InstructorFeedback();
+                    feedback.setFeedbackID(rs.getInt("FeedbackID"));
+                    feedback.setInstructorID(rs.getInt("InstructorID"));
+                    feedback.setComment(rs.getString("Comment"));
+                    feedback.setRating(rs.getInt("Rating"));
+                    feedback.setFeedbackDate(rs.getTimestamp("FeedbackDate").toLocalDateTime());
+
+                    User learner = new User();
+                    learner.setUserID(rs.getInt("LearnerID"));
+                    feedback.setLearner(learner);
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(InstructorFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return feedback;
+    }
+
     public static void main(String[] args) {
         InstructorFeedbackDAO feedbackDAO = new InstructorFeedbackDAO();
 
@@ -159,4 +228,36 @@ public class InstructorFeedbackDAO extends DAO<InstructorFeedback> {
         // Insert the feedback
         System.out.println(feedbackDAO.getStarRatingsCount("1"));
     }
+
+    public InstructorFeedback getFeedbackForInstructorByLearner(int instructorID, int learnerID) {
+        InstructorFeedback feedback = null;
+        String sql = "SELECT * FROM InstructorFeedback WHERE InstructorID = ? AND LearnerID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, instructorID);
+            st.setInt(2, learnerID);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    feedback = new InstructorFeedback();
+                    feedback.setFeedbackID(rs.getInt("FeedbackID"));
+                    feedback.setInstructorID(rs.getInt("InstructorID"));
+                    feedback.setComment(rs.getString("Comment"));
+                    feedback.setRating(rs.getInt("Rating"));
+                    feedback.setFeedbackDate(rs.getTimestamp("FeedbackDate").toLocalDateTime());
+
+                    User learner = new User();
+                    learner.setUserID(rs.getInt("LearnerID"));
+                    feedback.setLearner(learner);
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(InstructorFeedbackDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(InstructorFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return feedback;
+    }
+
 }

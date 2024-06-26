@@ -35,9 +35,7 @@
                             </tr>
                         </thead>
                         <tbody>
-
-                            <c:forEach items="${listcourses}" var="c">
-                            <a href="${pageContext.request.contextPath}/adminCourseDetail?id=${courseID}" class="btn blue outline radius-xl">View details</a>
+                        <c:forEach items="${listcourses}" var="c">
                             <tr>
                                 <td>                                      
                                     <a class="text-heading font-semibold" href="#">
@@ -59,15 +57,15 @@
                                     ${c.getPrice()}
                                 </td>
                                 <td>
-                                    <c:if test="${c.IsPublished()}">Published</c:if>
-                                    <c:if test="${!c.IsPublished()}">Not yet</c:if>
-                                    </td>
-                                    <td class="text-end">
-                                        <a href="./AdminCourseDetail?id=${c.getCourseID()}" class="btn btn-sm btn-neutral">View</a>
-                                    <!--                                        <button type="button" onclick="showSweetAlert()" class="btn btn-sm btn-square btn-neutral text-danger-hover">
-                                                                                <i class="bi bi-trash"></i>
-                                                                            </button>-->
-                                </td>
+                            <c:if test="${c.IsPublished()}">Published</c:if>
+                            <c:if test="${!c.IsPublished()}">Not yet</c:if>
+                            </td>
+                            <td class="text-end">
+                                <a href="./AdminCourseDetail?id=${c.getCourseID()}" class="btn btn-sm btn-neutral">View</a>
+                                <!--                                        <button type="button" onclick="showSweetAlert()" class="btn btn-sm btn-square btn-neutral text-danger-hover">
+                                                                            <i class="bi bi-trash"></i>
+                                                                        </button>-->
+                            </td>
                             </tr>
                         </c:forEach>
 

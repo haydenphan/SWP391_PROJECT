@@ -72,7 +72,7 @@ function handleNotificationClick(notification) {
     let url = '';
     switch (notification.target) {
         case 'Message':
-            url = "CourseDetail?id=" + notification.targetId;
+            url = "CourseDetail?id="+notification.targetId;
             break;
         case 'purchaseHistory':
             url = 'purchaseHistory.jsp';
@@ -104,3 +104,6 @@ function handleNotificationClick(notification) {
 //                }
 //            });
 }
+
+
+

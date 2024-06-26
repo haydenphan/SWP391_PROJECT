@@ -4,7 +4,6 @@
     display: inline-block;
     cursor: pointer;
     font-size: 24px;
-    margin-right: 25px;
 }
 
 .notification-bell i {
@@ -72,3 +71,5 @@
     cursor: pointer;
     padding: 10px;
 }
+
+

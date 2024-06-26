@@ -15,25 +15,26 @@ import model.Notification;
 public class NotificationDAO extends DAO<Notification> {
 
     public void insertNotification(Notification notification) {
-        String sql = "INSERT INTO Notifications (UserId, Message, Type, TimeStamp, Target, TargetId, IsRead) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
-            st.setInt(1, notification.getUserId());
-            st.setString(2, notification.getMessage());
-            st.setString(3, notification.getType());
-            st.setTimestamp(4, Timestamp.valueOf(notification.getTimeStamp()));
-            st.setString(5, notification.getTarget());
-            st.setInt(6, notification.getTargetId());
-            st.setBoolean(7, notification.isIsRead());
+    String sql = "INSERT INTO Notifications (UserId, Message, Type, TimeStamp, Target, TargetId, IsRead) " +
+                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
+    try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+        st.setInt(1, notification.getUserId());
+        st.setString(2, notification.getMessage());
+        st.setString(3, notification.getType());
+        st.setTimestamp(4, Timestamp.valueOf(notification.getTimeStamp()));
+        st.setString(5, notification.getTarget());
+        st.setInt(6, notification.getTargetId());
+        st.setBoolean(7, notification.isIsRead());
 
-            st.executeUpdate();
-        } catch (SQLException | ClassNotFoundException e) {
-            System.err.println("Error! " + e.getMessage());
-            Logger.getLogger(NotificationDAO.class.getName()).log(Level.SEVERE, null, e);
-        } catch (Exception ex) {
-            Logger.getLogger(NotificationDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        st.executeUpdate();
+    } catch (SQLException | ClassNotFoundException e) {
+        System.err.println("Error! " + e.getMessage());
+        Logger.getLogger(NotificationDAO.class.getName()).log(Level.SEVERE, null, e);
+    } catch (Exception ex) {
+        Logger.getLogger(NotificationDAO.class.getName()).log(Level.SEVERE, null, ex);
     }
+}
+
 
     public Notification getById(int id) {
         // Your existing getById method implementation
@@ -57,13 +58,13 @@ public class NotificationDAO extends DAO<Notification> {
 
     public List<Notification> getNotificationsForUserSince(LocalDateTime sinceTimestamp, int userID) {
         List<Notification> notifications = new ArrayList<>();
-        String sql = "SELECT Id, UserId, Message, Type, TimeStamp, Target, TargetId, IsRead "
-                + "FROM Notifications "
-                + "WHERE UserId = ? AND TimeStamp >= ?"
-                + "ORDER BY TimeStamp DESC";
+        String sql = "SELECT Id, UserId, Message, Type, TimeStamp, Target, TargetId, IsRead " +
+                     "FROM Notifications " +
+                     "WHERE UserId = ? AND TimeStamp >= ?"+
+                     "ORDER BY TimeStamp DESC";
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, userID);
-            st.setTimestamp(2, Timestamp.valueOf(sinceTimestamp));
+            st.setTimestamp(2, Timestamp.valueOf(sinceTimestamp));  
             try (ResultSet rs = st.executeQuery()) {
                 while (rs.next()) {
                     Notification notification = new Notification();
@@ -90,10 +91,9 @@ public class NotificationDAO extends DAO<Notification> {
 
         return notifications;
     }
-
-    public static void main(String args[]) {
+    public static void main(String args[]){
         NotificationDAO dao = new NotificationDAO();
-        for (Notification n : dao.getNotificationsForUserSince(LocalDateTime.of(2023, 6, 24, 12, 0), 1)) {
+        for(Notification n : dao.getNotificationsForUserSince(LocalDateTime.of(2023, 6, 24, 12, 0), 1)){
             System.out.println(n);
         }
     }

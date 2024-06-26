@@ -4,36 +4,29 @@ import DAO.CourseDAO;
 import DAO.LanguageDAO;
 import DAO.LevelDAO;
 import DAO.SubcategoryDAO;
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
-import config.CloudinaryConfig;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Map;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 import model.Course;
 import model.User;
-import org.apache.commons.io.IOUtils;
 
 @WebServlet(name = "CourseAddingServlet", urlPatterns = {"/course-adding-servlet/*"})
 @MultipartConfig
 public class CourseAddingServlet extends HttpServlet {
 
-    private Cloudinary cloudinary;
-
-    @Override
-    public void init() {
-        this.cloudinary = CloudinaryConfig.getCloudinary();
-    }
+    private static final String COVER_IMAGE_UPLOAD_DIRECTORY = "uploads/coverImages";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -61,10 +54,28 @@ public class CourseAddingServlet extends HttpServlet {
 
                 // Handle cover image upload
                 Part filePart = request.getPart("coverImage");
-                String coverImageUrl = uploadToCloudinary(filePart);
+                String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                String uploadPath = getServletContext().getRealPath("") + File.separator + COVER_IMAGE_UPLOAD_DIRECTORY;
+                String filePath = uploadPath + File.separator + fileName;
 
-                // Save the cover image URL to the session
-                session.setAttribute("coverImageUrl", coverImageUrl);
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs();
+                }
+
+                File existingFile = new File(filePath);
+                if (existingFile.exists()) {
+                    existingFile.delete();
+                }
+
+                try (InputStream fileContent = filePart.getInputStream()) {
+                    Files.copy(fileContent, Paths.get(filePath));
+                }
+
+                // Save the cover image path to the session or database
+                String coverImagePath = COVER_IMAGE_UPLOAD_DIRECTORY + "/" + fileName;
+
+                session.setAttribute("coverImagePath", coverImagePath);
                 session.setAttribute("name", name);
                 session.setAttribute("price", price);
                 session.setAttribute("category", category);
@@ -84,7 +95,7 @@ public class CourseAddingServlet extends HttpServlet {
                 level = (String) session.getAttribute("level");
                 description = (String) session.getAttribute("description");
                 requirements = (String) session.getAttribute("requirements");
-                coverImageUrl = (String) session.getAttribute("coverImageUrl");
+                coverImagePath = (String) session.getAttribute("coverImagePath");
 
                 CourseDAO courseDAO = new CourseDAO();
                 Course course = new Course();
@@ -93,10 +104,9 @@ public class CourseAddingServlet extends HttpServlet {
                 course.setPrice(price);
                 course.setAverageRating(0);
                 course.setCreatedBy(((User) session.getAttribute("user")).getUserID());
-                System.out.println("User ID: " + course.getCreatedBy());
                 LocalDateTime now = LocalDateTime.now();
                 course.setCreatedDate(now);
-                course.setImageURL(coverImageUrl);
+                course.setImageURL(coverImagePath);
                 course.setIsPublished(false);
                 course.setTotalEnrolled(0);
                 course.setRequirements(requirements);
@@ -106,7 +116,7 @@ public class CourseAddingServlet extends HttpServlet {
                 course.setSubcategoryID(SubcategoryDAO.getSubcategoryIdByName(subcategory));
                 courseDAO.insert(course);
 
-                session.removeAttribute("coverImageUrl");
+                session.removeAttribute("coverImagePath");
                 session.removeAttribute("name");
                 session.removeAttribute("price");
                 session.removeAttribute("category");
@@ -129,14 +139,6 @@ public class CourseAddingServlet extends HttpServlet {
 
         RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
         rd.forward(request, response);
-    }
-
-    private String uploadToCloudinary(Part filePart) throws IOException {
-        try (InputStream fileContent = filePart.getInputStream()) {
-            byte[] bytes = IOUtils.toByteArray(fileContent);
-            Map uploadResult = cloudinary.uploader().upload(bytes, ObjectUtils.emptyMap());
-            return (String) uploadResult.get("url");
-        }
     }
 
     @Override

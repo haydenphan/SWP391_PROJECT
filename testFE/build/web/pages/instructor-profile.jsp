@@ -12,11 +12,6 @@
     <head>
         <%-- HEAD --%>
         <%@ include file="../template/head.jsp" %>
-
-    <!-- jQuery and Bootstrap JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </head>
 
     <body>
@@ -176,7 +171,7 @@
                                     </div>
                                     <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                                         <h4 class='mb-25'>My Courses</h4>
-                                        <form style="margin-bottom: 50px" action="${pageContext.request.contextPath}/course-adding-servlet/create-course" method="POST">
+                                        <form style="margin-bottom: 50px" action="../course-adding-servlet/create-course" method="POST">
                                             <button type='submit' class="cont-btn">New course</button>
                                         </form>
                                         

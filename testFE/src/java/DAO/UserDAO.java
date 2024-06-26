@@ -284,7 +284,7 @@ public class UserDAO extends DAO<User> {
     }
 
     public boolean updateUserProfile(User user) {
-        String sql = "UPDATE [OnlineLearningV3].[dbo].[Users] SET "
+        String sql = "UPDATE [OnlineLearningV2].[dbo].[Users] SET "
                 + "[FirstName] = ?, "
                 + "[LastName] = ?, "
                 + "[Email] = ?, "

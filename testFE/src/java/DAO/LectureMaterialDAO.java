@@ -41,7 +41,7 @@ public class LectureMaterialDAO extends DAO<LectureMaterial> {
         return res;
     }
 
-    public static List<LectureMaterial> getLectureMaterialsByLectureID(int lectureID) {
+    public List<LectureMaterial> getLectureMaterialsByLectureID(int lectureID) {
         List<LectureMaterial> lectureMaterials = new ArrayList<>();
         String sql = "SELECT LectureExtraMaterialsId, LectureID, MaterialUrl FROM LectureExtraMaterials WHERE LectureID = ?";
 

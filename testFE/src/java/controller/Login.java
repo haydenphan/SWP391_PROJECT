@@ -5,16 +5,16 @@
 package controller;
 
 import DAO.UserDAO;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import model.User;
 
 /**
@@ -55,7 +55,7 @@ public class Login extends HttpServlet {
             session.setAttribute("user", res);
             System.out.println(res.getRole());
             url = switch (res.getRole()) {
-                case 1 -> "/user-profile";
+                case 1 -> "/pages/user-profile.jsp";
                 case 2 -> "/pages/instructor-profile.jsp";
                 default -> "/admin/adminHome.jsp";
             };

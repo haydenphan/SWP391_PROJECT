@@ -3,7 +3,10 @@
 
     <head>
         <!-- Vendors Style-->
+
+        <!-- Style-->
         <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/style.css">
+
         <%@ include file="../template/head.jsp" %>
         <style>
             .section {
@@ -38,8 +41,7 @@
                                         <p class="mb-0 card-subtitle text-muted">Fill in the details for sections and lectures below.</p>
                                     </div>
                                     <div class="card-body">
-                                        <form id="sectionLectureForm" action="../section-lecture-servlet" method="post"
-                                              enctype="multipart/form-data">
+                                        <form id="sectionLectureForm" action="../section-lecture-servlet" method="post" enctype="multipart/form-data">
                                             <input type="hidden" name="courseId" value="<%=request.getParameter("courseId")%>">
                                             <input type="hidden" id="sectionCount" name="sectionCount" value="0">
 
@@ -66,10 +68,12 @@
         <!-- Vendor JS -->
         <script src="${pageContext.request.contextPath}/adminCSS/js/vendors.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/icons/feather-icons/feather.min.js"></script>
-        <script src="${pageContext.request.contextPath}/adminCSS/js/demo.js"></script>
+
+        <script src=".${pageContext.request.contextPath}/adminCSS/js/demo.js"></script>
         <script src="${pageContext.request.contextPath}/adminCSS/js/jquery.smartmenus.js"></script>
         <script src="${pageContext.request.contextPath}/adminCSS/js/menus.js"></script>
-        <script src="${pageContext.request.contextPath}/adminCSS/js/template.js"></script>
+        <script src="${pageContext.request.contextPath}/adminCSS/js/template.js"></script>        
+
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             $(document).ready(function () {
@@ -101,8 +105,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="lectureMaterial${sectionCount}_1">Material:</label>
-                                        <input type="file" class="form-control" name="lectureMaterial${sectionCount}_1[]" id="lectureMaterial${sectionCount}_1" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
-                                        <button type="button" class="btn btn-info addMaterialBtn">Add Material</button>
+                                        <input type="file" class="form-control" name="lectureMaterial${sectionCount}_1" id="lectureMaterial${sectionCount}_1" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
                                     </div>
                                     <button type="button" class="btn btn-danger deleteLectureBtn">Delete Lecture</button>
                                 </div>
@@ -132,8 +135,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="lectureMaterial${sectionIndex}_${lectureCount}">Material:</label>
-                                <input type="file" class="form-control" name="lectureMaterial${sectionIndex}_${lectureCount}[]" id="lectureMaterial${sectionIndex}_${lectureCount}" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
-                                <button type="button" class="btn btn-info addMaterialBtn">Add Material</button>
+                                <input type="file" class="form-control" name="lectureMaterial${sectionIndex}_${lectureCount}" id="lectureMaterial${sectionIndex}_${lectureCount}" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
                             </div>
                             <button type="button" class="btn btn-danger deleteLectureBtn">Delete Lecture</button>
                         </div>
@@ -141,12 +143,6 @@
                     section.find('.lectures').append(lectureHtml);
                     $(`#lectureCount${sectionIndex}`).val(lectureCount);
                     updateSectionNumbers();
-                });
-
-                // Handle adding material
-                $('#sections').on('click', '.addMaterialBtn', function () {
-                    const materialField = $(this).siblings('input[type="file"]').first().clone();
-                    $(this).before(materialField);
                 });
 
                 // Handle deleting lecture
@@ -177,7 +173,7 @@
                             $(this).find('h6').text('Lecture ' + (lecIndex + 1));
                             $(this).find('input[name^="lectureTitle"]').attr('name', 'lectureTitle' + sectionIndex + '_' + (lecIndex + 1));
                             $(this).find('input[name^="lectureVideo"]').attr('name', 'lectureVideo' + sectionIndex + '_' + (lecIndex + 1));
-                            $(this).find('input[name^="lectureMaterial"]').attr('name', 'lectureMaterial' + sectionIndex + '_' + (lecIndex + 1) + '[]');
+                            $(this).find('input[name^="lectureMaterial"]').attr('name', 'lectureMaterial' + sectionIndex + '_' + (lecIndex + 1));
                         });
                     });
                 }
