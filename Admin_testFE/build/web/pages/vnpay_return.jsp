@@ -113,6 +113,10 @@
             if (signValue.equals(vnp_SecureHash)) {
                 if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
                     isPaymentSuccessful = true;
+                    // Update the wallets of admin and instructor
+                    double amount = Double.parseDouble(request.getParameter("vnp_Amount")) / 100; // Convert to VND
+                    int courseId = Integer.parseInt(request.getParameter("courseId"));
+                    response.sendRedirect("UpdateWalletServlet?courseId=" + courseId + "&amount=" + amount);
                 }
             }
         %>

@@ -1,13 +1,13 @@
 package controller;
 
 import DAO.CategoryDAO;
-import model.Category;
-import model.SubCategory;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Category;
+import model.SubCategory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

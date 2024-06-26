@@ -1,4 +1,4 @@
-package controller;
+package controller.Wishlist;
 
 import DAO.CourseDAO;
 import jakarta.servlet.RequestDispatcher;
@@ -13,7 +13,6 @@ import model.ProductCart;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
-
 
 @WebServlet(name = "WishlistControl", urlPatterns = {"/Wishlist/*"})
 public class WishlistControl extends HttpServlet {

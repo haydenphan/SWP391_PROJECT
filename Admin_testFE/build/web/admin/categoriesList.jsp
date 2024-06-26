@@ -4,26 +4,17 @@
 <%@ page import="model.*" %>
 <%@ page import="java.util.Map" %>
 <!DOCTYPE html>
-<html class="no-js" lang="zxx">
-    <% 
-        List<String> categories = (List<String>) request.getAttribute("categoriesName");
-        Map<String, List<SubCategory>> subcategoriesMap = (Map<String, List<SubCategory>>) request.getAttribute("subcategoriesMap");
-    %>
+<html lang="en">
     <head>
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/adminCSS/css/assets.css">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/adminCSS/css/typography.css">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/adminCSS/css/styles.css">
+        <meta charset="UTF-8">
+        <title>Categories Management</title>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/fontawesome-all.min.css">
         <style>
-            body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            color: #343a40;
-        }
             .categories-container {
                 width: 80%;
                 margin: 50px auto;
                 padding: 20px;
-                background: #EFEFEF;
                 border-radius: 12px;
                 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             }
@@ -36,7 +27,6 @@
             .categories-header h2 {
                 color: #333;
                 font-size: 28px;
-                font-family: Georgia;
             }
             .categories-list {
                 list-style: none;
@@ -47,7 +37,6 @@
                 flex-direction: column;
                 padding: 15px;
                 margin: 10px 0;
-                background: #F3F8FF;
                 border-radius: 8px;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                 transition: all 0.3s ease;
@@ -65,6 +54,12 @@
                 color: #373A40;
                 cursor: pointer;
             }
+            .categories-list li.active .category-name {
+                background-color: #2467EC;
+                color: #fff;
+                padding: 5px 10px;
+                border-radius: 4px;
+            }
             .subcategories-list {
                 list-style: none;
                 padding: 0;
@@ -72,12 +67,11 @@
                 display: none;
             }
             .subcategories-list li {
-                display:inline-grid;
+                display: flex;
                 justify-content: space-between;
                 align-items: center;
-                padding: inherit;
+                padding: 10px;
                 margin: 5px 0;
-                background: #E3F4F4;
                 border-radius: 8px;
                 font-size: 14px;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -89,20 +83,21 @@
                 margin-left: 5px;
             }
             .add-category-btn {
-                background-color: #7BC0A3;
+                background-color: #2467EC;
                 color: white;
                 border: none;
                 padding: 8px 18px;
-                border-radius: 50%;
+                border-radius: 25%;
                 cursor: pointer;
                 font-size: 24px;
                 transition: background-color 0.3s ease;
             }
             .add-category-btn:hover {
-                background-color: #45a049;
+                background-color: #FFB013;
+                color: black;
             }
             .add-subcategory-btn {
-                background-color: #7BC0A3;
+                background-color: #28a745;
                 color: white;
                 border: none;
                 padding: 0px 8.5px;
@@ -113,7 +108,7 @@
                 display: none;
             }
             .add-subcategory-btn:hover {
-                background-color: #45a049;
+                background-color: #218838;
             }
             .new-category-input,
             .new-subcategory-input {
@@ -139,7 +134,7 @@
             .new-subcategory-input .cancel-subcategory-btn {
                 padding: 10px;
                 cursor: pointer;
-                font-size: 10px;
+                font-size: 14px;
                 margin-left: 10px;
                 transition: background-color 0.3s ease;
                 border: none;
@@ -265,7 +260,6 @@
                 background-color: #e53935;
             }
             .modal-content-cate h2 {
-                font-family: Georgia;
                 font-size: 20px;
                 color: #333;
                 margin-bottom: 20px;
@@ -278,80 +272,19 @@
     <body>
         <%-- PRE LOADER --%>
         <%@ include file="../template/preLoader.jsp" %>
+
         <%-- SIDE TOGGLE --%>
         <%@ include file="../template/sideToggle.jsp" %>
+
         <%-- HEADER --%>
-        <header>
-            <div class="header-area header-transparent sticky-header">
-                <div class="container-fluid">
-                    <div class="header-main-wrapper">
-                        <div class="row align-items-center">
-                            <div class="col-xl-7 col-lg-7 col-md-5 col-sm-9 col-9">
-                                <div class="header-left d-flex align-items-center">
-                                    <div class="header-logo">
-                                        <a href="${pageContext.request.contextPath}/pages/home.jsp"><img src="${pageContext.request.contextPath}/img/logo/logo-black.png" alt="logo"></a>
-                                    </div>
-                                    <div class="main-menu d-none d-xl-block">
-                                        <nav id="mobile-menu">
-                                            <ul>
-                                                <li class="menu-item-has-children"><a href="index.jsp">Dashboard</a></li>
-                                                <li class="menu-item-has-children"><a href="${pageContext.request.contextPath}/get-course-info">Course</a></li>
-                                                <li class="menu-item-has-children"><a href="shop.jsp">Shop</a></li>
-                                                <li class="menu-item-has-children"><a href="#!">Pages</a></li>
-                                            </ul>
-                                        </nav>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-5 col-lg-5 col-md-7 col-sm-3 col-3">
-                                <div class="header-right d-flex align-items-center justify-content-end">
-                                    <c:choose>
-                                        <c:when test="${user != null}">
-                                            <div class="user-avatar-wrapper mr-30">
-                                                <a href="" class="user-avatar-btn">
-                                                    <div class="header__user-avatar p-relative">
-                                                        <img src="${user.getAvatar()}" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%;">
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="user-logout-wrapper mr-30">
-                                                <a href="${pageContext.request.contextPath}/LogoutServlet" class="user-logout-btn">Logout</a>
-                                            </div>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <div class="user-btn-inner p-relative d-none d-md-block">
-                                                <div class="user-btn-wrapper">
-                                                    <div class="user-btn-content">
-                                                        <a class="user-btn-sign-in" href="${pageContext.request.contextPath}/pages/login.jsp">Sign In</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="d-none d-md-block">
-                                                <a class="user-btn-sign-up edu-btn" href="${pageContext.request.contextPath}/pages/registration.jsp">Sign Up</a>
-                                            </div>
-                                        </c:otherwise>
-                                    </c:choose>
-                                    <div class="menu-bar d-xl-none ml-20">
-                                        <a class="side-toggle" href="javascript:void(0)">
-                                            <div class="bar-icon">
-                                                <span></span>
-                                                <span></span>
-                                                <span></span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
+        <%@ include file="../template/adminHeader.jsp" %>
+
         <!-- Main container start -->
         <!-- hero-area -->
         <jsp:include page="../template/heroArea.jsp">
             <jsp:param name="title" value="All Categories" />
         </jsp:include>
+
         <main class="ttr-wrapper">
             <div class="container-fluid">
                 <div class="categories-container">
@@ -360,27 +293,27 @@
                         <button class="add-category-btn" onclick="showAddCategoryRow()">+</button>
                     </div>
                     <c:if test="${not empty error}">
-                        <div class="error-message">${error}</div>
+                        <div class="alert alert-danger" role="alert">${error}</div>
                     </c:if>
                     <c:if test="${not empty success}">
-                        <div class="success-message">${success}</div>
+                        <div class="alert alert-success" role="alert">${success}</div>
                     </c:if>
                     <ul class="categories-list">
                         <li class="new-category-input" id="addCategoryRow" style="display: none;">
                             <form id="addCategoryForm" method="POST" action="${pageContext.request.contextPath}/AdminCategory">
                                 <input type="hidden" name="action" value="add">
-                                <input type="text" name="categoryName" id="newCategoryName" placeholder="Enter new category name">
-                                <button type="submit" class="save-category-btn">Save</button>
-                                <button type="button" class="cancel-category-btn" onclick="hideAddCategoryRow()">Cancel</button>
+                                <input type="text" name="categoryName" id="newCategoryName" placeholder="Enter new category name" class="form-control">
+                                <button type="submit" class="save-category-btn btn btn-success">Save</button>
+                                <button type="button" class="cancel-category-btn btn btn-danger" onclick="hideAddCategoryRow()">Cancel</button>
                             </form>
                         </li>
                         <c:forEach var="categoryName" items="${categoriesName}">
-                            <li>
+                            <li id="category-${categoryName}">
                                 <div class="category-header">
                                     <span class="category-name" onclick="toggleSubcategories('${categoryName}')">${categoryName}</span>
                                     <div class="category-actions">
-                                        <img src="${pageContext.request.contextPath}/img/category/edit-text.png" alt="Edit" onclick="editCategory('${categoryName}')">
-                                        <img src="${pageContext.request.contextPath}/img/category/delete.png" alt="Delete" onclick="deleteCategory('${categoryName}')">
+                                        <i class="fas fa-edit" alt="Edit" onclick="editCategory('${categoryName}')" style="cursor:pointer; margin-right:10px;"></i>
+                                        <i class="fas fa-trash-alt" alt="Delete" onclick="deleteCategory('${categoryName}')" style="cursor:pointer; margin-right:10px;"></i>
                                         <button class="add-subcategory-btn" id="addSubcategoryBtn-${categoryName}" onclick="showAddSubcategoryRow('${categoryName}')">+</button>
                                     </div>
                                 </div>
@@ -389,8 +322,8 @@
                                         <li>
                                             <span class="subcategory-name">${subcategory.name}</span>
                                             <div class="subcategory-actions">
-                                                <img src="${pageContext.request.contextPath}/img/category/edit-text.png" alt="Edit" onclick="editSubcategory('${subcategory.name}', '${categoryName}')">
-                                                <img src="${pageContext.request.contextPath}/img/category/delete.png" alt="Delete" onclick="deleteSubcategory('${subcategory.name}', '${categoryName}')">
+                                                <i class="fas fa-edit" alt="Edit" onclick="editSubcategory('${subcategory.name}', '${categoryName}')" style="cursor:pointer; margin-right:10px;"></i>
+                                                <i class="fas fa-trash-alt" alt="Delete" onclick="deleteSubcategory('${subcategory.name}', '${categoryName}')" style="cursor:pointer; margin-right:10px;"></i>
                                             </div>
                                         </li>
                                     </c:forEach>
@@ -398,9 +331,9 @@
                                         <form id="addSubcategoryForm" method="POST" action="${pageContext.request.contextPath}/AdminCategory">
                                             <input type="hidden" name="action" value="addSubcategory">
                                             <input type="hidden" name="categoryName" value="${categoryName}">
-                                            <input type="text" name="subcategoryName" placeholder="Enter new subcategory name">
-                                            <button type="submit" class="save-subcategory-btn">Save</button>
-                                            <button type="button" class="cancel-subcategory-btn" onclick="hideAddSubcategoryRow('${categoryName}')">Cancel</button>
+                                            <input type="text" name="subcategoryName" placeholder="Enter new subcategory name" class="form-control">
+                                            <button type="submit" class="save-subcategory-btn btn btn-success">Save</button>
+                                            <button type="button" class="cancel-subcategory-btn btn btn-danger" onclick="hideAddSubcategoryRow('${categoryName}')">Cancel</button>
                                         </form>
                                     </li>
                                 </ul>
@@ -411,69 +344,68 @@
             </div>
         </main>
         <div class="ttr-overlay"></div>
-        <%-- FOOTER --%>
-        <%@ include file="../template/footer.jsp" %>
+
         <%-- BACK TO TOP --%>
         <%@ include file="../template/backToTop.jsp" %>
         <!-- JS here -->
         <%@ include file="../template/script.jsp" %>
-        <script src="assets/js/jquery.min.js"></script>
-        <script src="assets/vendors/bootstrap/js/popper.min.js"></script>
-        <script src="assets/vendors/bootstrap/js/bootstrap.min.js"></script>
-        <script src='assets/vendors/scroll/scrollbar.min.js'></script>
-        <script src="assets/vendors/chart/chart.min.js"></script>
-        <script src="assets/js/admin.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/js/jquery.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/js/popper.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/js/bootstrap.min.js"></script>
         <script>
-            function showAddCategoryRow() {
-                document.getElementById('addCategoryRow').style.display = 'flex';
-            }
-            function hideAddCategoryRow() {
-                document.getElementById('addCategoryRow').style.display = 'none';
-                document.getElementById('newCategoryName').value = '';
-            }
-            function editCategory(categoryName) {
-                document.getElementById('editCategoryName').value = categoryName;
-                document.getElementById('oldCategoryName').value = categoryName;
-                openModal('editModal');
-            }
-            function deleteCategory(categoryName) {
-                document.getElementById('deleteCategoryName').value = categoryName;
-                openModal('deleteModal');
-            }
-            function toggleSubcategories(categoryName) {
-                var subcategoriesList = document.getElementById('subcategories-' + categoryName);
-                var addSubcategoryBtn = document.getElementById('addSubcategoryBtn-' + categoryName);
-                if (subcategoriesList.style.display === 'none' || subcategoriesList.style.display === '') {
-                    subcategoriesList.style.display = 'block';
-                    addSubcategoryBtn.style.display = 'inline';
-                } else {
-                    subcategoriesList.style.display = 'none';
-                    addSubcategoryBtn.style.display = 'none';
-                }
-            }
-            function showAddSubcategoryRow(categoryName) {
-                document.getElementById('addSubcategoryRow-' + categoryName).style.display = 'flex';
-            }
-            function hideAddSubcategoryRow(categoryName) {
-                document.getElementById('addSubcategoryRow-' + categoryName).style.display = 'none';
-            }
-            function editSubcategory(subcategoryName, categoryName) {
-                document.getElementById('editSubcategoryName').value = subcategoryName;
-                document.getElementById('oldSubcategoryName').value = subcategoryName;
-                document.getElementById('categoryNameForSubcategory').value = categoryName;
-                openModal('editSubcategoryModal');
-            }
-            function deleteSubcategory(subcategoryName, categoryName) {
-                document.getElementById('deleteSubcategoryName').value = subcategoryName;
-                document.getElementById('categoryNameForSubcategoryDelete').value = categoryName;
-                openModal('deleteSubcategoryModal');
-            }
-            function openModal(modalId) {
-                document.getElementById(modalId).style.display = 'flex';
-            }
-            function closeModal(modalId) {
-                document.getElementById(modalId).style.display = 'none';
-            }
+                                                function showAddCategoryRow() {
+                                                    document.getElementById('addCategoryRow').style.display = 'flex';
+                                                }
+                                                function hideAddCategoryRow() {
+                                                    document.getElementById('addCategoryRow').style.display = 'none';
+                                                    document.getElementById('newCategoryName').value = '';
+                                                }
+                                                function editCategory(categoryName) {
+                                                    document.getElementById('editCategoryName').value = categoryName;
+                                                    document.getElementById('oldCategoryName').value = categoryName;
+                                                    openModal('editModal');
+                                                }
+                                                function deleteCategory(categoryName) {
+                                                    document.getElementById('deleteCategoryName').value = categoryName;
+                                                    openModal('deleteModal');
+                                                }
+                                                function toggleSubcategories(categoryName) {
+                                                    var subcategoriesList = document.getElementById('subcategories-' + categoryName);
+                                                    var addSubcategoryBtn = document.getElementById('addSubcategoryBtn-' + categoryName);
+                                                    var categoryElement = document.getElementById('category-' + categoryName);
+                                                    if (subcategoriesList.style.display === 'none' || subcategoriesList.style.display === '') {
+                                                        subcategoriesList.style.display = 'block';
+                                                        addSubcategoryBtn.style.display = 'inline';
+                                                        categoryElement.classList.add('active');
+                                                    } else {
+                                                        subcategoriesList.style.display = 'none';
+                                                        addSubcategoryBtn.style.display = 'none';
+                                                        categoryElement.classList.remove('active');
+                                                    }
+                                                }
+                                                function showAddSubcategoryRow(categoryName) {
+                                                    document.getElementById('addSubcategoryRow-' + categoryName).style.display = 'flex';
+                                                }
+                                                function hideAddSubcategoryRow(categoryName) {
+                                                    document.getElementById('addSubcategoryRow-' + categoryName).style.display = 'none';
+                                                }
+                                                function editSubcategory(subcategoryName, categoryName) {
+                                                    document.getElementById('editSubcategoryName').value = subcategoryName;
+                                                    document.getElementById('oldSubcategoryName').value = subcategoryName;
+                                                    document.getElementById('categoryNameForSubcategory').value = categoryName;
+                                                    openModal('editSubcategoryModal');
+                                                }
+                                                function deleteSubcategory(subcategoryName, categoryName) {
+                                                    document.getElementById('deleteSubcategoryName').value = subcategoryName;
+                                                    document.getElementById('categoryNameForSubcategoryDelete').value = categoryName;
+                                                    openModal('deleteSubcategoryModal');
+                                                }
+                                                function openModal(modalId) {
+                                                    document.getElementById(modalId).style.display = 'flex';
+                                                }
+                                                function closeModal(modalId) {
+                                                    document.getElementById(modalId).style.display = 'none';
+                                                }
         </script>
         <div id="editModal" class="modal">
             <div class="modal-content-cate">
@@ -482,9 +414,9 @@
                 <form id="editCategoryForm" method="POST" action="${pageContext.request.contextPath}/AdminCategory">
                     <input type="hidden" name="action" value="edit">
                     <input type="hidden" name="oldCategoryName" id="oldCategoryName">
-                    <input type="text" name="newCategoryName" id="editCategoryName" placeholder="Enter new category name">
-                    <button type="submit" class="modal-save-btn">Save</button>
-                    <button type="button" class="modal-cancel-btn" onclick="closeModal('editModal')">Cancel</button>
+                    <input type="text" name="newCategoryName" id="editCategoryName" placeholder="Enter new category name" class="form-control">
+                    <button type="submit" class="modal-save-btn btn btn-success">Save</button>
+                    <button type="button" class="modal-cancel-btn btn btn-danger" onclick="closeModal('editModal')">Cancel</button>
                 </form>
             </div>
         </div>
@@ -496,8 +428,8 @@
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="categoryName" id="deleteCategoryName">
                     <p>Are you sure you want to delete this category?</p>
-                    <button type="submit" class="modal-delete-btn">Delete</button>
-                    <button type="button" class="modal-cancel-btn" onclick="closeModal('deleteModal')">Cancel</button>
+                    <button type="submit" class="modal-delete-btn btn btn-danger">Delete</button>
+                    <button type="button" class="modal-cancel-btn btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
                 </form>
             </div>
         </div>
@@ -509,9 +441,9 @@
                     <input type="hidden" name="action" value="editSubcategory">
                     <input type="hidden" name="oldSubcategoryName" id="oldSubcategoryName">
                     <input type="hidden" name="categoryName" id="categoryNameForSubcategory">
-                    <input type="text" name="newSubcategoryName" id="editSubcategoryName" placeholder="Enter new subcategory name">
-                    <button type="submit" class="modal-save-btn">Save</button>
-                    <button type="button" class="modal-cancel-btn" onclick="closeModal('editSubcategoryModal')">Cancel</button>
+                    <input type="text" name="newSubcategoryName" id="editSubcategoryName" placeholder="Enter new subcategory name" class="form-control">
+                    <button type="submit" class="modal-save-btn btn btn-success">Save</button>
+                    <button type="button" class="modal-cancel-btn btn btn-danger" onclick="closeModal('editSubcategoryModal')">Cancel</button>
                 </form>
             </div>
         </div>
@@ -524,11 +456,10 @@
                     <input type="hidden" name="subcategoryName" id="deleteSubcategoryName">
                     <input type="hidden" name="categoryName" id="categoryNameForSubcategoryDelete">
                     <p>Are you sure you want to delete this subcategory?</p>
-                    <button type="submit" class="modal-delete-btn">Delete</button>
-                    <button type="button" class="modal-cancel-btn" onclick="closeModal('deleteSubcategoryModal')">Cancel</button>
+                    <button type="submit" class="modal-delete-btn btn btn-danger">Delete</button>
+                    <button type="button" class="modal-cancel-btn btn btn-secondary" onclick="closeModal('deleteSubcategoryModal')">Cancel</button>
                 </form>
             </div>
         </div>
     </body>
 </html>
-ss

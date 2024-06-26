@@ -8,15 +8,14 @@ public class Category {
     private List<SubCategory> subCategories;
 
     // Constructor
+    public Category() {
+    }
+    
     public Category(int categoryID, String name, List<SubCategory> subCategories) {
         this.categoryID = categoryID;
         this.name = name;
         this.subCategories = subCategories;
     }
-
-    public Category() {
-    }
-    
 
     // Getters and Setters
     public int getCategoryID() {

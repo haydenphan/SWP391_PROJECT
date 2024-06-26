@@ -1,32 +1,28 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class SectionLecture {
 
     private int lectureID;
     private int sectionID;
     private String lectureName;
-    private String lectureType;
     private String lectureURL;
     private LocalDateTime createdDate;
+    private List<LectureMaterial> lectureMaterials;
 
     // Constructor
     public SectionLecture() {
     }
 
-    public SectionLecture(int lectureID, int sectionID, String lectureName, String lectureType, String lectureURL, LocalDateTime createdDate) {
+    public SectionLecture(int lectureID, int sectionID, String lectureName, String lectureURL, LocalDateTime createdDate, List<LectureMaterial> lectureMaterials) {
         this.lectureID = lectureID;
         this.sectionID = sectionID;
         this.lectureName = lectureName;
-        this.lectureType = lectureType;
         this.lectureURL = lectureURL;
         this.createdDate = createdDate;
-    }
-    
-    public String getMaterialURL() {
-        if("Document".equals(this.lectureType)) return this.getLectureURL();
-        return null;
+        this.lectureMaterials = lectureMaterials;
     }
 
     // Getters and Setters
@@ -54,14 +50,6 @@ public class SectionLecture {
         this.lectureName = lectureName;
     }
 
-    public String getLectureType() {
-        return lectureType;
-    }
-
-    public void setLectureType(String lectureType) {
-        this.lectureType = lectureType;
-    }
-
     public String getLectureURL() {
         return lectureURL;
     }
@@ -78,6 +66,14 @@ public class SectionLecture {
         this.createdDate = createdDate;
     }
 
+    public List<LectureMaterial> getLectureMaterials() {
+        return lectureMaterials;
+    }
+
+    public void setLectureMaterials(List<LectureMaterial> lectureMaterials) {
+        this.lectureMaterials = lectureMaterials;
+    }
+
     // Override toString() method for debugging
     @Override
     public String toString() {
@@ -85,7 +81,6 @@ public class SectionLecture {
                 + "lectureID=" + lectureID
                 + ", sectionID=" + sectionID
                 + ", lectureName='" + lectureName + '\''
-                + ", lectureType='" + lectureType + '\''
                 + ", lectureURL='" + lectureURL + '\''
                 + ", createdDate=" + createdDate
                 + '}';

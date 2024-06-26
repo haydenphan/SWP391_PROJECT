@@ -19,7 +19,7 @@
             <div class="course-info-wrapper">
                 <div class="cart-info-body">
                     <span class="category-color category-color-1"><a href="${pageContext.request.contextPath}/CourseList?subcategoryID=${currentCourse.subcategoryID}"><%=
-                        SubcategoryDAO.getCategoryNameBySubId(currentCourse.getSubcategoryID())
+                        SubcategoryDAO.getCategoryNameBySubId(currentCourse.getSubcategoryID()) != null ? SubcategoryDAO.getCategoryNameBySubId(currentCourse.getSubcategoryID()) : "Others"
                             %></a></span>
 
                     <h3>

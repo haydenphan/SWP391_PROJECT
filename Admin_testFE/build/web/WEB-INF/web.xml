@@ -36,4 +36,14 @@
         <servlet-name>TransactionServlet</servlet-name>
         <url-pattern>/transactionservlet</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>WithdrawServlet</servlet-name>
+        <servlet-class>controller.WithdrawServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>WithdrawServlet</servlet-name>
+        <url-pattern>/withdraw</url-pattern>
+    </servlet-mapping>
+
 </web-app>

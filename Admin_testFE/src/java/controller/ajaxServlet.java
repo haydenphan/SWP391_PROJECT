@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-
 @WebServlet(name = "ajaxServlet", urlPatterns = {"/ajaxServlet"})
 public class ajaxServlet extends HttpServlet {
 

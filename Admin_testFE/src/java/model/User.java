@@ -145,6 +145,20 @@ public class User {
         this.bio = bio;
         this.storedSalt = storedSalt;
     }
+    public User(int userID, String username, String passwordHash, String firstName, String lastName, String email, int roleID, LocalDateTime registrationDate, boolean isActive, String avatar, String bio, byte[] storedSalt) {
+        this.userID = userID;
+        this.userName = username;
+        this.passwordHash = passwordHash;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.roleID = roleID;
+        this.registrationDate = registrationDate;
+        this.isActive = isActive;
+        this.avatar = avatar;
+        this.bio = bio;
+        this.storedSalt = storedSalt;
+    }
 
     @Override
     public String toString() {

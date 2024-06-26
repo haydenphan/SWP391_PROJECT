@@ -8,10 +8,14 @@
 <!doctype html>
 <html class="no-js" lang="zxx">
 
-
     <head>
         <%-- HEAD --%>
         <%@ include file="../template/head.jsp" %>
+
+        <!-- jQuery and Bootstrap JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </head>
 
     <body>
@@ -31,12 +35,11 @@
                 System.out.println(instructorID);
                 courses = CourseDAO.getCoursesByInstructor(instructorID);
             %>
-            
+
             <!-- hero-area -->
             <jsp:include page="../template/heroArea.jsp">
                 <jsp:param name="title" value="My profile" />
             </jsp:include>
-
 
             <!-- User Profile Start-->
             <div class="course-details-area pt-120 pb-100">
@@ -116,6 +119,10 @@
                                             History</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="wallet-tab" data-bs-toggle="tab" data-bs-target="#wallet"
+                                                type="button" role="tab" aria-controls="wallet" aria-selected="false"><i class="fas fa-wallet"></i> Wallet</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="setting-tab" data-bs-toggle="tab"
                                                 data-bs-target="#setting" type="button" role="tab" aria-controls="setting"
                                                 aria-selected="false"><i class="fas fa-cog"></i> Settings</button>
@@ -174,7 +181,7 @@
                                         <form style="margin-bottom: 50px" action="${pageContext.request.contextPath}/course-adding-servlet/create-course" method="POST">
                                             <button type='submit' class="cont-btn">New course</button>
                                         </form>
-                                        
+
                                         <div class="row">
                                             <c:forEach var="course" items="<%=courses%>">
                                                 <c:set var="currentCourse" value="${course}" scope="request" />
@@ -197,6 +204,28 @@
                                     <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
                                         <h4 class='mb-25'>Transaction History</h4>
 
+                                    </div>
+
+                                    <div class="tab-pane fade" id="wallet" role="tabpanel" aria-labelledby="wallet-tab">
+                                        <h4 class='mb-25'>Wallet</h4>
+                                        <div class="modal-body">
+                                            <p id="walletBalance">Loading...</p>
+                                            <form id="withdrawForm" action="${pageContext.request.contextPath}/withdraw" method="post">
+                                                <div class="form-group">
+                                                    <label for="accountNumber">Account Number:</label>
+                                                    <input type="text" class="form-control" id="accountNumber" name="accountNumber" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="bankName">Bank Name:</label>
+                                                    <input type="text" class="form-control" id="bankName" name="bankName" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="amount">Amount:</label>
+                                                    <input type="number" class="form-control" id="amount" name="amount" required>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Withdraw</button>
+                                            </form>
+                                        </div>
                                     </div>
                                     <div class="tab-pane fade" id="ques" role="tabpanel" aria-labelledby="ques-tab">
                                         <p>No question completed yet.</p>
@@ -397,6 +426,48 @@
                             });
                 }
             }
+
+            function fetchWalletBalance() {
+                fetch('${pageContext.request.contextPath}/walletBalance')
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            document.getElementById("walletBalance").innerText = "Balance: " + data.balance + " VND";
+                        })
+                        .catch(error => {
+                            document.getElementById("walletBalance").innerText = "Error loading balance";
+                        });
+            }
+
+            document.getElementById("wallet-tab").addEventListener("click", fetchWalletBalance);
+
+            document.getElementById("withdrawForm").onsubmit = function () {
+                alert('Withdrawal successful');
+            }
+            document.addEventListener('DOMContentLoaded', function () {
+                fetch('${pageContext.request.contextPath}/walletBalance')
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById("walletBalance").innerText = "Balance: " + data.balance + " VND";
+                        })
+                        .catch(error => {
+                            document.getElementById("walletBalance").innerText = "Error loading balance";
+                        });
+
+                fetch('${pageContext.request.contextPath}/getBankAccount')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.accountNumber) {
+                                document.getElementById('accountNumber').value = data.accountNumber;
+                                document.getElementById('bankName').value = data.bankName;
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+            });
         </script>
     </body>
 

@@ -6,15 +6,15 @@ public class SubCategory {
     private String name;
 
     // Constructor
+    public SubCategory() {
+    }
+    
     public SubCategory(int subCategoryID, int categoryID, String name) {
         this.subCategoryID = subCategoryID;
         this.categoryID = categoryID;
         this.name = name;
     }
 
-    public SubCategory() {
-    }
-    
     // Getters and Setters
     public int getSubCategoryID() {
         return subCategoryID;
