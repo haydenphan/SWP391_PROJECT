@@ -49,11 +49,11 @@ public class CourseAddingServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         switch (actionString) {
-            case "/course-info":
+            case "/save-info" -> {
                 // Fetch form parameters
+                String subcategory = request.getParameter("subcategory");
                 String name = request.getParameter("courseName");
                 double price = Double.parseDouble(request.getParameter("price"));
-                String category = request.getParameter("category");
                 String language = request.getParameter("language");
                 String level = request.getParameter("level");
                 String description = request.getParameter("description");
@@ -62,29 +62,6 @@ public class CourseAddingServlet extends HttpServlet {
                 // Handle cover image upload
                 Part filePart = request.getPart("coverImage");
                 String coverImageUrl = uploadToCloudinary(filePart);
-
-                // Save the cover image URL to the session
-                session.setAttribute("coverImageUrl", coverImageUrl);
-                session.setAttribute("name", name);
-                session.setAttribute("price", price);
-                session.setAttribute("category", category);
-                session.setAttribute("language", language);
-                session.setAttribute("level", level);
-                session.setAttribute("description", description);
-                session.setAttribute("requirements", requirements);
-
-                url = "/pages/createCourse2.jsp";
-                break;
-
-            case "/save-info":
-                String subcategory = request.getParameter("subcategory");
-                name = (String) session.getAttribute("name");
-                price = (Double) session.getAttribute("price");
-                language = (String) session.getAttribute("language");
-                level = (String) session.getAttribute("level");
-                description = (String) session.getAttribute("description");
-                requirements = (String) session.getAttribute("requirements");
-                coverImageUrl = (String) session.getAttribute("coverImageUrl");
 
                 CourseDAO courseDAO = new CourseDAO();
                 Course course = new Course();
@@ -105,26 +82,17 @@ public class CourseAddingServlet extends HttpServlet {
                 course.setLevelID(LevelDAO.getLevelIdByName(level));
                 course.setSubcategoryID(SubcategoryDAO.getSubcategoryIdByName(subcategory));
                 courseDAO.insert(course);
-
-                session.removeAttribute("coverImageUrl");
-                session.removeAttribute("name");
-                session.removeAttribute("price");
-                session.removeAttribute("category");
-                session.removeAttribute("language");
-                session.removeAttribute("level");
-                session.removeAttribute("description");
-                session.removeAttribute("requirements");
-
-                url = "/pages/testSection.jsp?courseId=" + courseDAO.getCourseIDByInstructorAndName(course.getCreatedBy(), course.getCourseName());
-                break;
-
-            case "/create-course":
+                session.setAttribute("courseCreated", true);
                 url = "/pages/createCourse.jsp";
-                break;
+            }
 
-            default:
+            case "/create-course" ->
+                url = "/pages/createCourse.jsp";
+
+            default -> {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
+            }
         }
 
         RequestDispatcher rd = getServletContext().getRequestDispatcher(url);

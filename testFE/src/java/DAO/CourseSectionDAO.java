@@ -15,13 +15,14 @@ public class CourseSectionDAO extends DAO<CourseSection> {
 
     @Override
     public int insert(CourseSection courseSection) {
-        String sql = "INSERT INTO CourseSections (CourseID, SectionName, SectionOrder, CreatedDate) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO CourseSections (CourseID, SectionName, SectionOrder, SectionDescription, CreatedDate) VALUES (?, ?, ?, ?, ?)";
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, courseSection.getCourseID());
             ps.setString(2, courseSection.getSectionName());
             ps.setInt(3, courseSection.getSectionOrder());
-            ps.setObject(4, courseSection.getCreatedDate());
+            ps.setString(4, courseSection.getSectionDescription());
+            ps.setObject(5, courseSection.getCreatedDate());
             int affectedRows = ps.executeUpdate();
 
             if (affectedRows == 0) {
@@ -58,6 +59,7 @@ public class CourseSectionDAO extends DAO<CourseSection> {
                     courseSection.setSectionName(rs.getString("SectionName"));
                     courseSection.setSectionOrder(rs.getInt("SectionOrder"));
                     courseSection.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
+                    courseSection.setSectionDescription(rs.getString("SectionDescription"));
                     courseSection.setLectures(SectionLectureDAO.getLecturesBySectionId(courseSection.getSectionID()));
                     courseSections.add(courseSection);
                 }
@@ -72,14 +74,15 @@ public class CourseSectionDAO extends DAO<CourseSection> {
     }
 
     public static boolean updateSection(CourseSection courseSection) {
-        String sql = "UPDATE CourseSections SET SectionName = ?, SectionOrder = ?, CreatedDate = ? WHERE SectionID = ?";
+        String sql = "UPDATE CourseSections SET SectionName = ?, SectionOrder = ?, CreatedDate = ?, SectionDescription = ? WHERE SectionID = ?";
 
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, courseSection.getSectionName());
             ps.setInt(2, courseSection.getSectionOrder());
             ps.setObject(3, courseSection.getCreatedDate());
-            ps.setInt(4, courseSection.getSectionID());
+            ps.setString(4, courseSection.getSectionDescription());
+            ps.setInt(5, courseSection.getSectionID());
 
             int rowsUpdated = ps.executeUpdate();
             return rowsUpdated > 0;
@@ -103,6 +106,7 @@ public class CourseSectionDAO extends DAO<CourseSection> {
 //            return -1; // Return -1 in case of error
 //        }
 //    }
+
     public static CourseSection getSectionById(int sectionId) {
         String sql = "SELECT * FROM CourseSections WHERE SectionID = ?";
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -116,6 +120,7 @@ public class CourseSectionDAO extends DAO<CourseSection> {
                     courseSection.setSectionName(rs.getString("SectionName"));
                     courseSection.setSectionOrder(rs.getInt("SectionOrder"));
                     courseSection.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
+                    courseSection.setSectionDescription(rs.getString("SectionDescription"));
                     courseSection.setLectures(SectionLectureDAO.getLecturesBySectionId(courseSection.getSectionID()));
                     return courseSection;
                 }

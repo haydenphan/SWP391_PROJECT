@@ -20,6 +20,7 @@ public class CourseSectionServlet extends HttpServlet {
         int courseId = Integer.parseInt(request.getParameter("courseId"));
         List<CourseSection> sectionList = CourseSectionDAO.getCourseSections(courseId);
         if (sectionList != null) {
+            request.setAttribute("courseId", courseId);
             request.setAttribute("sectionList", sectionList);
             RequestDispatcher dis = request.getRequestDispatcher("/pages/manageSection.jsp");
             dis.forward(request, response);
