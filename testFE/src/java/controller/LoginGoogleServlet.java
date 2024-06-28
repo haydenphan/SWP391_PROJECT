@@ -1,31 +1,31 @@
-//package controller;
-//
-//import DAO.UserDAO;
-//import jakarta.servlet.RequestDispatcher;
-//import jakarta.servlet.ServletException;
-//import jakarta.servlet.annotation.WebServlet;
-//import jakarta.servlet.http.HttpServlet;
-//import jakarta.servlet.http.HttpServletRequest;
-//import jakarta.servlet.http.HttpServletResponse;
-//import utils.GoogleUtils;
-//import model.User;
-//
-//import java.io.IOException;
-//
-//@WebServlet(name = "LoginGoogleServlet", urlPatterns = {"/loginByGG"})
-//public class LoginGoogleServlet extends HttpServlet {
-//
-//    private static final long serialVersionUID = 1L;
-//
-//    @Override
-//    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        String code = request.getParameter("code");
-//        String state = request.getParameter("state");
-//
-//        if (code == null || code.isEmpty()) {
-//            RequestDispatcher dis = request.getRequestDispatcher("/pages/home.jsp");
-//            dis.forward(request, response);
-//        } else {
+package controller;
+
+import DAO.UserDAO;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import utils.GoogleUtils;
+import model.User;
+
+import java.io.IOException;
+
+@WebServlet(name = "LoginGoogleServlet", urlPatterns = {"/loginByGG"})
+public class LoginGoogleServlet extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String code = request.getParameter("code");
+        String state = request.getParameter("state");
+
+        if (code == null || code.isEmpty()) {
+            RequestDispatcher dis = request.getRequestDispatcher("/pages/home.jsp");
+            dis.forward(request, response);
+        } else {
 //            try {
 //                String accessToken = GoogleUtils.getToken(code);
 //                User googleUser = GoogleUtils.getUserInfo(accessToken);
@@ -67,11 +67,11 @@
 //            } catch (Exception ex) {
 //                java.util.logging.Logger.getLogger(LoginGoogleServlet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 //            }
-//        }
-//    }
-//
-//    @Override
-//    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        doGet(request, response);
-//    }
-//}
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
+}

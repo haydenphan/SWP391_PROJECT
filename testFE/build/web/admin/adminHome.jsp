@@ -15,14 +15,14 @@
 
     <head>
         <%-- HEAD --%>
-
+        
         <!-- Vendors Style-->
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/vendors_css.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/vendors_css.css">
 
-        <!-- Style-->
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/horizontal-menu.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/style.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/skin_color.css">
+	<!-- Style-->
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/horizontal-menu.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/style.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/skin_color.css">
         <%@ include file="../template/head.jsp" %>
     </head>
 
@@ -50,11 +50,11 @@
                                         <nav id="mobile-menu">
                                             <ul>
                                                 <li class="menu-item-has-children"><a href="index.jsp">Dashboard</a>
-
+                                                    
                                                 </li>
                                                 <li class="menu-item-has-children"><a href="#">Course</a>
                                                     <ul class="sub-menu">
-                                                        <li><a href="./PendingCourseList">Pending Courses</a></li>
+                                                        <li><a href="${pageContext.request.contextPath}/admin/pendingCourseList.jsp">Pending Courses</a></li>
                                                         <!--                                       
                                                                                                <li><a href="course-2.jsp">Course 2</a></li>
                                                                                                <li><a href="course-3.jsp">Course 3</a></li>
@@ -259,35 +259,135 @@
                                     <div class="box-header no-border px-0">
                                         <h3 class="fw-500 box-title">Popular Courses</h3>
                                         <div class="box-controls pull-right d-md-flex d-none">
-                                            <a href="./PendingCourseList">All Courses</a>
+                                            <a href="course.html">All Courses</a>
                                         </div>
                                     </div>
                                 </div>
                                 <div>
-                                    <c:forEach var="c" items="${topEnrolled}">
-                                        <div class="box mb-15 pull-up">
-                                            <div class="box-body">
-                                                <div class="d-flex align-items-center justify-content-between">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="me-15 bg-warning h-50 w-50 l-h-55 rounded text-center">
-                                                            <span class="fs-24">U</span>
-                                                        </div>
-                                                        <div class="d-flex flex-column fw-500">
-                                                            <a href="course.html"
-                                                               class="text-dark hover-warning mb-1 fs-16">${c.getCourseName()}</a>
-                                                            <span class="text-fade">${c.getTotalEnrolled()} ENROLLED</span>
-                                                        </div>
+                                    <div class="box mb-15 pull-up">
+                                        <div class="box-body">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-15 bg-warning h-50 w-50 l-h-55 rounded text-center">
+                                                        <span class="fs-24">U</span>
                                                     </div>
+                                                    <div class="d-flex flex-column fw-500">
+                                                        <a href="course.html"
+                                                           class="text-dark hover-warning mb-1 fs-16">UI/UX Design</a>
+                                                        <span class="text-fade">30+ Courses</span>
+                                                    </div>
+                                                </div>
 
-                                                    <div class="d-flex align-items-center">
-                                                        <a href="${pageContext.request.contextPath}/AdminCourseDetail?id=${c.getCourseID()}"
-                                                           class="waves-effect waves-light btn btn-sm btn-warning-light me-10">View
-                                                            Courses</a>
+                                                <div class="d-flex align-items-center">
+                                                    <a href="course.html"
+                                                       class="waves-effect waves-light btn btn-sm btn-warning-light me-10">View
+                                                        Courses</a>
+                                                    <div class="dropdown">
+                                                        <a class="px-10 pt-5" href="#" data-bs-toggle="dropdown"><i
+                                                                class="fa fa-ellipsis-v"></i></a>
+                                                        <div class="dropdown-menu dropdown-menu-end">
+                                                            <a class="dropdown-item flexbox" href="#">Apply</a>
+                                                            <a class="dropdown-item flexbox" href="#">Make a Payment</a>
+                                                            <a class="dropdown-item flexbox" href="#">Benefits</a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </c:forEach>
+                                    </div>
+                                    <div class="box mb-15 pull-up">
+                                        <div class="box-body">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-15 bg-danger h-50 w-50 l-h-55 rounded text-center">
+                                                        <span class="fs-24">M</span>
+                                                    </div>
+                                                    <div class="d-flex flex-column fw-500">
+                                                        <a href="course.html"
+                                                           class="text-dark hover-danger mb-1 fs-16">Marketing</a>
+                                                        <span class="text-fade">25+ Courses</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex align-items-center">
+                                                    <a href="course.html"
+                                                       class="waves-effect waves-light btn btn-sm btn-danger-light me-10">View
+                                                        Courses</a>
+                                                    <div class="dropdown">
+                                                        <a class="px-10 pt-5" href="#" data-bs-toggle="dropdown"><i
+                                                                class="fa fa-ellipsis-v"></i></a>
+                                                        <div class="dropdown-menu dropdown-menu-end">
+                                                            <a class="dropdown-item flexbox" href="#">Apply</a>
+                                                            <a class="dropdown-item flexbox" href="#">Make a Payment</a>
+                                                            <a class="dropdown-item flexbox" href="#">Benefits</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="box mb-15 pull-up">
+                                        <div class="box-body">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-15 bg-success h-50 w-50 l-h-55 rounded text-center">
+                                                        <span class="fs-24">W</span>
+                                                    </div>
+                                                    <div class="d-flex flex-column fw-500">
+                                                        <a href="course.html" class="text-dark hover-success mb-1 fs-16">Web
+                                                            Dev.</a>
+                                                        <span class="text-fade">30+ Courses</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex align-items-center">
+                                                    <a href="course.html"
+                                                       class="waves-effect waves-light btn btn-sm btn-success-light me-10">View
+                                                        Courses</a>
+                                                    <div class="dropdown">
+                                                        <a class="px-10 pt-5" href="#" data-bs-toggle="dropdown"><i
+                                                                class="fa fa-ellipsis-v"></i></a>
+                                                        <div class="dropdown-menu dropdown-menu-end">
+                                                            <a class="dropdown-item flexbox" href="#">Apply</a>
+                                                            <a class="dropdown-item flexbox" href="#">Make a Payment</a>
+                                                            <a class="dropdown-item flexbox" href="#">Benefits</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="box mb-15 pull-up">
+                                        <div class="box-body">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-15 bg-primary h-50 w-50 l-h-55 rounded text-center">
+                                                        <span class="fs-24">M</span>
+                                                    </div>
+                                                    <div class="d-flex flex-column fw-500">
+                                                        <a href="course.html"
+                                                           class="text-dark hover-primary mb-1 fs-16">Mathematics</a>
+                                                        <span class="text-fade">50+ Courses</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex align-items-center">
+                                                    <a href="course.html"
+                                                       class="waves-effect waves-light btn btn-sm btn-primary-light me-10">View
+                                                        Courses</a>
+                                                    <div class="dropdown">
+                                                        <a class="px-10 pt-5" href="#" data-bs-toggle="dropdown"><i
+                                                                class="fa fa-ellipsis-v"></i></a>
+                                                        <div class="dropdown-menu dropdown-menu-end">
+                                                            <a class="dropdown-item flexbox" href="#">Apply</a>
+                                                            <a class="dropdown-item flexbox" href="#">Make a Payment</a>
+                                                            <a class="dropdown-item flexbox" href="#">Benefits</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-12">

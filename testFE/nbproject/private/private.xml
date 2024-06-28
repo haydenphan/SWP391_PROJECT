@@ -3,14 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/tai%20lieu/SWP391_PROJECT/SWP391_PROJECT/testFE/src/java/controller/AdminCourseManage.java</file>
-            <file>file:/D:/tai%20lieu/SWP391_PROJECT/SWP391_PROJECT/testFE/src/java/DAO/CourseDAO.java</file>
-            <file>file:/D:/tai%20lieu/SWP391_PROJECT/SWP391_PROJECT/testFE/src/java/model/Course.java</file>
-            <file>file:/D:/tai%20lieu/SWP391_PROJECT/SWP391_PROJECT/testFE/web/admin/pendingCourseList.jsp</file>
-            <file>file:/D:/tai%20lieu/SWP391_PROJECT/SWP391_PROJECT/testFE/src/java/controller/Login.java</file>
-            <file>file:/D:/tai%20lieu/SWP391_PROJECT/SWP391_PROJECT/testFE/web/admin/adminHome.jsp</file>
-            <file>file:/D:/tai%20lieu/SWP391_PROJECT/SWP391_PROJECT/testFE/src/java/controller/AdminHomeServlet.java</file>
-            <file>file:/D:/tai%20lieu/SWP391_PROJECT/SWP391_PROJECT/testFE/src/java/controller/BestInstructorServlet.java</file>
+            <file>file:/D:/tai%20lieu/SWP391_PROJECT/SWP391_PROJECT/testFE/src/java/DAO/InstructorDAO.java</file>
+            <file>file:/D:/tai%20lieu/SWP391_PROJECT/SWP391_PROJECT/testFE/src/java/DAO/UserDAO.java</file>
         </group>
     </open-files>
 </project-private>

@@ -57,7 +57,7 @@ public class AdminCourseServlet extends HttpServlet {
         request.setAttribute("listcourses", allCourses);
 
         // Forward to JSP page
-        request.getRequestDispatcher("/admin/adminCourseApproval.jsp").forward(request, response);
+        request.getRequestDispatcher("/pages/adminCourseApproval.jsp").forward(request, response);
     } 
 
     @Override

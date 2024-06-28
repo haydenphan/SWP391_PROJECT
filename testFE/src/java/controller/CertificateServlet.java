@@ -2,10 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller;
 
-import DAO.CourseDAO;
+import DAO.CertificateDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,51 +12,60 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  *
  * @author quanhd
  */
-@WebServlet(name="AdminCourseManage", urlPatterns={"/AdminCourseManage"})
-public class AdminCourseManage extends HttpServlet {
-   
+@WebServlet(name = "CertificateServlet", urlPatterns = {"/Certificate"})
+public class CertificateServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AdminCourseManage</title>");  
+            out.println("<title>Servlet CertificateServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AdminCourseManage at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet CertificateServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    } 
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-    } 
+            throws ServletException, IOException {
+        try {
+            int userId = Integer.parseInt(request.getParameter("userId"));
+            CertificateDAO dao = new CertificateDAO();
+            List<String> certificateURLs = dao.getCertificateURLsByUserId(userId);
+
+            request.setAttribute("certificateURLs", certificateURLs);
+
+            request.getRequestDispatcher("/pages/adminCourseDetail.jsp").forward(request, response);
+        } catch (NumberFormatException e) {
+            response.getWriter().println("Invalid userId parameter");
+        } catch (Exception ex) {
+        }
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        CourseDAO cdao = new CourseDAO();
-        
-        String courseIDParam = request.getParameter("courseID");
-        if (courseIDParam != null) {
-            int courseID = Integer.parseInt(courseIDParam);
-            cdao.updateCourseStatus(courseID, true);
-        }
-        
-        response.sendRedirect("PendingCourseList");
+            throws ServletException, IOException {
+        processRequest(request, response);
     }
 
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
     @Override
     public String getServletInfo() {
         return "Short description";

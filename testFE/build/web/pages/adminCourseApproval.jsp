@@ -41,9 +41,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            
                             <c:forEach items="${listcourses}" var="c">
-                                <a href="${pageContext.request.contextPath}/adminCourseDetail?id=${courseID}" class="btn blue outline radius-xl">View details</a>
                                 <tr>
                                     <td>                                      
                                         <a class="text-heading font-semibold" href="#">
