@@ -3,9 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/testFE/src/java/controller/TestCommentServlet.java</file>
+            <file>file:/D:/testFE/src/java/controller/SectionCommentsServlet.java</file>
+            <file>file:/D:/testFE/web/css/viewSection.css</file>
             <file>file:/D:/testFE/web/pages/manageSection.jsp</file>
             <file>file:/D:/testFE/web/pages/manageLecture.jsp</file>
+            <file>file:/D:/testFE/src/java/controller/ViewSectionServlet.java</file>
+            <file>file:/D:/testFE/web/js/sectionComments.js</file>
             <file>file:/D:/testFE/src/java/controller/SectionLectureServlet.java</file>
+            <file>file:/D:/testFE/web/pages/viewSection.jsp</file>
         </group>
     </open-files>
 </project-private>
