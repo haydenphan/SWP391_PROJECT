@@ -106,7 +106,8 @@
 
         <div style="margin-top: 30px" class="container">
             <div class="row">
-                <c:forEach var="section" items="<%=sectionList%>">
+                <c:forEach var="section" items="${sectionList}">
+
                     <div class="col-lg-6">
                         <div class="section-card">
                             <div class="section-header">

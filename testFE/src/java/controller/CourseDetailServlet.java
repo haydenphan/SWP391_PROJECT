@@ -22,7 +22,7 @@ public class CourseDetailServlet extends HttpServlet {
         User user = (User) request.getSession().getAttribute("user");
         String courseID = request.getParameter("id");
         boolean hasEnrolled = user==null? false : ceDAO.isUserEnrolledInCourse(user.getUserID(), Integer.parseInt(courseID));
-        Course course = courseDAO.getCourseByID(courseID);
+        Course course = courseDAO.getCourseByID(Integer.parseInt(courseID));
         course.setNumberOfStarRatingList(courseDAO.getStarRatingsCount(courseID));
         request.setAttribute("course", course);
         request.setAttribute("hasEnrolled", hasEnrolled);

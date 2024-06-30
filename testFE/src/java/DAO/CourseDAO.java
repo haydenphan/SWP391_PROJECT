@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Course;
+import model.Quiz;
+import model.SectionLecture;
 import model.User;
 
 public class CourseDAO extends DAO<Course> {
@@ -66,7 +68,7 @@ public class CourseDAO extends DAO<Course> {
         return res;
     }
 
-    public Course getCourseByID(String ID) {
+    public Course getCourseByID(int ID) {
         String sql = "SELECT c.*, sc.SubcategoryName, l.LevelName, lg.LanguageName, ISNULL(AVG(cf.Rating), 0) AS AverageRating "
                 + "FROM Courses c "
                 + "LEFT JOIN CourseFeedback cf ON c.CourseID = cf.CourseID "
@@ -74,12 +76,12 @@ public class CourseDAO extends DAO<Course> {
                 + "LEFT JOIN CourseLevels l ON c.LevelID = l.LevelID "
                 + "LEFT JOIN CourseLanguages lg ON c.LanguageID = lg.LanguageID "
                 + "WHERE c.CourseID = ? "
-                + "GROUP BY c.CourseID, c.CourseName, c.Description, c.CreatedBy, c.CreatedDate, c.IsPublished, c.SubcategoryID, c.TotalEnrolled, c.LastUpdate, c.Requirements, c.Price, c.LanguageID, c.LevelID, c.ImageURL, sc.SubcategoryName, l.LevelName, lg.LanguageName";
+                + "GROUP BY c.CourseID, c.CourseName, c.Description, c.CreatedBy, c.CreatedDate, c.IsPublished, c.SubcategoryID, c.TotalEnrolled, c.LastUpdate, c.Requirements, c.Price, c.LanguageID, c.LevelID, c.ImageURL, c.isCancelled, sc.SubcategoryName, l.LevelName, lg.LanguageName";
 
         Course course = null;
 
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
-            st.setString(1, ID);
+            st.setInt(1, ID);
 
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
@@ -107,6 +109,7 @@ public class CourseDAO extends DAO<Course> {
                     course.setSubcategoryName(rs.getString("SubcategoryName"));
                     course.setLevelName(rs.getString("LevelName"));
                     course.setLanguageName(rs.getString("LanguageName"));
+                    course.setIsCancelled(rs.getBoolean("isCancelled"));
                 }
             }
 
@@ -219,6 +222,7 @@ public class CourseDAO extends DAO<Course> {
                     course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
                     course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime()); // Correct conversion from java.sql.Date to LocalDate
                     course.setRequirements(rs.getString("Requirements"));
+                    course.setIsCancelled(rs.getBoolean("isCancelled"));
                 }
             }
 
@@ -329,13 +333,13 @@ public class CourseDAO extends DAO<Course> {
     public List<Course> getFilteredCourses(Integer categoryID, Integer subcategoryID, String priceFilter, List<Integer> languageIDs, List<Integer> levelIDs, Double minRating, String sortOrder) {
         List<Course> courses = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
-                "SELECT c.*, sc.SubcategoryName, l.LevelName, lg.LanguageName, ISNULL(AVG(cf.Rating), 0) AS AverageRating "
+                "SELECT c.CourseID, c.CourseName, c.Description, c.CreatedBy, c.CreatedDate, c.IsPublished, c.SubcategoryID, c.TotalEnrolled, c.LastUpdate, c.Requirements, c.Price, c.LanguageID, c.LevelID, c.ImageURL, c.isCancelled, sc.SubcategoryName, l.LevelName, lg.LanguageName, ISNULL(AVG(cf.Rating), 0) AS AverageRating "
                 + "FROM Courses c "
                 + "LEFT JOIN CourseFeedback cf ON c.CourseID = cf.CourseID "
                 + "LEFT JOIN Subcategories sc ON c.SubcategoryID = sc.SubcategoryID "
                 + "LEFT JOIN CourseLevels l ON c.LevelID = l.LevelID "
                 + "LEFT JOIN CourseLanguages lg ON c.LanguageID = lg.LanguageID "
-                + "WHERE 1 = 1 ");
+                + "WHERE c.isCancelled = 0 ");
 
         if (categoryID != null) {
             sql.append("AND sc.CategoryID = ? ");
@@ -370,7 +374,7 @@ public class CourseDAO extends DAO<Course> {
             }
             sql.append(") ");
         }
-        sql.append("GROUP BY c.CourseID, c.CourseName, c.Description, c.CreatedBy, c.CreatedDate, c.IsPublished, c.SubcategoryID, c.TotalEnrolled, c.LastUpdate, c.Requirements, c.Price, c.LanguageID, c.LevelID, c.ImageURL, sc.SubcategoryName, l.LevelName, lg.LanguageName ");
+        sql.append("GROUP BY c.CourseID, c.CourseName, c.Description, c.CreatedBy, c.CreatedDate, c.IsPublished, c.SubcategoryID, c.TotalEnrolled, c.LastUpdate, c.Requirements, c.Price, c.LanguageID, c.LevelID, c.ImageURL, c.isCancelled, sc.SubcategoryName, l.LevelName, lg.LanguageName ");
 
         if (minRating != null) {
             sql.append("HAVING AVG(cf.Rating) >= ? ");
@@ -772,6 +776,7 @@ public class CourseDAO extends DAO<Course> {
             ex.printStackTrace();
         }
     }
+    
 
     public static void main(String[] args) {
         CourseDAO dao = new CourseDAO();

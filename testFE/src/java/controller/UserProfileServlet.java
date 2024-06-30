@@ -12,9 +12,9 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import model.LocalDateTimeAdapter;
 import model.Transaction;
 import model.User;
+import utils.LocalDateTimeAdapter;
 
 @WebServlet(name = "UserProfileServlet", urlPatterns = {"/user-profile"})
 public class UserProfileServlet extends HttpServlet {

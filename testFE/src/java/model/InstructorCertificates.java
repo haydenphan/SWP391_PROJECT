@@ -6,17 +6,27 @@ public class InstructorCertificates {
 
     private int certificateID;
     private int userID;
+    private int courseID;
     private String certificateUrl;
     private LocalDateTime UploadDate;
 
     public InstructorCertificates() {
     }
 
-    public InstructorCertificates(int certificateID, int userID, String certificateUrl, LocalDateTime UploadDate) {
+    public InstructorCertificates(int certificateID, int userID, int courseID, String certificateUrl, LocalDateTime UploadDate) {
         this.certificateID = certificateID;
         this.userID = userID;
+        this.courseID = courseID;
         this.certificateUrl = certificateUrl;
         this.UploadDate = UploadDate;
+    }
+
+    public int getCourseID() {
+        return courseID;
+    }
+
+    public void setCourseID(int courseID) {
+        this.courseID = courseID;
     }
 
     public int getCertificateID() {
@@ -53,6 +63,6 @@ public class InstructorCertificates {
 
     @Override
     public String toString() {
-        return "InstructorCertificates{" + "certificateID=" + certificateID + ", userID=" + userID + ", certificateUrl=" + certificateUrl + ", UploadDate=" + UploadDate + '}';
+        return "InstructorCertificates{" + "certificateID=" + certificateID + ", userID=" + userID + ", courseID=" + courseID + ", certificateUrl=" + certificateUrl + ", UploadDate=" + UploadDate + '}';
     }
 }

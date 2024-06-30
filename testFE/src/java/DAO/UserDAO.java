@@ -392,8 +392,6 @@ public class UserDAO extends DAO<User> {
 //            return false;
 //        }
 //    }
-    
-    
     public static void main(String[] args) {
         UserDAO user = new UserDAO();
 //        user.insert(new User("4232", "gwgh", "fgrwgw", "gfaeg", "sgwG", "GFGW", "1", LocalDateTime.now(), true, null, null));

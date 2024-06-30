@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 import java.util.List;
 
 import model.Quiz;
+import model.QuizAnswer;
+import model.QuizQuestion;
 
 public class QuizDAO {
 
@@ -84,11 +86,126 @@ public class QuizDAO {
             return false;
         }
     }
+    // Phương thức lấy quiz theo ID
+    public static Quiz getQuizById(int quizId) {
+        Quiz quiz = null;
+        String sql = "SELECT * FROM Quizzes WHERE QuizID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, quizId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    quiz = new Quiz();
+                    quiz.setQuizId(rs.getInt("QuizID"));
+                    quiz.setSectionId(rs.getInt("SectionID"));
+                    quiz.setQuizName(rs.getString("QuizName"));
+                    quiz.setGraded(rs.getBoolean("IsGraded"));
+                    quiz.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
+
+                    // Lấy danh sách câu hỏi của bài kiểm tra
+                    List<QuizQuestion> questions = getQuestionsByQuizId(quizId);
+                    quiz.setQuestions(questions);
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(QuizDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return quiz;
+    }
+
+    public static List<QuizQuestion> getQuestionsByQuizId(int quizId) {
+        List<QuizQuestion> questions = new ArrayList<>();
+        String sql = "SELECT * FROM QuizQuestions WHERE QuizID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, quizId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    QuizQuestion question = new QuizQuestion();
+                    question.setQuestionID(rs.getInt("QuestionID"));
+                    question.setQuizID(rs.getInt("QuizID"));
+                    question.setQuestionText(rs.getString("QuestionText"));
+                    question.setQuestionType(rs.getString("QuestionType"));
+                    
+                    // Lấy danh sách câu trả lời của câu hỏi
+                    List<QuizAnswer> answers = getAnswersByQuestionId(question.getQuestionID());
+                    question.setAnswers(answers);
+                    
+                    questions.add(question);
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(QuizDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return questions;
+    }
+    public static List<QuizAnswer> getAnswersByQuestionId(int questionId) {
+        List<QuizAnswer> answers = new ArrayList<>();
+        String sql = "SELECT * FROM QuizAnswers WHERE QuestionID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, questionId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    QuizAnswer answer = new QuizAnswer();
+                    answer.setAnswerID(rs.getInt("AnswerID"));
+                    answer.setQuestionID(rs.getInt("QuestionID"));
+                    answer.setAnswerText(rs.getString("AnswerText"));
+                    answer.setCorrect(rs.getBoolean("IsCorrect"));
+                    answers.add(answer);
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(QuizDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return answers;
+    }
 
     public static void main(String[] args) {
-        List<Quiz> list = QuizDAO.getQuizzesBySectionId(3);
-        for (Quiz quiz : list) {
-            System.out.println(quiz.toString());
+    // Test lấy bài kiểm tra theo ID và các câu hỏi của nó
+    int quizId = 3;
+    Quiz quiz = getQuizById(quizId);
+    if (quiz != null) {
+        System.out.println("Quiz ID: " + quiz.getQuizId());
+        System.out.println("Section ID: " + quiz.getSectionId());
+        System.out.println("Quiz Name: " + quiz.getQuizName());
+        System.out.println("Graded: " + quiz.isGraded());
+        System.out.println("Created Date: " + quiz.getCreatedDate());
+
+        List<QuizQuestion> questions = quiz.getQuestions();
+        if (questions != null && !questions.isEmpty()) {
+            System.out.println("Quiz Questions:");
+            for (QuizQuestion question : questions) {
+                System.out.println("Question ID: " + question.getQuestionID());
+                System.out.println("Question Text: " + question.getQuestionText());
+                System.out.println("Question Type: " + question.getQuestionType());
+                List<QuizAnswer> answers = question.getAnswers();
+                if (answers != null && !answers.isEmpty()) {
+                    for (QuizAnswer answer : answers) {
+                        System.out.println("Answer ID: " + answer.getAnswerID());
+                        System.out.println("Answer Text: " + answer.getAnswerText());
+                        System.out.println("Is Correct: " + answer.isCorrect());
+                    }
+                }
+                System.out.println("------------------------");
+            }
+        } else {
+            System.out.println("No questions found for this quiz.");
         }
+    } else {
+        System.out.println("Quiz not found for ID: " + quizId);
     }
+}
 }

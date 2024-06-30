@@ -12,6 +12,9 @@
 %>
 
 <style>
+   
+
+
     .fixed-size-img {
         width: 300px; /* Set the desired width */
         height: 200px; /* Set the desired height */
@@ -69,14 +72,26 @@
     </div>-->
 
             <div class="course-lessson-svg">
+                <div class="course-deteals-btns">
+                    <div class="btn-container">
+                        <a class="btn-details" href="${pageContext.request.contextPath}/view-section-servlet?courseId=<%= currentCourse.getCourseID()%>">
+                            <span class="me-2">View Details</span>
+                            <i class="far fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="btn-container">
+    <a class="btn-quiz" href="${pageContext.request.contextPath}/student-course-sections?courseId=${currentCourse.getCourseID()}">
+    <span class="me-2">Do Quiz</span>
+    <i class="far fa-pencil-alt"></i>
+</a>
 
-                <div class="course-deteals-btn">
-                    <a href="${pageContext.request.contextPath}/view-section-servlet?courseId=<%= currentCourse.getCourseID()%>">
-                        <span class="me-2">View Details</span>
-                        <i class="far fa-arrow-right"></i>
-                    </a>
+</div>
+
                 </div>
-            </div>
+</div>
+
+
+
         </div>
     </div>
 </div>

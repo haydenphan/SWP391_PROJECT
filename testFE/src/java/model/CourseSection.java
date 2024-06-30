@@ -10,6 +10,7 @@ public class CourseSection {
     private int sectionOrder;
     private LocalDateTime createdDate;
     private List<SectionLecture> lectures;
+     private List<Quiz> quizzes;
 
     public List<SectionLecture> getLectures() {
         return lectures;
@@ -70,6 +71,13 @@ public class CourseSection {
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
+    public List<Quiz> getQuizzes() {
+        return quizzes;
+    }
+
+    public void setQuizzes(List<Quiz> quizzes) {
+        this.quizzes = quizzes;
+    }
 
     // Override toString() method for debugging
     @Override
@@ -82,4 +90,6 @@ public class CourseSection {
                 ", createdDate=" + createdDate +
                 '}';
     }
+
+    
 }

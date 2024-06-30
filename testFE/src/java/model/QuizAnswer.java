@@ -50,6 +50,15 @@ public class QuizAnswer {
     public void setCorrect(boolean correct) {
         isCorrect = correct;
     }
+    @Override
+    public String toString() {
+        return "QuizAnswer{" +
+                "answerID=" + answerID +
+                ", questionID=" + questionID +
+                ", answerText='" + answerText + '\'' +
+                ", isCorrect=" + isCorrect +
+                '}';
+    }
 
   
     

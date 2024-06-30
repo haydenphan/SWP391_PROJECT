@@ -115,6 +115,7 @@ public class CartControl extends HttpServlet {
     private void addToCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        System.out.println(user.toString());
         if (user == null) {
             response.sendRedirect(request.getContextPath() + "/dang-nhap");
             return;

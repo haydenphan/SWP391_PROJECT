@@ -28,7 +28,8 @@
                                                                                        <li><a href="webinar-details.jsp">Webinar Details</a></li>-->
                                             </ul>
                                         </li>
-                                        <li class="menu-item-has-children"><a href="#!">Pages</a>
+                                        <li class="menu-item-has-children"><a href="manageuser?action=viewList">Manage User</a></li>
+
                                             <!--                                    <ul class="sub-menu">
                                                                                    <li><a href="about.jsp">About</a></li>
                                                                                    <li class="menu-item-has-children"><a href="instructor.jsp">instructor</a>

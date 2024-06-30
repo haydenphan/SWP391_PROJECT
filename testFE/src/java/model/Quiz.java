@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Quiz {
     private int quizId;
@@ -8,7 +9,7 @@ public class Quiz {
     private String quizName;
     private  boolean isGraded;           
     private LocalDateTime createdDate;
-
+private List<QuizQuestion> questions;
     // Default constructor
     public Quiz() {}
 
@@ -59,6 +60,13 @@ public class Quiz {
 
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
+    }
+    public List<QuizQuestion> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<QuizQuestion> questions) {
+        this.questions = questions;
     }
 
     @Override
