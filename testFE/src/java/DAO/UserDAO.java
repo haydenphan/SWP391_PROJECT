@@ -1,5 +1,6 @@
 package DAO;
 
+import controller.PaymentResultServlet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -372,6 +373,38 @@ public class UserDAO extends DAO<User> {
         return user;
     }
 
+    public static int getAdminId() throws SQLException, ClassNotFoundException {
+        int adminId = 0;
+        String sql = "SELECT UserID FROM Users WHERE RoleID = ?";
+        try (Connection connection = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, 3);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    adminId = rs.getInt("UserID");
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return adminId;
+    }
+
+    public static int getInstructorIdForCourse(int courseId) throws SQLException, ClassNotFoundException {
+        int instructorId = 0;
+        String sql = "SELECT CreatedBy FROM Courses WHERE CourseID = ?";
+        try (Connection connection = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, courseId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    instructorId = rs.getInt("CreatedBy");
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return instructorId;
+    }
+
 //    public boolean updateGoogleUser(String userId, String lastname, String firstname) throws Exception {
 //        String sql = "UPDATE Users SET UserName = ?, FirstName = ?, LastName = ? WHERE UserID = ?";
 //        Random rd = new Random();
@@ -392,8 +425,9 @@ public class UserDAO extends DAO<User> {
 //            return false;
 //        }
 //    }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
         UserDAO user = new UserDAO();
+        System.out.println(UserDAO.getAdminId());
 //        user.insert(new User("4232", "gwgh", "fgrwgw", "gfaeg", "sgwG", "GFGW", "1", LocalDateTime.now(), true, null, null));
     }
 }

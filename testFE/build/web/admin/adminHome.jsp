@@ -3,12 +3,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="model.*" %>
 <%@ page import="DAO.*" %>
-<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 <!doctype html>
 <html class="no-js" lang="zxx">
     <%
-        // String userName = (String)request.getAttribute("UserName");
         User user = (User) session.getAttribute("user");
         int role = (user != null) ? user.getRole() : 0;
         CourseDAO courseDAO = new CourseDAO();
@@ -17,6 +15,43 @@
 
     <head>
         <%-- HEAD --%>
+        <!-- Modal CSS -->
+        <style>
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.4);
+                padding-top: 60px;
+            }
+
+            .modal-content {
+                background-color: #fefefe;
+                margin: 5% auto;
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%;
+            }
+
+            .close {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+        </style>
 
         <!-- Vendors Style-->
         <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/vendors_css.css">
@@ -25,6 +60,7 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/horizontal-menu.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/style.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/skin_color.css">
+
         <%@ include file="../template/head.jsp" %>
 
         <script src="<c:url value='/js/notifications.js'/>"></script>
@@ -56,8 +92,7 @@
                                             <div class="row">
                                                 <div class="col-12 col-xl-7">
                                                     <h1 class="mb-0 fw-600">Learn With Effectively With Us!</h1>
-                                                    <p class="my-10 fs-16 text-white-70">Get 30% off every course on
-                                                        january.</p>
+                                                    <p class="my-10 fs-16 text-white-70">Get 30% off every course on January.</p>
                                                     <div class="mt-45 d-md-flex align-items-center">
                                                         <div class="me-30 mb-30 mb-md-0">
                                                             <div class="d-flex align-items-center">
@@ -400,7 +435,7 @@
                                                                      aria-valuemax="100" style="width: 20%">
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div                                                    >
                                                         <div>
                                                             <div>20%</div>
                                                         </div>
@@ -674,9 +709,41 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-xl-3 col-12">
+                                <a id="walletIcon" href="javascript:void(0)">Wallet</a>
+                            </div>
+
                         </div>
                     </section>
-                    <!-- /.content -->
+                    <!-- Modal HTML -->
+                    <div id="walletModal" class="modal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Wallet Balance</h5>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <p id="walletBalance">Loading...</p>
+                                    <form id="withdrawForm" action="${pageContext.request.contextPath}/withdraw" method="post">
+                                        <div class="form-group">
+                                            <label for="accountNumber">Account Number:</label>
+                                            <input type="text" class="form-control" id="accountNumber" name="accountNumber" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="bankName">Bank Name:</label>
+                                            <input type="text" class="form-control" id="bankName" name="bankName" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="amount">Amount:</label>
+                                            <input type="number" class="form-control" id="amount" name="amount" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Withdraw</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -699,10 +766,16 @@
         <script src="${pageContext.request.contextPath}/assets/vendor_components/moment/min/moment.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/vendor_components/bootstrap-daterangepicker/daterangepicker.js"></script>
 
-        <script src=".${pageContext.request.contextPath}/adminCSS/js/demo.js"></script>
+        <script src="${pageContext.request.contextPath}/adminCSS/js/demo.js"></script>
         <script src="${pageContext.request.contextPath}/adminCSS/js/jquery.smartmenus.js"></script>
         <script src="${pageContext.request.contextPath}/adminCSS/js/menus.js"></script>
         <script src="${pageContext.request.contextPath}/adminCSS/js/template.js"></script>
         <script src="${pageContext.request.contextPath}/adminCSS/js/pages/dashboard.js"></script>
+        <!-- Modal JavaScript -->
+        <script type="text/javascript">
+            var contextPath = '<%= request.getContextPath()%>';
+        </script>
+        <script src="${pageContext.request.contextPath}/adminCSS/js/adminWallet.js"></script>
+
     </body>
 </html>

@@ -3,9 +3,6 @@
 <%@ page import="DAO.*" %>
 <%@ page import="java.util.ArrayList" %>
 
-<%
-    CategoryDAO categoryDAO = new CategoryDAO();
-%>
 <!-- category-area-start -->
 <div class="top-catagory-area pt-110 pb-90">
     <div class="container">
@@ -18,9 +15,13 @@
         </div>
         <div class="row">
             <div class="col-xl-4 col-lg-6 col-md-6">
-                <a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%=categoryDAO.getCategoryIdByName("Development")%>&courses=<%=courses%>">
+                <c:url var="DevelopmentUrl" value="/CourseList">
+                    <c:param name="category" value="Development"/>
+                </c:url>
+                <a href="${DevelopmentUrl}">
                     <div class="catagory-wrapper mb-30">
                         <div class="catagory-thumb">
+                            <!-- SVG Icon for Development -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45.01" viewBox="0 0 45 45.01">
                                 <g id="code" transform="translate(-0.061)">
                                     <path id="Path_8754" data-name="Path 8754"
@@ -42,12 +43,15 @@
                     </div>
                 </a>
             </div>
-                    
-            <div class="col-xl-4 col-lg-6 col-md-6">
-                <a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%=categoryDAO.getCategoryIdByName("Business")%>&courses=<%=courses%>">
 
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <c:url var="BusinessUrl" value="/CourseList">
+                    <c:param name="category" value="Business"/>
+                </c:url>
+                <a href="${BusinessUrl}">
                     <div class="catagory-wrapper mb-30">
                         <div class="catagory-thumb">
+                            <!-- SVG Icon for Business -->
                             <svg id="briefcase" xmlns="http://www.w3.org/2000/svg" width="45" height="45"
                                  viewBox="0 0 45 45">
                                 <path id="Path_8750" data-name="Path 8750"
@@ -65,7 +69,6 @@
                                           transform="translate(-72.969 -189.32)" fill="#2467ec" />
                                 </g>
                             </svg>
-
                         </div>
                         <div class="catagory-content">
                             <h3>Business</h3>
@@ -74,12 +77,15 @@
                     </div>
                 </a>
             </div>
-                
-            <div class="col-xl-4 col-lg-6 col-md-6">
-                <a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%=categoryDAO.getCategoryIdByName("Data Science")%>&courses=<%=courses%>">
 
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <c:url var="DataScienceUrl" value="/CourseList">
+                    <c:param name="category" value="Data Science"/>
+                </c:url>
+                <a href="${DataScienceUrl}">
                     <div class="catagory-wrapper mb-30">
                         <div class="catagory-thumb">
+                            <!-- SVG Icon for Data Science -->
                             <svg id="collection" xmlns="http://www.w3.org/2000/svg" width="44.998" height="44.998"
                                  viewBox="0 0 44.998 44.998">
                                 <path id="Path_8761" data-name="Path 8761"
@@ -100,12 +106,15 @@
                     </div>
                 </a>
             </div>
-                
-            <div class="col-xl-4 col-lg-6 col-md-6">
-                <a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%=categoryDAO.getCategoryIdByName("Marketing")%>&courses=<%=courses%>">
 
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <c:url var="MarketingUrl" value="/CourseList">
+                    <c:param name="category" value="Marketing"/>
+                </c:url>
+                <a href="${MarketingUrl}">
                     <div class="catagory-wrapper mb-30">
                         <div class="catagory-thumb">
+                            <!-- SVG Icon for Marketing -->
                             <svg id="content-marketing" xmlns="http://www.w3.org/2000/svg" width="45" height="45"
                                  viewBox="0 0 45 45">
                                 <path id="Path_8764" data-name="Path 8764"
@@ -118,7 +127,6 @@
                                       d="M125.664,103.131H109.58a1.758,1.758,0,0,1,0-3.516h16.084a1.758,1.758,0,0,1,0,3.516Zm1.758,5.273a1.758,1.758,0,0,0-1.758-1.758H101.758a1.758,1.758,0,0,0,0,3.516h23.906A1.758,1.758,0,0,0,127.422,108.4Zm-17.578,7.031a1.758,1.758,0,0,0-1.758-1.758h-6.328a1.758,1.758,0,0,0,0,3.516h6.328A1.758,1.758,0,0,0,109.844,115.436ZM100,101.2a2.2,2.2,0,1,0,2.2-2.2A2.2,2.2,0,0,0,100,101.2Z"
                                       transform="translate(-91.211 -90.299)" fill="#ffb013" />
                             </svg>
-
                         </div>
                         <div class="catagory-content">
                             <h3>Marketing</h3>
@@ -127,12 +135,15 @@
                     </div>
                 </a>
             </div>
-                
-            <div class="col-xl-4 col-lg-6 col-md-6">
-                <a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%=categoryDAO.getCategoryIdByName("Life Styles")%>&courses=<%=courses%>">
 
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <c:url var="LifeStylesUrl" value="/CourseList">
+                    <c:param name="category" value="Life Styles"/>
+                </c:url>
+                <a href="${LifeStylesUrl}">
                     <div class="catagory-wrapper mb-30">
                         <div class="catagory-thumb">
+                            <!-- SVG Icon for Life Styles -->
                             <svg id="Swimming_Pool" xmlns="http://www.w3.org/2000/svg" width="45" height="45"
                                  viewBox="0 0 45 45">
                                 <g id="Group_4446" data-name="Group 4446" transform="translate(1.758 12.305)">
@@ -155,12 +166,15 @@
                     </div>
                 </a>
             </div>
-                
-            <div class="col-xl-4 col-lg-6 col-md-6">
-                <a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%=categoryDAO.getCategoryIdByName("Photography")%>&courses=<%=courses%>">
 
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <c:url var="PhotographyUrl" value="/CourseList">
+                    <c:param name="category" value="Photography"/>
+                </c:url>
+                <a href="${PhotographyUrl}">
                     <div class="catagory-wrapper mb-30">
                         <div class="catagory-thumb">
+                            <!-- SVG Icon for Photography -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="45" height="44.991" viewBox="0 0 45 44.991">
                                 <g id="no-photo" transform="translate(0 -0.049)">
                                     <path id="Path_8770" data-name="Path 8770"
@@ -182,12 +196,15 @@
                     </div>
                 </a>
             </div>
-                
-            <div class="col-xl-4 col-lg-6 col-md-6">
-                <a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%=categoryDAO.getCategoryIdByName("Art & Design")%>&courses=<%=courses%>">
 
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <c:url var="ArtDesignUrl" value="/CourseList">
+                    <c:param name="category" value="Art & Design"/>
+                </c:url>
+                <a href="${ArtDesignUrl}">
                     <div class="catagory-wrapper mb-30">
                         <div class="catagory-thumb">
+                            <!-- SVG Icon for Art & Design -->
                             <svg id="Vector" xmlns="http://www.w3.org/2000/svg" width="45" height="45"
                                  viewBox="0 0 45 45">
                                 <g id="Group_4444" data-name="Group 4444" transform="translate(8.437 5.273)">
@@ -207,7 +224,6 @@
                                       d="M204.789,162.547h-1.758v-8.789a1.758,1.758,0,1,0-3.516,0v8.789h-1.758a1.758,1.758,0,1,0,0,3.516h7.031a1.758,1.758,0,0,0,0-3.516Z"
                                       transform="translate(-178.773 -138.641)" fill="#ffb013" />
                             </svg>
-
                         </div>
                         <div class="catagory-content">
                             <h3>Art & Design</h3>
@@ -216,12 +232,15 @@
                     </div>
                 </a>
             </div>
-                
-            <div class="col-xl-4 col-lg-6 col-md-6">
-                <a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%=categoryDAO.getCategoryIdByName("Health & Fitness")%>&courses=<%=courses%>">
 
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <c:url var="healthFitnessUrl" value="/CourseList">
+                    <c:param name="category" value="Health & Fitness"/>
+                </c:url>
+                <a href="${healthFitnessUrl}">
                     <div class="catagory-wrapper mb-30">
                         <div class="catagory-thumb">
+                            <!-- SVG Icon for Health & Fitness -->
                             <svg id="make" xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 45 45">
                                 <path id="Path_8773" data-name="Path 8773"
                                       d="M42.061,119.6a4.834,4.834,0,0,1-4.834-4.834V99.834A4.834,4.834,0,0,1,42.071,95l1.376.7a4.809,4.809,0,0,0-1.035,2.988v16.084a4.834,4.834,0,0,0,4.834,4.834Zm-16.655,1.988v.4a5.274,5.274,0,0,1,4.114-5.144l-.2-.129H25.273A5.273,5.273,0,0,0,20,121.982v-.4a4.79,4.79,0,0,0,4.79,4.79H30.2A4.79,4.79,0,0,1,25.405,121.587Z"
@@ -241,12 +260,12 @@
                     </div>
                 </a>
             </div>
-                
-            <div class="col-xl-4 col-lg-6 col-md-6">
-                <a href="${pageContext.request.contextPath}/pages/courseList.jsp?category=<%=categoryDAO.getCategoryIdByName("Music")%>&courses=<%=courses%>">
 
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <a href="${pageContext.request.contextPath}/CourseList?category=Music">
                     <div class="catagory-wrapper mb-30">
                         <div class="catagory-thumb">
+                            <!-- SVG Icon for Music -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="45" height="42.172" viewBox="0 0 45 42.172">
                                 <g id="electric-guitar" transform="translate(0 -18.851)">
                                     <path id="Path_8776" data-name="Path 8776"
@@ -265,7 +284,6 @@
                                           transform="translate(-81.734 -221.473)" fill="#ffb013" />
                                 </g>
                             </svg>
-
                         </div>
                         <div class="catagory-content">
                             <h3>Music</h3>
