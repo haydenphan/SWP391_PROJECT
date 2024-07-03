@@ -7,6 +7,7 @@ import model.BankAccount;
 import model.Wallet;
 
 public class WalletController {
+
     private WalletDAO walletDAO;
     private BankAccountDAO bankAccountDAO;
 

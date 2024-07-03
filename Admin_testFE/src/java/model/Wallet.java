@@ -1,14 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author Thunguyet
- */
 public class Wallet {
+
     private int WalletID;
     private int userID;
     private double Balance;
@@ -21,7 +14,7 @@ public class Wallet {
 
     public Wallet() {
     }
-    
+
     public int getWalletID() {
         return WalletID;
     }
@@ -51,5 +44,4 @@ public class Wallet {
         return "Wallet{" + "WalletID=" + WalletID + ", userID=" + userID + ", Balance=" + Balance + '}';
     }
 
-    
 }

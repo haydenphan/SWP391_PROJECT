@@ -13,7 +13,9 @@
                                 <nav id="mobile-menu">
                                     <ul>
                                         <li class=""><a href="index.jsp">Dashboard</a>
-
+                                            <ul class="sub-menu">
+                                                <li><a href="${pageContext.request.contextPath}/admin/statisticalTransaction.jsp">Statistical Revenue</a></li>
+                                            </ul>
                                         </li>
                                         <li class="menu-item-has-children"><a href="#">Course</a>
                                             <ul class="sub-menu">

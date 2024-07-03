@@ -1,14 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author Thunguyet
- */
 public class BankAccount {
+
     private int AccountID;
     private int userID;
     private String AccountNumber;
@@ -29,7 +22,6 @@ public class BankAccount {
         this.BankName = BankName;
         this.Amount = Amount;
     }
-    
 
     public BankAccount() {
     }
@@ -78,8 +70,4 @@ public class BankAccount {
     public String toString() {
         return "BankAccount{" + "AccountID=" + AccountID + ", userID=" + userID + ", AccountNumber=" + AccountNumber + ", BankName=" + BankName + ", Amount=" + Amount + '}';
     }
-    
-   
-
-    
 }

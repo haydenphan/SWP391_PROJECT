@@ -76,23 +76,28 @@ public class WalletDAO {
             stmt.setInt(1, roleId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return new User(
-                            rs.getInt("UserID"),
-                            rs.getString("Username"),
-                            rs.getString("PasswordHash"),
-                            rs.getString("FirstName"),
-                            rs.getString("LastName"),
-                            rs.getString("Email"),
-                            rs.getInt("RoleID"),
-                            rs.getDate("RegistrationDate").toLocalDate().atStartOfDay(),
-                            rs.getBoolean("IsActive"),
-                            rs.getString("Avatar"),
-                            rs.getString("Bio"),
-                            rs.getBytes("StoredSalt")
-                    );
+                    User user = new User();
+                    user.setUserID(rs.getInt("UserID"));
+                    user.setUserName(rs.getString("Username"));
+                    user.setPasswordHash(rs.getString("PasswordHash"));
+                    user.setFirstName(rs.getString("FirstName"));
+                    user.setLastName(rs.getString("LastName"));
+                    user.setEmail(rs.getString("Email"));
+                    user.setRole(rs.getInt("RoleID"));
+                    user.setRegistrationDate(rs.getDate("RegistrationDate").toLocalDate().atStartOfDay());
+                    user.setIsActive(rs.getBoolean("IsActive"));
+                    user.setAvatar(rs.getString("Avatar"));
+                    user.setBio(rs.getString("Bio"));
+                    user.setStoredSalt(rs.getBytes("StoredSalt"));
+                    return user;
                 }
             }
         }
         return null;
+    }
+    
+    public static void main(String[] args) throws Exception {
+        WalletDAO dao = new WalletDAO(JDBC.getConnectionWithSqlJdbc());
+        System.out.println(dao.getWalletByUserId(2));
     }
 }

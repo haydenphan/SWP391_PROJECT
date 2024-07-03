@@ -48,19 +48,19 @@
                 <form action="<%= request.getContextPath()%>/ajaxServlet" id="frmCreateOrder" method="post">
                     <div class="form-group">
                         <label class="required">First Name</label>
-                        <input type="text" class="form-control" name="firstName" value="<%= firstName%>" readonly>
+                        <input type="text" class="form-control" name="firstName" value="<%= firstName %>" readonly>
                     </div>
                     <div class="form-group">
                         <label class="required">Last Name</label>
-                        <input type="text" class="form-control" name="lastName" value="<%= lastName%>" readonly>
+                        <input type="text" class="form-control" name="lastName" value="<%= lastName %>" readonly>
                     </div>
                     <div class="form-group">
                         <label class="required">Email Address</label>
-                        <input type="email" class="form-control" name="email" value="<%= email%>" readonly>
+                        <input type="email" class="form-control" name="email" value="<%= email %>" readonly>
                     </div>
                     <div class="form-group">
                         <label class="required">Order Total (VND)</label>
-                        <input type="text" class="form-control" name="orderTotal" value="<%= amountInVND / 100%>" readonly>
+                        <input type="text" class="form-control" name="orderTotal" value="<%= amountInVND / 100 %>" readonly>
                     </div>
                     <div class="form-group">
                         <h5>Select Payment Interface Language:</h5>
@@ -73,7 +73,7 @@
                             <label class="form-check-label" for="languageEN">English</label>
                         </div>
                     </div>
-                    <input type="hidden" name="amountInVND" value="<%= amountInVND%>">
+                    <input type="hidden" name="amountInVND" value="<%= amountInVND %>">
                     <button type="submit" class="btn btn-primary">Pay</button>
                 </form>
             </div>

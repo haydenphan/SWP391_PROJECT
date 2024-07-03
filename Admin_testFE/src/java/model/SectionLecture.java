@@ -10,16 +10,26 @@ public class SectionLecture {
     private String lectureName;
     private String lectureURL;
     private LocalDateTime createdDate;
+    private String lectureDescription;
     private List<LectureMaterial> lectureMaterials;
 
+    public String getLectureDescription() {
+        return lectureDescription;
+    }
+
+    public void setLectureDescription(String lectureDescription) {
+        this.lectureDescription = lectureDescription;
+    }
+    
     // Constructor
     public SectionLecture() {
     }
 
-    public SectionLecture(int lectureID, int sectionID, String lectureName, String lectureURL, LocalDateTime createdDate, List<LectureMaterial> lectureMaterials) {
+    public SectionLecture(int lectureID, int sectionID, String lectureName, String lectureDescription, String lectureURL, LocalDateTime createdDate, List<LectureMaterial> lectureMaterials) {
         this.lectureID = lectureID;
         this.sectionID = sectionID;
         this.lectureName = lectureName;
+        this.lectureDescription = lectureDescription;
         this.lectureURL = lectureURL;
         this.createdDate = createdDate;
         this.lectureMaterials = lectureMaterials;
@@ -82,7 +92,9 @@ public class SectionLecture {
                 + ", sectionID=" + sectionID
                 + ", lectureName='" + lectureName + '\''
                 + ", lectureURL='" + lectureURL + '\''
-                + ", createdDate=" + createdDate
+                + ", createdDate=" + createdDate + '\''
+                + ", lectureDescription=" + lectureDescription + '\''
+                + ", materials=" + lectureMaterials 
                 + '}';
     }
 }

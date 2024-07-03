@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import DAO.WalletDAO;
 
 public class PaymentController {
+
     private WalletDAO walletDAO;
     private static final double ADMIN_PERCENTAGE = 0.30;
     private static final double INSTRUCTOR_PERCENTAGE = 0.70;

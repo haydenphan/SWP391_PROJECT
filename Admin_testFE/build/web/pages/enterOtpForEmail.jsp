@@ -33,10 +33,9 @@
                                 </h3>
                                 <h2 class="text-center">Enter OTP</h2>
                                 <%
-if(request.getAttribute("message")!=null)
-{
-        out.print("<p class='text-danger ml-1'>"+request.getAttribute("message")+"</p>");
-}		  
+                                    if (request.getAttribute("message") != null) {
+                                        out.print("<p class='text-danger ml-1'>" + request.getAttribute("message") + "</p>");
+                                    }
                                 %>
 
                                 <div class="panel-body">
@@ -55,7 +54,7 @@ if(request.getAttribute("message")!=null)
                                         <div class="form-group">
                                             <input name="recover-submit"
                                                    class="btn btn-lg btn-primary btn-block"
-                                                   value="Reset Password" type="submit">
+                                                   value="Submit" type="submit">
                                         </div>
 
                                         <input type="hidden" class="hide" name="token" id="token"

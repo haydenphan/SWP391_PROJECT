@@ -9,8 +9,17 @@ public class CourseSection {
     private String sectionName;
     private int sectionOrder;
     private LocalDateTime createdDate;
+    private String sectionDescription;
     private List<SectionLecture> lectures;
 
+    public String getSectionDescription() {
+        return sectionDescription;
+    }
+
+    public void setSectionDescription(String sectionDescription) {
+        this.sectionDescription = sectionDescription;
+    }
+    
     public List<SectionLecture> getLectures() {
         return lectures;
     }
@@ -22,10 +31,11 @@ public class CourseSection {
     // Constructor
     public CourseSection() {}
 
-    public CourseSection(int sectionID, int courseID, String sectionName, int sectionOrder, LocalDateTime createdDate) {
+    public CourseSection(int sectionID, int courseID, String sectionName, String sectionDescription, int sectionOrder, LocalDateTime createdDate) {
         this.sectionID = sectionID;
         this.courseID = courseID;
         this.sectionName = sectionName;
+        this.sectionDescription = sectionDescription;
         this.sectionOrder = sectionOrder;
         this.createdDate = createdDate;
     }
@@ -80,6 +90,7 @@ public class CourseSection {
                 ", sectionName='" + sectionName + '\'' +
                 ", sectionOrder=" + sectionOrder +
                 ", createdDate=" + createdDate +
+                ", sectionDescription=" + sectionDescription +
                 '}';
     }
 }

@@ -1,18 +1,4 @@
-<%@ page import="java.net.URLEncoder"%>
-<%@ page import="java.nio.charset.StandardCharsets"%>
-<%@ page import="config.VNPayConfig"%>
-<%@ page import="model.Cart"%>
-<%@ page import="model.CartDetails"%>
-<%@ page import="model.Course"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
-
-<%@page import="java.util.Iterator"%>
-<%@page import="java.util.Collections"%>
-<%@page import="java.util.List"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.Enumeration"%>
-<%@page import="java.util.Map"%>
-<%@page import="java.util.HashMap"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -62,65 +48,6 @@
         </style>
     </head>
     <body>
-        <%
-            // Begin process return from VNPAY
-            Map<String, String> fields = new HashMap<>();
-            for (Enumeration<String> params = request.getParameterNames(); params.hasMoreElements();) {
-                String fieldName = params.nextElement();
-                String fieldValue = request.getParameter(fieldName);
-                if (fieldValue != null && fieldValue.length() > 0) {
-                    fields.put(fieldName, fieldValue);
-                }
-            }
-            String vnp_SecureHash = request.getParameter("vnp_SecureHash");
-            if (fields.containsKey("vnp_SecureHashType")) {
-                fields.remove("vnp_SecureHashType");
-            }
-            if (fields.containsKey("vnp_SecureHash")) {
-                fields.remove("vnp_SecureHash");
-            }
-
-            // Sort the field names
-            List<String> fieldNames = new ArrayList<>(fields.keySet());
-            Collections.sort(fieldNames);
-
-            // Build the data string to be hashed
-            StringBuilder hashData = new StringBuilder();
-            for (String fieldName : fieldNames) {
-                String fieldValue = fields.get(fieldName);
-                if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                    if (hashData.length() > 0) {
-                        hashData.append('&');
-                    }
-                    hashData.append(fieldName).append('=').append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-                }
-            }
-
-            String signValue = VNPayConfig.hmacSHA512(VNPayConfig.secretKey, hashData.toString());
-            // Retrieve product information from session
-            Cart cart = (Cart) session.getAttribute("cart");
-            StringBuilder productDescription = new StringBuilder();
-            if (cart != null && !cart.isEmpty()) {
-                for (CartDetails item : cart.getCartDetails()) {
-                    Course course = item.getCourse();
-                    productDescription.append(course.getCourseName()).append(" - $").append(course.getPrice()).append("<br>");
-                }
-            } else {
-                productDescription.append("No products found in session.");
-            }
-
-            boolean isPaymentSuccessful = false;
-            if (signValue.equals(vnp_SecureHash)) {
-                if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
-                    isPaymentSuccessful = true;
-                    // Update the wallets of admin and instructor
-                    double amount = Double.parseDouble(request.getParameter("vnp_Amount")) / 100; // Convert to VND
-                    int courseId = Integer.parseInt(request.getParameter("courseId"));
-                    response.sendRedirect("UpdateWalletServlet?courseId=" + courseId + "&amount=" + amount);
-                }
-            }
-        %>
-        <!-- Begin display -->
         <div class="container">
             <div class="header clearfix">
                 <h3 class="text-muted">PAYMENT RESULTS</h3>
@@ -128,41 +55,41 @@
             <div class="table-responsive">
                 <div class="form-group">
                     <label>Payment transaction code:</label>
-                    <p><%=request.getParameter("vnp_TxnRef")%></p>
+                    <p><%=request.getAttribute("vnp_TxnRef")%></p>
                 </div>    
                 <div class="form-group">
                     <label>Amount:</label>
-                    <p><%=request.getParameter("vnp_Amount")%></p>
+                    <p><%=request.getAttribute("vnp_Amount")%></p>
                 </div>  
                 <div class="form-group">
                     <label>Transaction description: </label>
-                    <p><%= productDescription.toString()%></p>
+                    <p><%= request.getAttribute("productDescription")%></p>
                 </div> 
                 <div class="form-group">
                     <label>Payment error code:</label>
-                    <p><%=request.getParameter("vnp_ResponseCode")%></p>
+                    <p><%=request.getAttribute("vnp_ResponseCode")%></p>
                 </div> 
                 <div class="form-group">
                     <label>Transaction code at CTT VNPAY-QR:</label>
-                    <p><%=request.getParameter("vnp_TransactionNo")%></p>
+                    <p><%=request.getAttribute("vnp_TransactionNo")%></p>
                 </div> 
                 <div class="form-group">
                     <label>Payment bank code:</label>
-                    <p><%=request.getParameter("vnp_BankCode")%></p>
+                    <p><%=request.getAttribute("vnp_BankCode")%></p>
                 </div> 
                 <div class="form-group">
                     <label>Payment time:</label>
-                    <p><%=request.getParameter("vnp_PayDate")%></p>
+                    <p><%=request.getAttribute("vnp_PayDate")%></p>
                 </div>
                 <div class="form-group">
                     <label>Transaction status:</label>
                     <p>
-                        <%= isPaymentSuccessful ? "Completed" : "Failed"%>
+                        <%= request.getAttribute("transactionStatus")%>
                     </p>
                 </div> 
             </div>
             <div class="text-center">
-                <% if (isPaymentSuccessful) { %>
+                <% if ((boolean) request.getAttribute("isPaymentSuccessful")) { %>
                 <form action="${pageContext.request.contextPath}/paymentHandler" method="post">
                     <input type="hidden" name="isPaymentSuccessful" value="true"/>
                     <button type="submit" class="btn btn-primary">Go to Enrolled Courses</button>

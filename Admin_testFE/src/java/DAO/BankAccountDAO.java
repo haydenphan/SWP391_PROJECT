@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class BankAccountDAO {
+
     private final Connection connection;
 
     public BankAccountDAO(Connection connection) {
@@ -20,11 +21,11 @@ public class BankAccountDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new BankAccount(
-                        rs.getInt("AccountID"),
-                        rs.getInt("UserID"),
-                        rs.getString("Account_Number"),
-                        rs.getString("Bank_Name"),
-                        rs.getDouble("Amount")
+                            rs.getInt("AccountID"),
+                            rs.getInt("UserID"),
+                            rs.getString("Account_Number"),
+                            rs.getString("Bank_Name"),
+                            rs.getDouble("Amount")
                     );
                 }
             }
@@ -58,4 +59,3 @@ public class BankAccountDAO {
         }
     }
 }
-    
