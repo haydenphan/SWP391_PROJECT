@@ -89,17 +89,26 @@
         <div class="container">
             <h2>Add New Quiz</h2>
             <form action="${pageContext.request.contextPath}/add-quiz" method="post">
-                <input type="hidden" name="sectionId" value="<%= sectionId%>"/>
+                <input type="hidden" name="sectionId" value="<%= sectionId %>"/>
+
                 <div class="form-group">
                     <label for="quizName">Quiz Name:</label>
-                    <input type="text" id="quizName" name="quizName">
+                    <input type="text" id="quizName" name="quizName" required>
                 </div>
-                <div>
+
+                <div class="form-group">
                     <label for="isGraded">Graded:</label>
                     <input type="checkbox" id="isGraded" name="isGraded" value="true">
                 </div>
+
+                <div class="form-group">
+                    <label for="timeLimitInSeconds">Time Limit (seconds):</label>
+                    <input type="number" id="timeLimitInSeconds" name="timeLimitInSeconds" min="1" required>
+                </div>
+
                 <input type="submit" value="Create Quiz">
             </form>
+
         </div>
     </body>
 </html>

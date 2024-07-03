@@ -7,18 +7,21 @@ public class Quiz {
     private int quizId;
     private int sectionId;
     private String quizName;
-    private  boolean isGraded;           
+    private boolean isGraded;
     private LocalDateTime createdDate;
-private List<QuizQuestion> questions;
+    private List<QuizQuestion> questions;
+    private int timeLimitInSeconds; // New attribute
+
     // Default constructor
     public Quiz() {}
 
     // Parameterized constructor
-    public Quiz(int sectionId, String quizName, boolean isGraded, LocalDateTime createdDate) {
+    public Quiz(int sectionId, String quizName, boolean isGraded, LocalDateTime createdDate, int timeLimitInSeconds) {
         this.sectionId = sectionId;
         this.quizName = quizName;
         this.isGraded = isGraded;
         this.createdDate = createdDate;
+        this.timeLimitInSeconds = timeLimitInSeconds;
     }
 
     // Getters and Setters
@@ -61,12 +64,21 @@ private List<QuizQuestion> questions;
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
+
     public List<QuizQuestion> getQuestions() {
         return questions;
     }
 
     public void setQuestions(List<QuizQuestion> questions) {
         this.questions = questions;
+    }
+
+    public int getTimeLimitInSeconds() {
+        return timeLimitInSeconds;
+    }
+
+    public void setTimeLimitInSeconds(int timeLimitInSeconds) {
+        this.timeLimitInSeconds = timeLimitInSeconds;
     }
 
     @Override
@@ -77,6 +89,7 @@ private List<QuizQuestion> questions;
                 ", quizName='" + quizName + '\'' +
                 ", isGraded=" + isGraded +
                 ", createdDate=" + createdDate +
+                ", timeLimitInSeconds=" + timeLimitInSeconds +
                 '}';
     }
 }

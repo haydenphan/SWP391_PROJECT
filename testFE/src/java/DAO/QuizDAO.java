@@ -17,32 +17,36 @@ import model.QuizQuestion;
 public class QuizDAO {
 
     public static void createQuiz(Quiz quiz) {
-        String sql = "INSERT INTO Quizzes (SectionID, QuizName, IsGraded, CreatedDate) VALUES (?, ?, ?, ?)";
-        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, quiz.getSectionId());
-            stmt.setString(2, quiz.getQuizName());
-            stmt.setBoolean(3, quiz.isGraded());
-            stmt.setObject(4, quiz.getCreatedDate());
+    String sql = "INSERT INTO Quizzes (SectionID, QuizName, IsGraded, CreatedDate, TimeLimitInSeconds) VALUES (?, ?, ?, ?, ?)";
+    try (Connection con = JDBC.getConnectionWithSqlJdbc(); 
+         PreparedStatement stmt = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+        
+        stmt.setInt(1, quiz.getSectionId());
+        stmt.setString(2, quiz.getQuizName());
+        stmt.setBoolean(3, quiz.isGraded());
+        stmt.setObject(4, quiz.getCreatedDate());
+        stmt.setInt(5, quiz.getTimeLimitInSeconds()); // Thêm TimeLimitInSeconds vào PreparedStatement
 
-            int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("New quiz added successfully.");
-                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        int quizId = generatedKeys.getInt(1);
-                        quiz.setQuizId(quizId);
-                        System.out.println("Generated Quiz ID: " + quizId);
-                    }
+        int rowsAffected = stmt.executeUpdate();
+        if (rowsAffected > 0) {
+            System.out.println("New quiz added successfully.");
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int quizId = generatedKeys.getInt(1);
+                    quiz.setQuizId(quizId);
+                    System.out.println("Generated Quiz ID: " + quizId);
                 }
-            } else {
-                System.out.println("Failed to add new quiz.");
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (Exception ex) {
-            Logger.getLogger(QuizDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } else {
+            System.out.println("Failed to add new quiz.");
         }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    } catch (Exception ex) {
+        Logger.getLogger(QuizDAO.class.getName()).log(Level.SEVERE, null, ex);
     }
+}
+
 
     public static List<Quiz> getQuizzesBySectionId(int sectionId) {
         String sql = "SELECT * FROM Quizzes WHERE SectionID = ?";

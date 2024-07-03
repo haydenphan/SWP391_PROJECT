@@ -41,10 +41,53 @@
         hr {
             border: 0.5px solid #0074D9; /* Blue horizontal rule */
         }
+        
+        #timer {
+            font-size: 24px;
+            color: red;
+            margin-top: 10px;
+        }
     </style>
+    <script>
+        let timeLeft = 480; // Thời gian ban đầu (8 phút)
+
+        function startTimer() {
+            let timer = document.getElementById("timer");
+
+            // Lấy thời gian giới hạn từ giáo viên
+            let teacherTimeLimitInput = document.getElementById("teacherTimeLimit");
+            if (teacherTimeLimitInput && teacherTimeLimitInput.value) {
+                let timeParts = teacherTimeLimitInput.value.split(":");
+                timeLeft = parseInt(timeParts[0]) * 60 + parseInt(timeParts[1]);
+            }
+
+            function updateTimer() {
+                if (timeLeft <= 0) {
+                    document.getElementById("timeTaken").value = 480;
+                    document.getElementById("quizForm").submit();
+                } else {
+                    let minutes = Math.floor(timeLeft / 60);
+                    let seconds = timeLeft % 60;
+                    timer.innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                    timeLeft--;
+                }
+            }
+
+            updateTimer(); // Gọi hàm để hiển thị thời gian ngay lập tức
+            setInterval(updateTimer, 1000); // Cập nhật mỗi giây
+        }
+
+        function submitForm() {
+            document.getElementById("timeTaken").value = 480 - timeLeft;
+            document.getElementById("quizForm").submit();
+        }
+
+        window.onload = startTimer;
+    </script>
 </head>
 <body>
     <h1>Take Quiz</h1>
+    <div id="timer">08:20</div>
     
     <c:if test="${not empty quiz}">
         <h2>Quiz: ${quiz.quizName}</h2>
@@ -64,10 +107,14 @@
                 </div>
                 <hr>
             </c:forEach>
-            <input type="hidden" name="studentId" value="1"> <!-- Replace with actual student ID -->
+            <div class="form-group">
+                <label for="teacherTimeLimit">Teacher's Time Limit (minutes:seconds):</label>
+                <input type="text" id="teacherTimeLimit" name="teacherTimeLimit" pattern="\d{1,2}:\d{2}" title="Format: mm:ss">
+            </div>
+            <input type="hidden" name="studentId" value="1"> <!-- Thay bằng ID học sinh thực tế -->
             <input type="hidden" name="quizId" value="${quiz.quizId}">
-            <!-- Removed time_taken input -->
-            <button type="submit">Submit Quiz</button>
+            <input type="hidden" id="timeTaken" name="timeTaken" value="0"> <!-- Cập nhật thời gian đã trôi qua -->
+            <button type="button" onclick="submitForm()">Submit Quiz</button>
         </form>
     </c:if>
     
