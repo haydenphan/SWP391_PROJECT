@@ -33,7 +33,7 @@
             <%
                 int instructorID = ((User) session.getAttribute("user")).getUserID();
                 System.out.println(instructorID);
-                courses = CourseDAO.getCoursesByInstructor(instructorID);
+                List<Course> coursesList = CourseDAO.getCoursesByInstructor(instructorID);
             %>
 
             <!-- hero-area -->
@@ -73,12 +73,6 @@
                             <div class="student-profile-sidebar mb-30">
                                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
-                                                data-bs-target="#home" type="button" role="tab" aria-controls="home"
-                                                aria-selected="true"><i class="fas fa-tachometer-alt-fast"></i>
-                                            Dashboard</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
                                                 data-bs-target="#profile" type="button" role="tab" aria-controls="profile"
                                                 aria-selected="false"><i class="fas fa-user"></i> My Profile</button>
@@ -93,11 +87,6 @@
                                         <button class="nav-link" id="reviews-tab" data-bs-toggle="tab"
                                                 data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews"
                                                 aria-selected="false"><i class="fas fa-star"></i> Reviews</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="quiz-tab" data-bs-toggle="tab" data-bs-target="#quiz"
-                                                type="button" role="tab" aria-controls="quiz" aria-selected="false"><i
-                                                class="fas fa-cubes"></i> My Quiz Attempts</button>
                                     </li>
 
                                     <li class="nav-item" role="presentation">
@@ -134,11 +123,6 @@
                         <div class="col-xl-9 col-lg-8">
                             <div class="student-profile-content">
                                 <div class="tab-content" id="myTabContent">
-                                    <div class="tab-pane fade show active" id="home" role="tabpanel"
-                                         aria-labelledby="home-tab">
-                                        <h4 class='mb-25'>Dashboard</h4>
-
-                                    </div>
                                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                                         <h4 class='mb-25'>My Profile</h4>
                                         <ul class='student-profile-info'>
@@ -183,7 +167,7 @@
                                         </form>
 
                                         <div class="row">
-                                            <c:forEach var="course" items="<%=courses%>">
+                                            <c:forEach var="course" items="<%=coursesList%>">
                                                 <c:set var="currentCourse" value="${course}" scope="request" />
                                                 <jsp:include page="../template/course/instructorCourseComponent.jsp" />
                                             </c:forEach>
@@ -194,9 +178,7 @@
                                         <h4 class='mb-25'>Reviews</h4>
 
                                     </div>
-                                    <div class="tab-pane fade" id="quiz" role="tabpanel" aria-labelledby="quiz-tab">
-                                        <p>No quiz attempts yet.</p>
-                                    </div>
+                                   
                                     <div class="tab-pane fade" id="certificate" role="tabpanel" aria-labelledby="certificate-tab">
                                         <h4 class='mb-25'>Instructor Certificate</h4>
 

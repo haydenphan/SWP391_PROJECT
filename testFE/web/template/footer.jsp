@@ -28,7 +28,7 @@
                                 <li><a href="#">Proper Guidelines</a></li>
                                 <li><a href="#">Digital Library</a></li>
                                 <li><a href="#">Compare Us</a></li>
-                                <li><a href="#">Become Instructor</a></li>
+                                <li><a href="${pageContext.request.contextPath}/pages/become-instructor.jsp">Become Instructor</a></li>
                                 <li><a href="#">Build Career</a></li>
                             </ul>
                         </div>
@@ -37,11 +37,36 @@
                         <div class="footer-widget f-w3 mb-40">
                             <h3>Browse Courses</h3>
                             <ul>
-                                <li><a href="#">Development</a></li>
-                                <li><a href="#">Business</a></li>
-                                <li><a href="#">Health & Fitness</a></li>
-                                <li><a href="#">Life Styles</a></li>
-                                <li><a href="#">Photography</a></li>
+                                <li>
+                                <c:url var="DevelopmentUrl" value="/CourseList">
+                                    <c:param name="category" value="Development"/>
+                                </c:url>
+                                <a href="${DevelopmentUrl}">Development</a>
+                                </li>
+                                <li>
+                                <c:url var="BusinessUrl" value="/CourseList">
+                                    <c:param name="category" value="Business"/>
+                                </c:url>
+                                <a href="${BusinessUrl}">Business</a>
+                                </li>
+                                <li>
+                                <c:url var="healthFitnessUrl" value="/CourseList">
+                                    <c:param name="category" value="Health & Fitness"/>
+                                </c:url>
+                                <a href="${healthFitnessUrl}">Health & Fitness</a>
+                                </li>
+                                <li>
+                                <c:url var="LifeStylesUrl" value="/CourseList">
+                                    <c:param name="category" value="Life Styles"/>
+                                </c:url>
+                                <a href="${LifeStylesUrl}">Life Styles</a>
+                                </li>
+                                <li>
+                                <c:url var="PhotographyUrl" value="/CourseList">
+                                    <c:param name="category" value="Photography"/>
+                                </c:url>
+                                <a href="${PhotographyUrl}">Photography</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -51,7 +76,7 @@
                             <ul>
                                 <li><a href="#">Global Partners</a></li>
                                 <li><a href="#">Forum</a></li>
-                                <li><a href="#">Help & Support</a></li>
+                                <li><a href="${pageContext.request.contextPath}/pages/faq.jsp">Help & Support</a></li>
                                 <li><a href="#">Community</a></li>
                                 <li><a href="#">Documentation</a></li>
                             </ul>

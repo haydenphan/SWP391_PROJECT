@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="model.*" %>
+<%@ page import="DAO.*" %>
 <!doctype html>
 <html class="no-js" lang="zxx">
 
@@ -33,42 +34,24 @@
             <!-- TOP CATEGORIES -->
             <%@ include file="../template/categoryArea.jsp" %>
             <!-- portfolio main area start  -->
-            <section class="course-area p-relative pt-110 pb-90">
-                <div class="course-shape-1">
-                    <img src="${pageContext.request.contextPath}/img/shape/portfolio-shap-1.png" alt="shape">
-                </div>
-                <div class="course-shape-2">
-                    <img src="${pageContext.request.contextPath}/img/shape/portfolio-shap-2.png" alt="shape">
-                </div>
-                <div class="course-shape-3">
-                    <img src="${pageContext.request.contextPath}/img/shape/portfolio-shap-3.png" alt="shape">
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-5 col-lg-5 f-left">
-                            <div class="section-title mb-50">
-                                <h2>Discover<br> World's Best <span class="down-mark-line">Courses</span></h2>
-                            </div>
-                        </div>
-                        <div class="col-xl-7 col-lg-7">
-                            <div class="portfolio-button mt-60">
-                                <button class="filter-button active" data-filter="*">View All<span class="port-red">[06]</span></button>
-                                <button class="filter-button" data-filter=".c-1">Data Science<span class="port-red">[01]</span></button>
-                                <button class="filter-button" data-filter=".c-2">Development<span class="port-red">[03]</span></button>
-                                <button class="filter-button" data-filter=".c-3">Business<span class="port-red">[01]</span></button>
-                                <button class="filter-button" data-filter=".c-4">Life Styles<span class="port-red">[01]</span></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row grid course-main-items">
-                        <c:forEach var="course" items="<%=CourseDAO.getCoursesSortedByEnrollment()%>" begin="0" end="5">
-                            <c:set var="currentCourse" value="${course}" scope="request" />
-                            <jsp:include page="../template/course/homeCourseComponent.jsp" />
-                        </c:forEach>
-                    </div>
-                </div>
-            </section>
-            <!-- portfolio main area end -->
+            <%@ include file="../template/portfolio.jsp" %>
+            <!-- features-area-start-->
+            <%@ include file="../template/featureArea.jsp" %>
+            <!-- student-choose-area start -->
+            <%@ include file="../template/studentChoose.jsp" %>
+            <!-- browser-area start -->
+            <%@ include file="../template/browser.jsp" %>
+
+            <div class="testimonial-area pb-120">
+
+            </div>
+
+            <!-- education-area start -->
+            <%@ include file="../template/education.jsp" %>
+
+            <div class="brand-area theme-bg pt-90 pb-120">
+
+            </div>
         </main>
 
         <%-- FOOTER --%>

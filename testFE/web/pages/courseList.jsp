@@ -190,8 +190,15 @@
                                     <jsp:include page="../template/course/courseComponent.jsp" />
                                 </c:forEach>
                             </div>
-                        </div>
-
+                            <div class="edu-pagination mt-30 mb-20">
+                                <ul>
+                                    <li><a href="#"><i class="fal fa-angle-left"></i></a></li>
+                                    <li class="active"><a href="#"><span>01</span></a></li>
+                                    <li><a href="#"><span>02</span></a></li>
+                                    <li><a href="#"><i class="fal fa-angle-right"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>                        
                     </div>
                 </div>
             </section>

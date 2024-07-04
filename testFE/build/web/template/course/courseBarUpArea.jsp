@@ -9,7 +9,6 @@
                     <div class="bar-filter">
                         <i class="flaticon-filter"></i>
                         <span>Filter</span>
-                        <span>(2)</span>
                     </div>
                     <div class="course-sidebar-tab">
                         <div class="course-sidebar-wrapper">
@@ -20,11 +19,9 @@
                             </div>
                             <div class="couse-dropdown">
                                 <div class="course-drop-inner">
-                                    <select name="sortOrder" form="filterForm" onchange="applyFilters()">
+                                    <select name="sortOrder" form="filterForm">
                                         <option value="latest">Newly published</option>
                                         <option value="popularity">Most Viewed</option>
-                                        <option value="rating">5 Star Rated</option>
-                                        <option value="duration">Duration</option>
                                     </select>
                                 </div>
                             </div>

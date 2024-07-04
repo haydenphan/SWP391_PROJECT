@@ -5953,8 +5953,6 @@ div.tagcloud a:hover {
 }
 .portfolio-button button span::before {
   position: absolute;
-  width: 31px;
-  height: 1px;
   content: "";
   background: #FFB013;
   top: 50%;

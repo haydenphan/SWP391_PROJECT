@@ -755,7 +755,9 @@ public class CourseDAO extends DAO<Course> {
                 course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime());
                 course.setRequirements(rs.getString("Requirements"));
                 course.setPrice(rs.getDouble("Price"));
+                course.setImageURL(rs.getString("ImageURL"));
                 course.setIsCancelled(rs.getBoolean("isCancelled"));
+                course.setLevelID(rs.getInt("LevelID"));
 
                 courses.add(course);
             }

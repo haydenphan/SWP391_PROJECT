@@ -46,10 +46,20 @@
 
         <%
             User pojo = (User) request.getAttribute("pojo");
-            String hashedPassword = "GG";
             String defaultBio = "No bio yet";
-
-            User user = new User(null, hashedPassword, pojo.getFirstName(), pojo.getLastName(), pojo.getEmail(), 0, pojo.getRegistrationDate(), true, pojo.getAvatar(), defaultBio, null);
+            User user = new User();
+            user.setEmail(pojo.getEmail());
+            user.setUserName(pojo.getUserName());
+            user.setFirstName(pojo.getFirstName());
+            user.setLastName(pojo.getLastName());
+            user.setRole(1);
+            user.setRegistrationDate(LocalDateTime.now());
+            user.setIsActive(true);
+            user.setBio(defaultBio);
+            user.setAvatar(pojo.getAvatar());
+            user.setProviderID(2);
+            user.setPasswordHash(null);
+            user.setStoredSalt(null);
             System.out.println(user.toString());
             session.setAttribute("user", user);
         %>

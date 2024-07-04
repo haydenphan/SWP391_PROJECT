@@ -16,7 +16,7 @@ public class UserDAO extends DAO<User> {
     @Override
     public int insert(User t) {
         int res = 0;
-        String sql = "INSERT INTO Users (UserName, PasswordHash, FirstName, LastName, Email, RoleID, RegistrationDate, IsActive, Avatar, Bio, StoredSalt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Users (UserName, PasswordHash, FirstName, LastName, Email, RoleID, RegistrationDate, IsActive, Avatar, Bio, StoredSalt, ProviderID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
 
@@ -31,6 +31,7 @@ public class UserDAO extends DAO<User> {
             st.setString(9, t.getAvatar());
             st.setString(10, t.getBio());
             st.setBytes(11, t.getStoredSalt());
+            st.setInt(12, t.getProviderID());
 
             res = st.executeUpdate();
 
@@ -98,96 +99,104 @@ public class UserDAO extends DAO<User> {
         return user;
     }
 
-    public User checkExistedGGAccount(User user) throws Exception {
-        String sql = "SELECT * FROM Users WHERE Email = ? AND PasswordHash = ?";
-
-        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
-            st.setString(1, user.getEmail());
-            st.setString(2, "GG");
-
-            try (ResultSet rs = st.executeQuery()) {
-                if (rs.next()) {
-                    user = new User();
-                    user.setUserID(rs.getInt("UserID"));
-                    user.setUserName(rs.getString("UserName"));
-                    user.setPasswordHash(rs.getString("PasswordHash"));
-                    user.setFirstName(rs.getString("FirstName"));
-                    user.setLastName(rs.getString("LastName"));
-                    user.setEmail(rs.getString("Email"));
-                    user.setRole(rs.getInt("RoleID"));
-                    user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
-                    user.setIsActive(rs.getBoolean("IsActive"));
-                    user.setAvatar(rs.getString("Avatar"));
-                    user.setBio(rs.getString("Bio"));
-                    user.setStoredSalt(rs.getBytes("StoredSalt"));
-                    return user;
-
-                }
-            }
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return null;
-    }
-
+//    public User checkExistedGGAccount(User user) throws Exception {
+//        String sql = "SELECT * FROM Users WHERE Email = ? AND PasswordHash = ?";
+//
+//        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+//            st.setString(1, user.getEmail());
+//            st.setString(2, "GG");
+//
+//            try (ResultSet rs = st.executeQuery()) {
+//                if (rs.next()) {
+//                    user = new User();
+//                    user.setUserID(rs.getInt("UserID"));
+//                    user.setUserName(rs.getString("UserName"));
+//                    user.setPasswordHash(rs.getString("PasswordHash"));
+//                    user.setFirstName(rs.getString("FirstName"));
+//                    user.setLastName(rs.getString("LastName"));
+//                    user.setEmail(rs.getString("Email"));
+//                    user.setRole(rs.getInt("RoleID"));
+//                    user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
+//                    user.setIsActive(rs.getBoolean("IsActive"));
+//                    user.setAvatar(rs.getString("Avatar"));
+//                    user.setBio(rs.getString("Bio"));
+//                    user.setStoredSalt(rs.getBytes("StoredSalt"));
+//                    return user;
+//
+//                }
+//            }
+//        } catch (SQLException | ClassNotFoundException ex) {
+//            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//        return null;
+//    }
     public User checkExistedAccount(User user) throws Exception {
-        String sql = "SELECT * FROM Users WHERE (Email = ? OR UserName = ?)";
+        String sql = "";
+        if (user.getProviderID() == 1) {
+            sql = "SELECT * FROM Users WHERE (Email = ? OR UserName = ?)";
+            try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+                st.setString(1, user.getEmail());
+                st.setString(2, user.getUserName());
 
-        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
-            st.setString(1, user.getEmail());
-            st.setString(2, user.getUserName());
+                try (ResultSet rs = st.executeQuery()) {
+                    if (rs.next()) {
+                        // User exists, now verify the password
+                        String hashedPasswordFromDB = rs.getString("PasswordHash");
+                        String enteredPassword = user.getPasswordHash();
+                        byte[] storedSalt = rs.getBytes("StoredSalt");
 
-            try (ResultSet rs = st.executeQuery()) {
-                if (rs.next()) {
-                    // User exists, now verify the password
-                    String hashedPasswordFromDB = rs.getString("PasswordHash");
-                    String enteredPassword = user.getPasswordHash();
-                    byte[] storedSalt = rs.getBytes("StoredSalt");
-
-                    if (storedSalt != null) {
-                        if (PasswordUtils.verifyPassword(enteredPassword, storedSalt, hashedPasswordFromDB)) {
-                            // Passwords match, login successful
-                            user = new User();
-                            user.setUserID(rs.getInt("UserID"));
-                            user.setUserName(rs.getString("UserName"));
-                            user.setPasswordHash(rs.getString("PasswordHash"));
-                            user.setFirstName(rs.getString("FirstName"));
-                            user.setLastName(rs.getString("LastName"));
-                            user.setEmail(rs.getString("Email"));
-                            user.setRole(rs.getInt("RoleID"));
-                            user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
-                            user.setIsActive(rs.getBoolean("IsActive"));
-                            user.setAvatar(rs.getString("Avatar"));
-                            user.setBio(rs.getString("Bio"));
-                            user.setStoredSalt(rs.getBytes("StoredSalt"));
-                            return user;
-                        }
-                    } else {
-                        if (enteredPassword.equals(hashedPasswordFromDB)) {
-                            user = new User();
-                            user.setUserID(rs.getInt("UserID"));
-                            user.setUserName(rs.getString("UserName"));
-                            user.setPasswordHash(rs.getString("PasswordHash"));
-                            user.setFirstName(rs.getString("FirstName"));
-                            user.setLastName(rs.getString("LastName"));
-                            user.setEmail(rs.getString("Email"));
-                            user.setRole(rs.getInt("RoleID"));
-                            user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
-                            user.setIsActive(rs.getBoolean("IsActive"));
-                            user.setAvatar(rs.getString("Avatar"));
-                            user.setBio(rs.getString("Bio"));
-                            user.setStoredSalt(rs.getBytes("StoredSalt"));
-                            return user;
+                        if (storedSalt != null) {
+                            if (PasswordUtils.verifyPassword(enteredPassword, storedSalt, hashedPasswordFromDB)) {
+                                // Passwords match, login successful
+                                user = new User();
+                                user.setUserID(rs.getInt("UserID"));
+                                user.setUserName(rs.getString("UserName"));
+                                user.setPasswordHash(rs.getString("PasswordHash"));
+                                user.setFirstName(rs.getString("FirstName"));
+                                user.setLastName(rs.getString("LastName"));
+                                user.setEmail(rs.getString("Email"));
+                                user.setRole(rs.getInt("RoleID"));
+                                user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
+                                user.setIsActive(rs.getBoolean("IsActive"));
+                                user.setAvatar(rs.getString("Avatar"));
+                                user.setBio(rs.getString("Bio"));
+                                user.setStoredSalt(rs.getBytes("StoredSalt"));
+                                return user;
+                            }
                         }
                     }
-
                 }
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } else {
+            sql = "SELECT * FROM Users WHERE (Email = ?)";
+            try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+                st.setString(1, user.getEmail());
 
+                try (ResultSet rs = st.executeQuery()) {
+                    if (rs.next()) {
+                        user = new User();
+                        user.setUserID(rs.getInt("UserID"));
+                        user.setUserName(rs.getString("UserName"));
+                        user.setPasswordHash(rs.getString("PasswordHash"));
+                        user.setFirstName(rs.getString("FirstName"));
+                        user.setLastName(rs.getString("LastName"));
+                        user.setEmail(rs.getString("Email"));
+                        user.setRole(rs.getInt("RoleID"));
+                        user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
+                        user.setIsActive(rs.getBoolean("IsActive"));
+                        user.setAvatar(rs.getString("Avatar"));
+                        user.setBio(rs.getString("Bio"));
+                        user.setStoredSalt(rs.getBytes("StoredSalt"));
+                        return user;
+                    }
+                }
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return null;
     }
 
@@ -285,7 +294,7 @@ public class UserDAO extends DAO<User> {
     }
 
     public boolean updateUserProfile(User user) {
-        String sql = "UPDATE [OnlineLearningV3].[dbo].[Users] SET "
+        String sql = "UPDATE [OnlineLearningV2].[dbo].[Users] SET "
                 + "[FirstName] = ?, "
                 + "[LastName] = ?, "
                 + "[Email] = ?, "

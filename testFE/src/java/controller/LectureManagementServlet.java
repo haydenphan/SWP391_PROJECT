@@ -96,8 +96,10 @@ public class LectureManagementServlet extends HttpServlet {
                     url = "/errors/errorAlert.jsp";
                 }
             } else if ("delete-material".equals(action)) {
-                int materialId = Integer.parseInt(request.getParameter("materialId"));
-                LectureMaterialDAO.deleteMaterial(materialId);
+                if (Integer.valueOf(request.getParameter("materialId")) != null) {
+                    int materialId = Integer.parseInt(request.getParameter("materialId"));
+                    LectureMaterialDAO.deleteMaterial(materialId);
+                }                 
                 url = "/lecture-management?action=view&sectionId=" + sectionId;
             } else if ("add-lecture".equals(action)) {
                 String lectureName = request.getParameter("lectureName");

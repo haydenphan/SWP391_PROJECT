@@ -24,11 +24,6 @@
         <%@ include file="../template/header.jsp" %>
 
         <main>
-            <!-- hero-area -->
-            <jsp:include page="../template/heroArea.jsp">
-                <jsp:param name="title" value="My profile" />
-            </jsp:include>
-
             <%
                 ArrayList<String> categoryList = CategoryDAO.getAllCategoryName();
                 ArrayList<String> languageList = LanguageDAO.getAllLanguageName();

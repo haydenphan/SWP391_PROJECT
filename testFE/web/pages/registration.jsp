@@ -75,7 +75,7 @@
                                             </div>
 
                                             <div class="sign-button mb-20">
-                                                <input id="submitbtn" class="sign-btn" type="submit" value="Register now" disabled />
+                                                <input style="border: none" id="submitbtn" class="sign-btn" type="submit" value="Sign Up" disabled />
                                             </div>
 
                                             <div class="acount-login text-center">
