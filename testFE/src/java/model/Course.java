@@ -28,7 +28,16 @@ public class Course {
     private double averageRating;
     private boolean isCancelled;
     private List<Integer> NumberOfStarRatingList = new ArrayList<>();
+    private String creatorName;
+    
+    
+public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
 
+    public String getCreatorName() {
+        return creatorName;
+    }
     public boolean isIsCancelled() {
         return isCancelled;
     }

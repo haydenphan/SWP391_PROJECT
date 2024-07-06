@@ -525,33 +525,43 @@ public class CourseDAO extends DAO<Course> {
         return courses;
     }
 
-    public List<Course> SearchCourseByName(String name) {
-        List<Course> list = new ArrayList<>();
-        String sql = "SELECT * FROM Courses WHERE [CourseName] LIKE ?";
-        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, "%" + name + "%");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Course course = new Course();
-                // populate the course object with data from result set
-                course.setCourseID(rs.getInt("CourseID"));
-                course.setCourseName(rs.getString("CourseName"));
-                course.setDescription(rs.getString("Description"));
-                course.setCreatedBy(rs.getInt("CreatedBy"));
-                course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
-                course.setIsPublished(rs.getBoolean("IsPublished"));
-                course.setSubcategoryID(rs.getInt("SubcategoryID"));
-                course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
-                course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime());
-                course.setRequirements(rs.getString("Requirements"));
-                course.setPrice(rs.getDouble("Price"));
-                list.add(course);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public List<Course> searchCourse(String searchText) {
+    List<Course> list = new ArrayList<>();
+    String sql = "SELECT c.*, u.FirstName, u.LastName " +
+                 "FROM Courses c " +
+                 "JOIN Users u ON c.CreatedBy = u.UserID " +
+                 "WHERE c.CourseName LIKE ? OR c.Description LIKE ? OR u.FirstName LIKE ? OR u.LastName LIKE ?";
+    try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, "%" + searchText + "%");
+        ps.setString(2, "%" + searchText + "%");
+        ps.setString(3, "%" + searchText + "%");
+        ps.setString(4, "%" + searchText + "%");
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Course course = new Course();
+            // Populate the course object with data from result set
+            course.setCourseID(rs.getInt("CourseID"));
+            course.setCourseName(rs.getString("CourseName"));
+            course.setDescription(rs.getString("Description"));
+            course.setCreatedBy(rs.getInt("CreatedBy"));
+            course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
+            course.setIsPublished(rs.getBoolean("IsPublished"));
+            course.setSubcategoryID(rs.getInt("SubcategoryID"));
+            course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
+            course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime());
+            course.setRequirements(rs.getString("Requirements"));
+            course.setPrice(rs.getDouble("Price"));
+            // Add the creator's name to the course object (if needed)
+            String creatorName = rs.getString("FirstName") + " " + rs.getString("LastName");
+            course.setCreatorName(creatorName); // Assuming Course class has a setCreatorName method
+            list.add(course);
         }
-        return list;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return list;
+}
+
 
     public static Course getCoursesByIDForCart(int id) {
         String sql = "SELECT * FROM Courses WHERE CourseID = ?";
