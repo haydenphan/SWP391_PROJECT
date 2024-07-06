@@ -187,7 +187,7 @@ public class CourseDAO extends DAO<Course> {
 
         return course;
     }
-    
+
     public static User getInstructor(int id) {
         String sql = "SELECT * FROM Users WHERE UserID = ?";
         User instructor = null;
@@ -282,7 +282,7 @@ public class CourseDAO extends DAO<Course> {
         return courseID;
     }
 
-    public List<Course> getFilteredCourses(Integer categoryID, Integer subcategoryID, String priceFilter, List<Integer> languageIDs, List<Integer> levelIDs, Double minRating, String sortOrder) {
+    public List<Course> getFilteredCourses(Integer categoryID, Integer subcategoryID, String priceFilter, List<Integer> languageIDs, List<Integer> levelIDs, Double minRating, String sortOrder, int currentPage, int pageSize) {
         List<Course> courses = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
                 "SELECT c.*, sc.SubcategoryName, l.LevelName, lg.LanguageName, ISNULL(AVG(cf.Rating), 0) AS AverageRating "
@@ -338,8 +338,12 @@ public class CourseDAO extends DAO<Course> {
             } else if (sortOrder.equals("latest")) {
                 sql.append("ORDER BY c.CreatedDate DESC ");
             }
+        } else {
+            sql.append("ORDER BY c.CourseID DESC ");
         }
-
+        // Pagination
+        int offset = (currentPage - 1) * pageSize;
+        sql.append("OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql.toString())) {
             int paramIndex = 1;
             if (categoryID != null) {
@@ -361,7 +365,8 @@ public class CourseDAO extends DAO<Course> {
             if (minRating != null) {
                 st.setDouble(paramIndex++, minRating);
             }
-
+            st.setInt(paramIndex++, offset);
+            st.setInt(paramIndex++, pageSize);
             try (ResultSet rs = st.executeQuery()) {
                 while (rs.next()) {
                     Course course = new Course();
@@ -399,8 +404,94 @@ public class CourseDAO extends DAO<Course> {
         } catch (Exception ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return courses;
+    }
+
+    public int getTotalCourses(Integer categoryID, Integer subcategoryID, String priceFilter, List<Integer> languageIDs, List<Integer> levelIDs, Double minRating) {
+        int totalCourses = 0;
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(DISTINCT c.CourseID) AS TotalCourses "
+                + "FROM Courses c "
+                + "LEFT JOIN CourseFeedback cf ON c.CourseID = cf.CourseID "
+                + "LEFT JOIN Subcategories sc ON c.SubcategoryID = sc.SubcategoryID "
+                + "LEFT JOIN CourseLevels l ON c.LevelID = l.LevelID "
+                + "LEFT JOIN CourseLanguages lg ON c.LanguageID = lg.LanguageID "
+                + "WHERE 1 = 1 ");
+
+        if (categoryID != null) {
+            sql.append("AND sc.CategoryID = ? ");
+        }
+        if (subcategoryID != null) {
+            sql.append("AND c.SubcategoryID = ? ");
+        }
+        if (priceFilter != null) {
+            if (priceFilter.equals("free")) {
+                sql.append("AND c.Price = 0 ");
+            } else if (priceFilter.equals("paid")) {
+                sql.append("AND c.Price > 0 ");
+            }
+        }
+        if (languageIDs != null && !languageIDs.isEmpty()) {
+            sql.append("AND c.LanguageID IN (");
+            for (int i = 0; i < languageIDs.size(); i++) {
+                sql.append("?");
+                if (i < languageIDs.size() - 1) {
+                    sql.append(", ");
+                }
+            }
+            sql.append(") ");
+        }
+        if (levelIDs != null && !levelIDs.isEmpty()) {
+            sql.append("AND c.LevelID IN (");
+            for (int i = 0; i < levelIDs.size(); i++) {
+                sql.append("?");
+                if (i < levelIDs.size() - 1) {
+                    sql.append(", ");
+                }
+            }
+            sql.append(") ");
+        }
+
+        if (minRating != null) {
+            sql.append("HAVING AVG(cf.Rating) >= ? ");
+        }
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+            if (categoryID != null) {
+                st.setInt(paramIndex++, categoryID);
+            }
+            if (subcategoryID != null) {
+                st.setInt(paramIndex++, subcategoryID);
+            }
+            if (languageIDs != null && !languageIDs.isEmpty()) {
+                for (Integer languageID : languageIDs) {
+                    st.setInt(paramIndex++, languageID);
+                }
+            }
+            if (levelIDs != null && !levelIDs.isEmpty()) {
+                for (Integer levelID : levelIDs) {
+                    st.setInt(paramIndex++, levelID);
+                }
+            }
+            if (minRating != null) {
+                st.setDouble(paramIndex++, minRating);
+            }
+
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    totalCourses = rs.getInt("TotalCourses");
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return totalCourses;
     }
 
     public static List<Course> selectBySubCategoryID(int subcategoryID) {
@@ -596,14 +687,15 @@ public class CourseDAO extends DAO<Course> {
 
     public static void main(String[] args) {
         CourseDAO dao = new CourseDAO();
-//        List<Course> list = dao.getFilteredCourses(null, null, null, null, null, null, null);
-//        for (Course course : list) {
-//            System.out.println(course.toString());
-//        }
+        List<Course> list = dao.getFilteredCourses(1, null, null, null, null, null, null, 1, 10);
+        for (Course course : list) {
+            System.out.println(course.toString());
+        }
+        System.out.println(dao.getTotalCourses(1, null, null, null, null, null));
 //        System.out.println(dao.getCourseByID("3"));
 //        List<Integer> starCounts = dao.getStarRatingsCount("3");
 //        System.out.println("Star ratings count for course ID " + "3" + ": " + starCounts);
-        System.out.println(CourseDAO.getCoursesByInstructor(3).size());
+//        System.out.println(CourseDAO.getCoursesByInstructor(3).size());
 //        for (Course course : CourseDAO.getCoursesByInstructor(3)) {
 //            System.out.println(course.toString());
 //        }

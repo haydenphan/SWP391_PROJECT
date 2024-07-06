@@ -25,17 +25,20 @@
                         <div class="course-sidebar-wrapper">
                             <div class="curse-tab-left-wrap">
                                 <div class="course-results">
-                                    Showing <span class="course-result-showing">15</span> of <span
-                                        class="course-result-number">60</span> results
+                                    <% 
+                                    // Assuming 'courses' is the attribute name for the list of courses
+                                    List<Course> crs = (List<Course>) request.getAttribute("courses");
+                                    int totalCourses = (crs != null) ? crs.size() : 0;
+                                    %>
+                                    Showing <span class="course-result-showing"><%= totalCourses %></span> of <span
+                                        class="course-result-number">${totalResults}</span> results
                                 </div>
                             </div>
                             <div class="couse-dropdown">
                                 <div class="course-drop-inner">
-                                    <select>
-                                        <option value="">Newly published</option>
-                                        <option value="">Most Viewed</option>
-                                        <option value="">5 Star Rated</option>
-                                        <option value="">Duration</option>
+                                    <select id="sortOrder" class="form-control" onchange="changeSortOrder()">
+                                        <option value="latest">Newly published</option>
+                                        <option value="popularity">Most Viewed</option>
                                     </select>
                                 </div>
                             </div>

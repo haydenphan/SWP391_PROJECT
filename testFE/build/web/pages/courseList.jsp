@@ -166,11 +166,33 @@
 
 
                         <div class="col-xl-9 col-lg-8 col-md-12">
-                            <div class="row">
+                            <div class="row">                                
                                 <c:forEach var="course" items="${courses}">
                                     <c:set var="currentCourse" value="${course}" scope="request" />
                                     <jsp:include page="../template/course/courseComponent.jsp" />
                                 </c:forEach>
+                                <%
+                                    int totalDisplayedCourses = (crs != null) ? crs.size() : 0;
+                                    boolean isCoursesEmpty = (totalDisplayedCourses == 0);
+                                    if (isCoursesEmpty) {
+                                %>
+                                <p>No more content available</p>
+                                <%
+                                    }
+                                %>
+
+
+                            </div>
+                            <!-- Pagination controls -->
+                            <div class="d-flex justify-content-center mt-4">
+                                <button class="btn btn-primary mr-2" onclick="changePage(-1)" id="prevBtn">Previous</button>
+                                <div class="input-group" style="width: 120px;">
+                                    <input type="number" class="form-control" id="pageInput" onkeypress="handleEnterKey(event)" value="1">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" onclick="goToPage()">Go</button>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary ml-2" onclick="changePage(1)" id="nextBtn">Next</button>
                             </div>
                         </div>
 
@@ -284,9 +306,57 @@
                         languageInput.checked = true;
                     }
                 });
+                
+                const currentPage = parseInt(queryParams.get('currentPage')) || 1;
+                document.getElementById('pageInput').value = currentPage;
+
+                if (currentPage <= 1) {
+                    document.getElementById('prevBtn').disabled = true;
+                }
+                const coursesEmpty = <%= isCoursesEmpty %>;
+                if (coursesEmpty) {
+                    document.getElementById('nextBtn').disabled = true;
+                }
+                const sortOrder = queryParams.get('sortOrder') || 'latest';
+                document.getElementById('sortOrder').value = sortOrder;
             }
             // Parse query parameters on page load
             parseQueryParams();
+            
+            function changePage(offset) {
+                const urlParams = new URLSearchParams(window.location.search);
+                let currentPage = parseInt(urlParams.get('currentPage')) || 1;
+                const newPage = currentPage + offset;
+
+                if (newPage < 1) return;
+
+                urlParams.set('currentPage', newPage);
+                window.location.search = urlParams.toString();
+            }
+
+            function goToPage() {
+                const pageInput = document.getElementById('pageInput').value;
+                const newPage = parseInt(pageInput);
+
+                if (isNaN(newPage) || newPage < 1) return;
+
+                const urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('currentPage', newPage);
+                window.location.search = urlParams.toString();
+            }
+
+            function handleEnterKey(event) {
+                if (event.keyCode === 13) {
+                    goToPage();
+                }
+            }
+            function changeSortOrder() {
+                const sortOrder = document.getElementById('sortOrder').value;
+                const urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('sortOrder', sortOrder);
+                urlParams.set('currentPage', 1); // Reset to first page
+                window.location.search = urlParams.toString();
+            }
         </script>
     </body>
 

@@ -41,11 +41,12 @@ public class CourseListServlet extends HttpServlet {
         String[] levelIDArray = request.getParameterValues("level");
         String minRatingStr = request.getParameter("rating");
         String sortOrder = request.getParameter("sortOrder");
-
+        if(sortOrder == null || sortOrder.isEmpty()){
+            sortOrder = "latest";
+        }
         Integer categoryID = categoryIDStr != null && !categoryIDStr.isEmpty() ? Integer.parseInt(categoryIDStr) : null;
         Integer subcategoryID = subcategoryIDStr != null && !subcategoryIDStr.isEmpty() ? Integer.parseInt(subcategoryIDStr) : null;
         Double minRating = minRatingStr != null && !minRatingStr.isEmpty() ? Double.parseDouble(minRatingStr) : null;
-
         List<Integer> languageIDs = new ArrayList<>();
         if (languageIDArray != null) {
             for (String languageID : languageIDArray) {
@@ -59,18 +60,20 @@ public class CourseListServlet extends HttpServlet {
                 levelIDs.add(Integer.parseInt(levelID));
             }
         }
-
+        String currentPageStr = request.getParameter("currentPage");
+        Integer currentPage = currentPageStr != null && !currentPageStr.isEmpty()? Integer.parseInt(currentPageStr) : 1;
+        Integer pageSize = 1;
         // Use CourseDAO to get filtered courses
-        List<Course> allCourses = courseDAO.getFilteredCourses(categoryID, subcategoryID, priceFilter, languageIDs, levelIDs, minRating, sortOrder);
+        List<Course> allCourses = courseDAO.getFilteredCourses(categoryID, subcategoryID, priceFilter, languageIDs, levelIDs, minRating, sortOrder, currentPage, pageSize);
 
         // Filter out unpublished courses
         List<Course> filteredCourses = allCourses.stream()
                 .filter(Course::IsPublished)
                 .collect(Collectors.toList());
-
+        Integer totalResults = courseDAO.getTotalCourses(categoryID, subcategoryID, priceFilter, languageIDs, levelIDs, minRating);
         // Set filtered courses as request attribute
         request.setAttribute("courses", filteredCourses);
-
+        request.setAttribute("totalResults", totalResults);
         // Forward to JSP page
         request.getRequestDispatcher("/pages/courseList.jsp").forward(request, response);
     }
