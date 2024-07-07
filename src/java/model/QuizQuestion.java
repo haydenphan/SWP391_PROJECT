@@ -1,11 +1,14 @@
 package model;
 
+import java.util.List;
+
 public class QuizQuestion {
    
     private int questionID;
     private int quizID;
     private String questionText;
     private String questionType;
+    private List<QuizAnswer> answers;
 
     // Constructors
     public QuizQuestion() {
@@ -16,6 +19,14 @@ public class QuizQuestion {
         this.quizID = quizID;
         this.questionText = questionText;
         this.questionType = questionType;
+    }
+
+    public List<QuizAnswer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<QuizAnswer> answers) {
+        this.answers = answers;
     }
     
 

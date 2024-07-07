@@ -36,4 +36,13 @@
         <servlet-name>TransactionServlet</servlet-name>
         <url-pattern>/transactionservlet</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>ReportManageServlet</servlet-name>
+        <servlet-class>controller.ReportManageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReportManageServlet</servlet-name>
+        <url-pattern>/Report</url-pattern>
+    </servlet-mapping>
 </web-app>

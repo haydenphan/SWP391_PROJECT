@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Quiz {
     private int quizId;
@@ -8,7 +9,12 @@ public class Quiz {
     private String quizName;
     private  boolean isGraded;           
     private LocalDateTime createdDate;
-
+    private int sectionID;
+    private String sectionName;
+    private int submissionID;
+    private Date submissionDate;
+    
+    
     // Default constructor
     public Quiz() {}
 
@@ -59,6 +65,38 @@ public class Quiz {
 
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public int getSectionID() {
+        return sectionID;
+    }
+
+    public void setSectionID(int sectionID) {
+        this.sectionID = sectionID;
+    }
+
+    public String getSectionName() {
+        return sectionName;
+    }
+
+    public void setSectionName(String sectionName) {
+        this.sectionName = sectionName;
+    }
+
+    public int getSubmissionID() {
+        return submissionID;
+    }
+
+    public void setSubmissionID(int submissionID) {
+        this.submissionID = submissionID;
+    }
+
+    public Date getSubmissionDate() {
+        return submissionDate;
+    }
+
+    public void setSubmissionDate(Date submissionDate) {
+        this.submissionDate = submissionDate;
     }
 
     @Override

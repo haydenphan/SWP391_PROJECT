@@ -71,6 +71,8 @@
                                                                                <li><a href="contact.jsp">contact</a></li>
                                                                             </ul>-->
                                         </li>
+                                        
+                                        <li class=""><a href="ReportManage?action=reports">Manage Report</a></li>
                                     </ul>
                                 </nav>
                             </div>

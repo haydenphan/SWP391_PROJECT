@@ -1,15 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="model.QuizQuestion" %>
 <%@ page import="model.QuizAnswer" %>
 <%@ page import="DAO.QuizQuestionDAO" %>
 <%@ page import="DAO.QuizAnswerDAO" %>
 <%@ page import="java.util.List" %>
 
-<%
-    int quizId = request.getAttribute("quizId") != null ? (int)request.getAttribute("quizId") : Integer.parseInt(request.getParameter("quizId"));
-    List<QuizQuestion> questions = QuizQuestionDAO.getQuizQuestionsByQuizId(quizId);
-%>
+
+
 
 <!DOCTYPE html>
 <html>
@@ -98,28 +97,27 @@
         <div class="container">
             <h2>Quiz Previews</h2>
 
-            <% for (QuizQuestion question : questions) {%>
-            <div class="question-group" id="question_<%= question.getQuestionID()%>">
-                <button type="button" class="delete-question" onclick="deleteQuestion(<%= question.getQuestionID()%>)">×</button>
-                <button type="button" class="edit-question" onclick="editQuestion(<%= question.getQuestionID()%>)">✎</button>
-                <h3>Question: <%= question.getQuestionText()%></h3>
-                <p>Type: <%= question.getQuestionType()%></p>
+           
+            <div class="question-group" id="question_">
+                <button type="button" class="delete-question" onclick="deleteQuestion()">×</button>
+                <button type="button" class="edit-question" onclick="editQuestion()">✎</button>
+                <h3>Question: </h3>
+                <p>Type: </p>
 
                 <div class="answers">
                     <h4>Answers:</h4>
-                    <% List<QuizAnswer> answers = QuizAnswerDAO.getAnswersByQuestionId(question.getQuestionID()); %>
-                    <% for (QuizAnswer answer : answers) {%>
-                    <div class="answer-group" id="answer_<%= answer.getAnswerID()%>">
-                        <input type="text" value="<%= answer.getAnswerText()%>" readonly>
-                        <input type="checkbox" <%= answer.isCorrect() ? "checked" : ""%> disabled>
-                        <label for="isCorrect<%= answer.getAnswerID()%>">Correct</label>
-                        <button type="button" class="delete-answer" onclick="deleteAnswer(<%= answer.getAnswerID()%>)">×</button>
-                        <button type="button" class="edit-answer" onclick="editAnswer(<%= answer.getAnswerID()%>)">✎</button>
+                    
+                    <div class="answer-group" id="answer_">
+                        <input type="text" value="" readonly>
+                        <input type="checkbox"  disabled>
+                        <label for="isCorrect">Correct</label>
+                        <button type="button" class="delete-answer" onclick="deleteAnswer()">×</button>
+                        <button type="button" class="edit-answer" onclick="editAnswer()">✎</button>
                     </div>
-                    <% } %>
+                    
                 </div>
             </div>
-            <% }%>
+         
 
             <div class="btn-container">
                 <button type="button" class="cont-btn" onclick="addQuestion()">Add Question</button>

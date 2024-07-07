@@ -1,4 +1,7 @@
 # SWP391_PROJECT
+send report- thong bao-phan hoi qua email
+bi loi servlet
 
-lo push het len =))
-phuong thuc get top 5 instructor trong dao userDao, admin home dung jstl de load len
+tao data cho report_comment
+dao classes truy van lien quan
+servlet send report van con bi loi phan nhan action tu request chua fix duoc

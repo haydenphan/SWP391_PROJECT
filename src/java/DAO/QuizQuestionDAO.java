@@ -50,6 +50,7 @@ public class QuizQuestionDAO extends JDBC {
                 question.setQuizID(rs.getInt("QuizID"));
                 question.setQuestionText(rs.getString("QuestionText"));
                 question.setQuestionType(rs.getString("QuestionType"));
+                question.setAnswers(QuizAnswerDAO.getAnswersByQuestionId(question.getQuestionID()));
                 questions.add(question);
             }
         } catch (SQLException ex) {
