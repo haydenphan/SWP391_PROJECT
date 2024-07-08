@@ -12,20 +12,16 @@
                             <div class="main-menu d-none d-xl-block">
                                 <nav id="mobile-menu">
                                     <ul>
-                                        <li class=""><a href="index.jsp">Dashboard</a>
-
+                                        <li class="menu-item-has-children"><a href="#">User</a>
+                                            <ul class="sub-menu">
+                                                <li><a href="${pageContext.request.contextPath}/manageuser?action=viewList">View User List</a></li>
+                                                <li><a href="${pageContext.request.contextPath}/manageuser?action=viewList">View User Report</a></li>
+                                            </ul>
                                         </li>
                                         <li class="menu-item-has-children"><a href="#">Course</a>
                                             <ul class="sub-menu">
                                                 <li><a href="${pageContext.request.contextPath}/pending-course-list">Pending Courses</a></li>
                                                 <li><a href="${pageContext.request.contextPath}/AdminCategory">Category Management</a></li>
-                                                <!--                                       
-                                                                                       <li><a href="course-2.jsp">Course 2</a></li>
-                                                                                       <li><a href="course-3.jsp">Course 3</a></li>
-                                                                                       <li><a href="course-4.jsp">Course 4</a></li>
-                                                                                       <li><a href="course-details.jsp">course details</a></li>
-                                                                                       <li><a href="webinars.jsp">Webinars</a></li>
-                                                                                       <li><a href="webinar-details.jsp">Webinar Details</a></li>-->
                                             </ul>
                                         </li>
                                         <li class="menu-item-has-children"><a href="#!">Pages</a>

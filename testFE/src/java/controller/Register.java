@@ -47,14 +47,14 @@ public class Register extends HttpServlet {
         String username = (String) session.getAttribute("username");
         String password = (String) session.getAttribute("password");
         String roles = (String) session.getAttribute("roles");
-        int roleID;
-        int providerID = 1;
-        if (roles.equals("learner")) {
-            roleID = 1;
-        } else {
-            roleID = 2;
+
+        if (!roles.equals("learner") && !roles.equals("instructor")) {
+            response.sendRedirect(request.getContextPath() + "/errorPage.jsp");
+            return;
         }
 
+        int roleID = roles.equals("learner") ? 1 : 2;
+        int providerID = 1;
         String url = "";
 
         UserDAO userDAO = new UserDAO();
@@ -85,8 +85,8 @@ public class Register extends HttpServlet {
 
         userDAO.insert(user);
         session.setAttribute("user", user);
-        
-        url = "/${pageContext.request.contextPath}/home?role=" + user.getRole();
+
+        url = "/home?role=" + user.getRole();
 
         RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
         rd.forward(request, response);

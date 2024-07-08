@@ -129,7 +129,7 @@
                             <div class="col-xl-3 col-12">
                                 <div class="box bg-transparent no-shadow">
                                     <div class="box-body p-xl-0 text-center">
-                                        <h3 class="px-30 mb-20">Have More<br>knoledge to share?</h3>
+                                        <h3 class="px-30 mb-20">Have More<br>knowledge to share?</h3>
                                         <a href="course.html" class="waves-effect waves-light w-p100 btn btn-primary"><i
                                                 class="fa fa-plus me-15"></i> Create New Course</a>
                                     </div>

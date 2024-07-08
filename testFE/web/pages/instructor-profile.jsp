@@ -32,7 +32,6 @@
         <main>
             <%
                 int instructorID = ((User) session.getAttribute("user")).getUserID();
-                System.out.println(instructorID);
                 List<Course> coursesList = CourseDAO.getCoursesByInstructor(instructorID);
             %>
 

@@ -10,17 +10,17 @@
         <%-- HEAD --%>
         <%@ include file="../template/head.jsp" %>
         <style>
-/*            .btn-primary {
-                background-color: #007bff;
-                border-color: #007bff;
-                color: #fff;
-            }
-
-            .btn-secondary {
-                background-color: #6c757d;
-                border-color: #6c757d;
-                color: #fff;
-            }*/
+            /*            .btn-primary {
+                            background-color: #007bff;
+                            border-color: #007bff;
+                            color: #fff;
+                        }
+            
+                        .btn-secondary {
+                            background-color: #6c757d;
+                            border-color: #6c757d;
+                            color: #fff;
+                        }*/
 
             .btn {
                 padding: 10px 20px;
@@ -44,6 +44,10 @@
         <%@ include file="../template/header.jsp" %>
 
         <main>
+            <%
+                int instructorID = user.getUserID();
+                List<Course> coursesList = CourseDAO.getCoursesByInstructor(instructorID);
+            %>
             <!-- hero-area start-->
             <div class="hero-area hero-height d-flex align-items-center position-relative" data-background="">
                 <img class="hero-shape-5" src="${pageContext.request.contextPath}/img/shape/shape-02.png" alt="shape">
@@ -92,57 +96,57 @@
             <!-- hero-area end-->
 
             <!-- instructor-dashboard-stats start-->
-<!--            <div class="instructor-dashboard-stats mt-4 pt-120 pb-100">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="stat-box">
-                                <h3>Total Courses</h3>
-                                <p><span class="stat-number">18</span></p>
+            <!--            <div class="instructor-dashboard-stats mt-4 pt-120 pb-100">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="stat-box">
+                                            <h3>Total Courses</h3>
+                                            <p><span class="stat-number">18</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="stat-box">
+                                            <h3>Total Students</h3>
+                                            <p><span class="stat-number">5740</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="stat-box">
+                                            <h3>Total Earnings</h3>
+                                            <p><span class="stat-number">$25,000</span></p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stat-box">
-                                <h3>Total Students</h3>
-                                <p><span class="stat-number">5740</span></p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stat-box">
-                                <h3>Total Earnings</h3>
-                                <p><span class="stat-number">$25,000</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>-->
+                        </div>-->
             <!-- instructor-dashboard-stats end-->
 
             <!-- dashboard-quick-links start-->
-<!--            <div class="dashboard-quick-links mt-4">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <a href="/manage-courses" class="quick-link-box">
-                                <i class="fas fa-book"></i>
-                                <span>Manage Courses</span>
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a href="/manage-enrollments" class="quick-link-box">
-                                <i class="fas fa-user-graduate"></i>
-                                <span>Manage Enrollments</span>
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a href="/course-reports" class="quick-link-box">
-                                <i class="fas fa-chart-line"></i>
-                                <span>Course Reports</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>-->
+            <!--            <div class="dashboard-quick-links mt-4">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <a href="/manage-courses" class="quick-link-box">
+                                            <i class="fas fa-book"></i>
+                                            <span>Manage Courses</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a href="/manage-enrollments" class="quick-link-box">
+                                            <i class="fas fa-user-graduate"></i>
+                                            <span>Manage Enrollments</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a href="/course-reports" class="quick-link-box">
+                                            <i class="fas fa-chart-line"></i>
+                                            <span>Course Reports</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>-->
             <!-- dashboard-quick-links end-->
 
             <!-- course-details-area start -->
@@ -184,7 +188,9 @@
                                                                 </svg>
                                                             </div>
                                                             <div class="count-number">
-                                                                <span class="counter">18</span>
+                                                                <span class="counter">
+                                                                    <%= CourseDAO.countCoursesByInstructor(instructorID)%>
+                                                                </span>
                                                                 <p>Online Courses</p>
                                                             </div>
                                                         </div>
@@ -208,181 +214,15 @@
                                                                 </svg>
                                                             </div>
                                                             <div class="count-number">
-                                                                <span class="counter">5,740</span>
+                                                                <span class="counter">
+                                                                    <%= CourseDAO.countTotalEnrollmentsByInstructor(instructorID)%>
+                                                                </span>
                                                                 <p>Enrolled Students</p>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="my-course-info">
-                                            <h3>My Courses</h3>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xl-4 col-lg-4 col-md-4">
-                                                <div class="eduman-course-main-wrapper mb-30">
-                                                    <div class="eduman-course-img w-img">
-                                                        <a href="course-details.html"><img src="${pageContext.request.contextPath}/img/portfilo/course-img-01.jpg" alt="course-img"></a>
-                                                    </div>
-                                                    <div class="eduman-course-wraper">
-                                                        <div class="eduman-course-heading">
-                                                            <a href="course.html" class="course-link-color-1">Development</a>
-                                                            <span class="couse-star"><i class="fas fa-star"></i>4.9 (25)</span>
-                                                        </div>
-                                                        <div class="eduman-course-text">
-                                                            <h3><a href="course-details.html">WordPress Development Course for Plugins &amp; Themes</a></h3>
-                                                        </div>
-                                                        <div class="eduman-course-meta">
-                                                            <div class="eduman-course-price">
-                                                                <span class="price-now">$25.00 </span>
-                                                                <del class="price-old">$36.00</del>
-                                                            </div>
-                                                            <div class="eduman-course-tutor">
-                                                                <a href="instructor-profile.html"><img src="${pageContext.request.contextPath}/img/portfilo/course-tutor-01.png" alt="tutor-img"></a>
-                                                                <a href="instructor-profile.html"><span>Eduman</span></a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="eduman-course-footer">
-                                                        <div class="course-lessson-svg">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16.471" height="16.471" viewBox="0 0 16.471 16.471">
-                                                            <g id="blackboard-52441" transform="translate(-0.008)">
-                                                            <path id="Path_101-65441" data-name="Path 101" d="M16,1.222H8.726V.483a.483.483,0,1,0-.965,0v.74H.491A.483.483,0,0,0,.008,1.7V13.517A.483.483,0,0,0,.491,14H5.24L4.23,15.748a.483.483,0,1,0,.836.483L6.354,14H7.761v1.99a.483.483,0,0,0,.965,0V14h1.407l1.288,2.231a.483.483,0,1,0,.836-.483L11.247,14H16a.483.483,0,0,0,.483-.483V1.7A.483.483,0,0,0,16,1.222Zm-.483.965v8.905H.973V2.187Zm0,10.847H.973v-.976H15.514Z" fill="#575757" />
-                                                            </g>
-                                                            </svg>
-                                                            <span class="ms-2">12 Lessons</span>
-                                                        </div>
-                                                        <div class="course-deteals-btn">
-                                                            <a href="course-details.html"><span class="me-2">View Details</span><i class="far fa-arrow-right"></i></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-4 col-lg-4 col-md-4">
-                                                <div class="eduman-course-main-wrapper mb-30">
-                                                    <div class="eduman-course-img w-img">
-                                                        <a href="course-details.html"><img src="${pageContext.request.contextPath}/img/portfilo/course-img-02.jpg" alt="course-img"></a>
-                                                    </div>
-                                                    <div class="eduman-course-wraper">
-                                                        <div class="eduman-course-heading">
-                                                            <a href="course.html" class="course-link-color-2">Life Style</a>
-                                                            <span class="couse-star"><i class="fas fa-star"></i>4.9 (25)</span>
-                                                        </div>
-                                                        <div class="eduman-course-text">
-                                                            <h3><a href="course-details.html">Master Google Docs: Free online documents for personal use</a></h3>
-                                                        </div>
-                                                        <div class="eduman-course-meta">
-                                                            <div class="eduman-course-price">
-                                                                <span class="price-now">$22.00 </span>
-                                                                <del class="price-old">$31.00</del>
-                                                            </div>
-                                                            <div class="eduman-course-tutor">
-                                                                <a href="instructor-profile.html"><img src="${pageContext.request.contextPath}/img/portfilo/course-tutor-02.png" alt="image not found"></a>
-                                                                <a href="instructor-profile.html"><span>Eduman</span></a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="eduman-course-footer">
-                                                        <div class="course-lessson-svg">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16.471" height="16.471" viewBox="0 0 16.471 16.471">
-                                                            <g id="blackboard-1244" transform="translate(-0.008)">
-                                                            <path id="Path_10154542" data-name="Path 101" d="M16,1.222H8.726V.483a.483.483,0,1,0-.965,0v.74H.491A.483.483,0,0,0,.008,1.7V13.517A.483.483,0,0,0,.491,14H5.24L4.23,15.748a.483.483,0,1,0,.836.483L6.354,14H7.761v1.99a.483.483,0,0,0,.965,0V14h1.407l1.288,2.231a.483.483,0,1,0,.836-.483L11.247,14H16a.483.483,0,0,0,.483-.483V1.7A.483.483,0,0,0,16,1.222Zm-.483.965v8.905H.973V2.187Zm0,10.847H.973v-.976H15.514Z" fill="#575757" />
-                                                            </g>
-                                                            </svg>
-                                                            <span class="ms-2">12 Lessons</span>
-                                                        </div>
-                                                        <div class="course-deteals-btn">
-                                                            <a href="course-details.html"><span class="me-2">View Details</span><i class="far fa-arrow-right"></i></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-4 col-lg-4 col-md-4">
-                                                <div class="eduman-course-main-wrapper mb-30">
-                                                    <div class="eduman-course-img w-img">
-                                                        <a href="course-details.html"><img src="${pageContext.request.contextPath}/img/portfilo/course-img-03.jpg" alt="course-img"></a>
-                                                    </div>
-                                                    <div class="eduman-course-wraper">
-                                                        <div class="eduman-course-heading">
-                                                            <a href="course.html" class="course-link-color-3">Business</a>
-                                                            <span class="couse-star"><i class="fas fa-star"></i>4.9 (25)</span>
-                                                        </div>
-                                                        <div class="eduman-course-text">
-                                                            <h3><a href="course-details.html">Write Better Emails: Tactics for Smarter Team Communication</a></h3>
-                                                        </div>
-                                                        <div class="eduman-course-meta">
-                                                            <div class="eduman-course-price">
-                                                                <span class="price-now">$21.00 </span>
-                                                                <del class="price-old">$32.00</del>
-                                                            </div>
-                                                            <div class="eduman-course-tutor">
-                                                                <a href="instructor-profile.html"><img src="${pageContext.request.contextPath}/img/portfilo/course-tutor-04.png" alt="image not found"></a>
-                                                                <a href="instructor-profile.html"><span>Eduman</span></a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="eduman-course-footer">
-                                                        <div class="course-lessson-svg">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16.471" height="16.471" viewBox="0 0 16.471 16.471">
-                                                            <g id="blackboard" transform="translate(-0.008)">
-                                                            <path id="Path_101" data-name="Path 101" d="M16,1.222H8.726V.483a.483.483,0,1,0-.965,0v.74H.491A.483.483,0,0,0,.008,1.7V13.517A.483.483,0,0,0,.491,14H5.24L4.23,15.748a.483.483,0,1,0,.836.483L6.354,14H7.761v1.99a.483.483,0,0,0,.965,0V14h1.407l1.288,2.231a.483.483,0,1,0,.836-.483L11.247,14H16a.483.483,0,0,0,.483-.483V1.7A.483.483,0,0,0,16,1.222Zm-.483.965v8.905H.973V2.187Zm0,10.847H.973v-.976H15.514Z" fill="#575757" />
-                                                            </g>
-                                                            </svg>
-                                                            <span class="ms-2">12 Lessons</span>
-                                                        </div>
-                                                        <div class="course-deteals-btn">
-                                                            <a href="course-details.html"><span class="me-2">View Details</span><i class="far fa-arrow-right"></i></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-4 col-lg-4 col-md-4">
-                                                <div class="eduman-course-main-wrapper mb-30">
-                                                    <div class="eduman-course-img w-img">
-                                                        <a href="course-details.html"><img src="${pageContext.request.contextPath}/img/portfilo/course-img-06.jpg" alt="course-img"></a>
-                                                    </div>
-                                                    <div class="eduman-course-wraper">
-                                                        <div class="eduman-course-heading">
-                                                            <a href="course.html" class="course-link-color-4">Health & Fitness</a>
-                                                            <span class="couse-star"><i class="fas fa-star"></i>4.9 (25)</span>
-                                                        </div>
-                                                        <div class="eduman-course-text">
-                                                            <h3><a href="course-details.html">Become a Super Human: Naturally & Safely Boost Testosterone</a></h3>
-                                                        </div>
-                                                        <div class="eduman-course-meta">
-                                                            <div class="eduman-course-price">
-                                                                <span class="price-now">$27.00 </span>
-                                                            </div>
-                                                            <div class="eduman-course-tutor">
-                                                                <a href="instructor-profile.html"><img src="${pageContext.request.contextPath}/img/portfilo/course-tutor-05.png" alt="image not found"></a>
-                                                                <a href="instructor-profile.html"><span>Eduman</span></a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="eduman-course-footer">
-                                                        <div class="course-lessson-svg">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16.471" height="16.471" viewBox="0 0 16.471 16.471">
-                                                            <g id="blackboard-2004" transform="translate(-0.008)">
-                                                            <path id="Path_1012055" data-name="Path 101" d="M16,1.222H8.726V.483a.483.483,0,1,0-.965,0v.74H.491A.483.483,0,0,0,.008,1.7V13.517A.483.483,0,0,0,.491,14H5.24L4.23,15.748a.483.483,0,1,0,.836.483L6.354,14H7.761v1.99a.483.483,0,0,0,.965,0V14h1.407l1.288,2.231a.483.483,0,1,0,.836-.483L11.247,14H16a.483.483,0,0,0,.483-.483V1.7A.483.483,0,0,0,16,1.222Zm-.483.965v8.905H.973V2.187Zm0,10.847H.973v-.976H15.514Z" fill="#575757" />
-                                                            </g>
-                                                            </svg>
-                                                            <span class="ms-2">12 Lessons</span>
-                                                        </div>
-                                                        <div class="course-deteals-btn">
-                                                            <a href="course-details.html"><span class="me-2">View Details</span><i class="far fa-arrow-right"></i></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="edu-pagination mt-30 mb-20">
-                                            <ul>
-                                                <li><a href="#"><i class="fal fa-angle-left"></i></a></li>
-                                                <li class="active"><a href="#"><span>01</span></a> </li>
-                                                <li><a href="#"><span>02</span></a></li>
-                                                <li><a href="#"><i class="fal fa-angle-right"></i></a></li>
-                                            </ul>
                                         </div>
                                     </div>
                                 </div>
@@ -392,6 +232,41 @@
                 </div>
             </div>
             <!-- course-details-area- end -->
+
+            <!-- My Course -->
+            <section class="course-area p-relative pt-110 pb-90">
+                <div class="course-shape-1">
+                    <img src="${pageContext.request.contextPath}/img/shape/portfolio-shap-1.png" alt="shape">
+                </div>
+                <div class="course-shape-2">
+                    <img src="${pageContext.request.contextPath}/img/shape/portfolio-shap-2.png" alt="shape">
+                </div>
+                <div class="course-shape-3">
+                    <img src="${pageContext.request.contextPath}/img/shape/portfolio-shap-3.png" alt="shape">
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="my-course-info">
+                            <h3>My Courses</h3>
+                        </div>
+                        <div class="row">
+                            <c:forEach var="course" items="<%=coursesList%>">
+                                <c:set var="currentCourse" value="${course}" scope="request" />
+                                <jsp:include page="../template/course/instructorCourseComponent.jsp" />
+                            </c:forEach>
+                        </div>
+                        <div class="edu-pagination mt-30 mb-20">
+                            <ul>
+                                <li><a href="#"><i class="fal fa-angle-left"></i></a></li>
+                                <li class="active"><a href="#"><span>01</span></a> </li>
+                                <li><a href="#"><span>02</span></a></li>
+                                <li><a href="#"><i class="fal fa-angle-right"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
         </main>
 
         <%-- FOOTER --%>

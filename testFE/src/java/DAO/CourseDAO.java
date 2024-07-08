@@ -834,6 +834,52 @@ public class CourseDAO extends DAO<Course> {
         return courses;
     }
 
+    public static int countCoursesByInstructor(int instructorID) {
+        int courseCount = 0;
+        String sql = "SELECT COUNT(*) AS CourseCount FROM Courses WHERE CreatedBy = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, instructorID);
+
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    courseCount = rs.getInt("CourseCount");
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return courseCount;
+    }
+
+    public static int countTotalEnrollmentsByInstructor(int instructorID) {
+        int totalEnrollments = 0;
+        String sql = "SELECT SUM(TotalEnrolled) AS TotalEnrollments FROM Courses WHERE CreatedBy = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, instructorID);
+
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    totalEnrollments = rs.getInt("TotalEnrollments");
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return totalEnrollments;
+    }
+
     public static void main(String[] args) {
         CourseDAO dao = new CourseDAO();
 //        List<Course> list = dao.getFilteredCourses(null, null, null, null, null, null, null);
