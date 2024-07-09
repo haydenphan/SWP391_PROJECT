@@ -16,7 +16,7 @@ public class UserDAO extends DAO<User> {
     @Override
     public int insert(User t) {
         int res = 0;
-        String sql = "INSERT INTO Users (UserName, PasswordHash, FirstName, LastName, Email, RoleID, RegistrationDate, IsActive, Avatar, Bio, StoredSalt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Users (UserName, PasswordHash, FirstName, LastName, Email, RoleID, RegistrationDate, IsActive, Avatar, Bio, StoredSalt, ProviderID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
 
@@ -31,6 +31,7 @@ public class UserDAO extends DAO<User> {
             st.setString(9, t.getAvatar());
             st.setString(10, t.getBio());
             st.setBytes(11, t.getStoredSalt());
+            st.setInt(12, t.getProviderID());
 
             res = st.executeUpdate();
 
@@ -98,96 +99,114 @@ public class UserDAO extends DAO<User> {
         return user;
     }
 
-    public User checkExistedGGAccount(User user) throws Exception {
-        String sql = "SELECT * FROM Users WHERE Email = ? AND PasswordHash = ?";
-
-        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
-            st.setString(1, user.getEmail());
-            st.setString(2, "GG");
-
-            try (ResultSet rs = st.executeQuery()) {
-                if (rs.next()) {
-                    user = new User();
-                    user.setUserID(rs.getInt("UserID"));
-                    user.setUserName(rs.getString("UserName"));
-                    user.setPasswordHash(rs.getString("PasswordHash"));
-                    user.setFirstName(rs.getString("FirstName"));
-                    user.setLastName(rs.getString("LastName"));
-                    user.setEmail(rs.getString("Email"));
-                    user.setRole(rs.getInt("RoleID"));
-                    user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
-                    user.setIsActive(rs.getBoolean("IsActive"));
-                    user.setAvatar(rs.getString("Avatar"));
-                    user.setBio(rs.getString("Bio"));
-                    user.setStoredSalt(rs.getBytes("StoredSalt"));
-                    return user;
-
-                }
-            }
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return null;
-    }
-
+//    public User checkExistedGGAccount(User user) throws Exception {
+//        String sql = "SELECT * FROM Users WHERE Email = ? AND PasswordHash = ?";
+//
+//        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+//            st.setString(1, user.getEmail());
+//            st.setString(2, "GG");
+//
+//            try (ResultSet rs = st.executeQuery()) {
+//                if (rs.next()) {
+//                    user = new User();
+//                    user.setUserID(rs.getInt("UserID"));
+//                    user.setUserName(rs.getString("UserName"));
+//                    user.setPasswordHash(rs.getString("PasswordHash"));
+//                    user.setFirstName(rs.getString("FirstName"));
+//                    user.setLastName(rs.getString("LastName"));
+//                    user.setEmail(rs.getString("Email"));
+//                    user.setRole(rs.getInt("RoleID"));
+//                    user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
+//                    user.setIsActive(rs.getBoolean("IsActive"));
+//                    user.setAvatar(rs.getString("Avatar"));
+//                    user.setBio(rs.getString("Bio"));
+//                    user.setStoredSalt(rs.getBytes("StoredSalt"));
+//                    return user;
+//
+//                }
+//            }
+//        } catch (SQLException | ClassNotFoundException ex) {
+//            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//        return null;
+//    }
     public User checkExistedAccount(User user) throws Exception {
-        String sql = "SELECT * FROM Users WHERE (Email = ? OR UserName = ?)";
+        String sql = "";
+        if (user.getProviderID() == 1) {
+            sql = "SELECT * FROM Users WHERE (Email = ? OR UserName = ?)";
+            try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+                st.setString(1, user.getEmail());
+                st.setString(2, user.getUserName());
 
-        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
-            st.setString(1, user.getEmail());
-            st.setString(2, user.getUserName());
+                try (ResultSet rs = st.executeQuery()) {
+                    if (rs.next()) {
+                        // User exists, now verify the password
+                        String hashedPasswordFromDB = rs.getString("PasswordHash");
+                        String enteredPassword = user.getPasswordHash();
+                        byte[] storedSalt = rs.getBytes("StoredSalt");
 
-            try (ResultSet rs = st.executeQuery()) {
-                if (rs.next()) {
-                    // User exists, now verify the password
-                    String hashedPasswordFromDB = rs.getString("PasswordHash");
-                    String enteredPassword = user.getPasswordHash();
-                    byte[] storedSalt = rs.getBytes("StoredSalt");
-
-                    if (storedSalt != null) {
-                        if (PasswordUtils.verifyPassword(enteredPassword, storedSalt, hashedPasswordFromDB)) {
-                            // Passwords match, login successful
-                            user = new User();
-                            user.setUserID(rs.getInt("UserID"));
-                            user.setUserName(rs.getString("UserName"));
-                            user.setPasswordHash(rs.getString("PasswordHash"));
-                            user.setFirstName(rs.getString("FirstName"));
-                            user.setLastName(rs.getString("LastName"));
-                            user.setEmail(rs.getString("Email"));
-                            user.setRole(rs.getInt("RoleID"));
-                            user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
-                            user.setIsActive(rs.getBoolean("IsActive"));
-                            user.setAvatar(rs.getString("Avatar"));
-                            user.setBio(rs.getString("Bio"));
-                            user.setStoredSalt(rs.getBytes("StoredSalt"));
-                            return user;
+                        if (storedSalt != null) {
+                            if (PasswordUtils.verifyPassword(enteredPassword, storedSalt, hashedPasswordFromDB)) {
+                                // Passwords match, login successful
+                                user = new User();
+                                user.setUserID(rs.getInt("UserID"));
+                                user.setUserName(rs.getString("UserName"));
+                                user.setPasswordHash(rs.getString("PasswordHash"));
+                                user.setFirstName(rs.getString("FirstName"));
+                                user.setLastName(rs.getString("LastName"));
+                                user.setEmail(rs.getString("Email"));
+                                user.setRole(rs.getInt("RoleID"));
+                                user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
+                                user.setIsActive(rs.getBoolean("IsActive"));
+                                user.setAvatar(rs.getString("Avatar"));
+                                user.setBio(rs.getString("Bio"));
+                                user.setStoredSalt(rs.getBytes("StoredSalt"));
+                                System.out.println("Login successful for user: " + user.getUserName());
+                                return user;
+                            } else {
+                                System.out.println("Password does not match for user: " + user.getUserName());
+                            }
+                        } else {
+                            System.out.println("Stored salt is null for user: " + user.getUserName());
                         }
                     } else {
-                        if (enteredPassword.equals(hashedPasswordFromDB)) {
-                            user = new User();
-                            user.setUserID(rs.getInt("UserID"));
-                            user.setUserName(rs.getString("UserName"));
-                            user.setPasswordHash(rs.getString("PasswordHash"));
-                            user.setFirstName(rs.getString("FirstName"));
-                            user.setLastName(rs.getString("LastName"));
-                            user.setEmail(rs.getString("Email"));
-                            user.setRole(rs.getInt("RoleID"));
-                            user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
-                            user.setIsActive(rs.getBoolean("IsActive"));
-                            user.setAvatar(rs.getString("Avatar"));
-                            user.setBio(rs.getString("Bio"));
-                            user.setStoredSalt(rs.getBytes("StoredSalt"));
-                            return user;
-                        }
+                        System.out.println("User not found with email or username: " + user.getEmail() + " / " + user.getUserName());
                     }
-
                 }
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } else {
+            sql = "SELECT * FROM Users WHERE (Email = ?)";
+            try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+                st.setString(1, user.getEmail());
 
+                try (ResultSet rs = st.executeQuery()) {
+                    if (rs.next()) {
+                        user = new User();
+                        user.setUserID(rs.getInt("UserID"));
+                        user.setUserName(rs.getString("UserName"));
+                        user.setPasswordHash(rs.getString("PasswordHash"));
+                        user.setFirstName(rs.getString("FirstName"));
+                        user.setLastName(rs.getString("LastName"));
+                        user.setEmail(rs.getString("Email"));
+                        user.setRole(rs.getInt("RoleID"));
+                        user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
+                        user.setIsActive(rs.getBoolean("IsActive"));
+                        user.setAvatar(rs.getString("Avatar"));
+                        user.setBio(rs.getString("Bio"));
+                        user.setStoredSalt(rs.getBytes("StoredSalt"));
+                        System.out.println("Login successful for user: " + user.getUserName());
+                        return user;
+                    } else {
+                        System.out.println("User not found with email: " + user.getEmail());
+                    }
+                }
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return null;
     }
 
@@ -284,13 +303,8 @@ public class UserDAO extends DAO<User> {
         return result;
     }
 
-    public boolean updateUserProfile(User user) {
-        String sql = "UPDATE [OnlineLearningV3].[dbo].[Users] SET "
-                + "[FirstName] = ?, "
-                + "[LastName] = ?, "
-                + "[Email] = ?, "
-                + "[Bio] = ? "
-                + "WHERE [UserID] = ?";
+    public boolean updateUserProfile(User user) throws Exception {
+        String sql = "UPDATE Users SET FirstName = ?, LastName = ?, Email = ?, Bio = ? WHERE UserID = ?";
 
         try (Connection connection = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = connection.prepareStatement(sql)) {
 
@@ -300,16 +314,21 @@ public class UserDAO extends DAO<User> {
             st.setString(4, user.getBio());
             st.setInt(5, user.getUserID());
 
-            return st.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
+            int rowsUpdated = st.executeUpdate();
+            Logger.getLogger(UserDAO.class.getName()).log(Level.INFO, "Rows updated: " + rowsUpdated);
+            return rowsUpdated > 0;
+        } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
 
     public boolean updateUserPassword(User user) throws Exception {
+        byte[] salt = PasswordUtils.generateSalt();
+        String hashedPassword = PasswordUtils.hashPassword(user.getPasswordHash(), salt);
+        user.setPasswordHash(hashedPassword);
+        user.setStoredSalt(salt);
+
         String sql = "UPDATE Users SET PasswordHash = ?, StoredSalt = ? WHERE UserID = ?";
         try (Connection conn = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, user.getPasswordHash());
@@ -328,14 +347,14 @@ public class UserDAO extends DAO<User> {
         String sql = "UPDATE Users SET Avatar = ? WHERE UserID = ?";
 
         try (Connection conn = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setString(1, avatarUrl);
             stmt.setInt(2, userId);
 
             int rowsUpdated = stmt.executeUpdate();
+            Logger.getLogger(UserDAO.class.getName()).log(Level.INFO, "Rows updated: " + rowsUpdated);
             return rowsUpdated > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
             return false;
         }
     }

@@ -29,7 +29,7 @@
         <main>
             <%
                 int learnerID = ((User) session.getAttribute("user")).getUserID();
-                courses = CourseEnrollmentDAO.getCoursesByUserID(learnerID);
+                List<Course> courseList = CourseEnrollmentDAO.getCoursesByUserID(learnerID);
             %>
 
             <!-- hero-area -->
@@ -43,20 +43,23 @@
                     <div class="student-profile-author pb-30">
                         <div class="student-profile-author-img">
                             <img style="width: 200px; height: 200px" id="avatarImage" src="${user.getAvatar()}" alt="img not found" />
-                            <input type="file" id="avatarUpload" style="display: none;" onchange="changeAva();">
-                            <label for="avatarUpload" style="cursor: pointer;">
-                                <span style="
-                                      width: 30px;
-                                      height: 30px;
-                                      display: inline-block;
-                                      background-image: url('${pageContext.request.contextPath}/img/icon/upload.png');
-                                      background-size: cover;
-                                      position: relative;
-                                      top: -40px;
-                                      left: 150px;">
-                                </span>
-                            </label>
+                            <form action="${pageContext.request.contextPath}/uploadAvatar" method="post" enctype="multipart/form-data">
+                                <input type="file" id="avatarUpload" name="avatar" style="display: none;" onchange="uploadAvatar();">
+                                <label for="avatarUpload" style="cursor: pointer;">
+                                    <span style="
+                                          width: 30px;
+                                          height: 30px;
+                                          display: inline-block;
+                                          background-image: url('${pageContext.request.contextPath}/img/icon/upload.png');
+                                          background-size: cover;
+                                          position: relative;
+                                          top: -40px;
+                                          left: 150px;">
+                                    </span>
+                                </label>
+                            </form>
                         </div>
+
                         <div class="student-profile-author-text">
                             <span>Hello,</span>
                             <h3 class='student-profile-author-name'>
@@ -109,6 +112,12 @@
                                         <button class="nav-link" id="ques-tab" data-bs-toggle="tab" data-bs-target="#ques"
                                                 type="button" role="tab" aria-controls="ques" aria-selected="false"><i
                                                 class="fas fa-fist-raised"></i> Question & Answer</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="cert-tab" data-bs-toggle="tab" data-bs-target="#cert"
+                                                type="button" role="tab" aria-controls="cert" aria-selected="false">
+                                            <i class="fas fa-award"></i> Certificate
+                                        </button>
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="setting-tab" data-bs-toggle="tab"
@@ -166,7 +175,7 @@
                                         <h4 class='mb-25'>My Enrolled Courses</h4>
 
                                         <div class="row">
-                                            <c:forEach var="course" items="<%=courses%>">
+                                            <c:forEach var="course" items="<%=courseList%>">
                                                 <c:set var="currentCourse" value="${course}" scope="request" />
                                                 <jsp:include page="../template/course/learnerCourseComponent.jsp" />
                                             </c:forEach>
@@ -203,6 +212,23 @@
                                     <div class="tab-pane fade" id="ques" role="tabpanel" aria-labelledby="ques-tab">
                                         <p>No question completed yet.</p>
                                     </div>
+                                    <div class="tab-pane fade" id="cert" role="tabpanel" aria-labelledby="cert-tab">
+                                        <h4 class='mb-25'>Certificates</h4>
+                                        <div class="row">
+                                            <c:forEach var="certificate" items="${certificates}">
+                                                <div class="col-md-4">
+                                                    <div class="card mb-4">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">${certificate.courseName}</h5>
+                                                            <p class="card-text">Instructor: ${certificate.instructorName}</p>
+                                                            <a href="${certificate.certificateUrl}" target="_blank" class="btn btn-primary">View Certificate</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </c:forEach>
+                                        </div>
+                                    </div>
+
                                     <div class="tab-pane fade" id="setting" role="tabpanel" aria-labelledby="setting-tab">
                                         <h4 class='mb-25'>Settings</h4>
                                         <div class="student-profile-enroll">
@@ -272,27 +298,24 @@
                                                 </div>
                                                 <div class="tab-pane fade" id="password" role="tabpanel"
                                                      aria-labelledby="password-tab">
-                                                    <form action="user-profile/changePassword" method="POST">
+                                                    <form action="${pageContext.request.contextPath}/doi-mat-khau" method="POST">
                                                         <div class="row">
                                                             <div class="col-md-6">
                                                                 <div class="contact-from-input mb-20">
                                                                     <label htmlFor="Current">Current Password</label>
-                                                                    <input name="oldPassword" id='Current' type="password"
-                                                                           placeholder="Type password" />
+                                                                    <input name="oldPassword" id='Current' type="password" placeholder="Type password" />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <div class="contact-from-input mb-20">
                                                                     <label htmlFor="New">New Password</label>
-                                                                    <input name="newPassword" id='New' type="password"
-                                                                           placeholder="Type password" />
+                                                                    <input name="newPassword" id='New' type="password" placeholder="Type password" />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <div class="contact-from-input mb-20">
                                                                     <label htmlFor="Retype">Re-type New Password</label>
-                                                                    <input name="confirmPassword" id='Retype' type="password"
-                                                                           placeholder="Type password" />
+                                                                    <input name="confirmPassword" id='Retype' type="password" placeholder="Type password" />
                                                                 </div>
                                                             </div>
                                                             <div class="col-sm-12">
@@ -302,6 +325,7 @@
                                                             </div>
                                                         </div>
                                                     </form>
+
                                                 </div>
                                                 <div class="tab-pane fade" id="completedA" role="tabpanel"
                                                      aria-labelledby="completedA-tab">
@@ -398,6 +422,31 @@
                 });
             });
         </script>
+        <script>
+            function uploadAvatar() {
+                var formData = new FormData();
+                var fileInput = document.getElementById('avatarUpload');
+                var file = fileInput.files[0];
+                formData.append('avatar', file);
+
+                fetch('${pageContext.request.contextPath}/uploadAvatar', {
+                    method: 'POST',
+                    body: formData
+                })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                document.getElementById('avatarImage').src = data.avatarUrl;
+                            } else {
+                                console.error('Error updating avatar:', data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error uploading avatar:', error);
+                        });
+            }
+        </script>
+
 
     </body>
 

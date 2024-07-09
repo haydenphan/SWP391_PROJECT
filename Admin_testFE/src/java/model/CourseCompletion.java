@@ -1,16 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import java.util.Date;
 
-/**
- *
- * @author Thunguyet
- */
 public class CourseCompletion {
+
     private int coursrCompletionID;
     private int userID;
     private int courseID;
@@ -79,6 +72,5 @@ public class CourseCompletion {
     public String toString() {
         return "CourseCompletion{" + "coursrCompletionID=" + coursrCompletionID + ", userID=" + userID + ", courseID=" + courseID + ", completionDate=" + completionDate + ", status=" + status + '}';
     }
-    
-    
+
 }

@@ -19,7 +19,7 @@ import utils.PasswordUtils;
 /**
  * Servlet implementation class DoiMatKhau
  */
-@WebServlet("/doi-mat-khau")
+@WebServlet(name = "ChangePassword", urlPatterns = {"/doi-mat-khau"})
 public class ChangePassword extends HttpServlet {
     private static final long serialVersionUID = 1L;
 

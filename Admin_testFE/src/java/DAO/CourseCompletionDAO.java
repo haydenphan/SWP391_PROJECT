@@ -5,25 +5,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Course;
 
-/**
- * Class to handle course completion operations.
- */
 public class CourseCompletionDAO {
+
     private Connection connection;
 
     public CourseCompletionDAO(Connection connection) {
         this.connection = connection;
     }
 
-    /**
-     * Method to mark a course as completed.
-     *
-     * @param userId   the ID of the user
-     * @param courseId the ID of the course
-     * @throws SQLException if a database access error occurs
-     */
     public void markCourseAsCompleted(int userId, int courseId) throws SQLException {
         String sql = "INSERT INTO CourseCompletion (UserId, CourseID, completionDate, Status) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -32,6 +25,9 @@ public class CourseCompletionDAO {
             ps.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
             ps.setString(4, "Completed");
             ps.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(CourseCompletionDAO.class.getName()).log(Level.SEVERE, "SQL error: " + e.getMessage(), e);
+            throw e;
         }
     }
 
@@ -47,15 +43,13 @@ public class CourseCompletionDAO {
     }
 
     private boolean isCourseCompleted(int userId, Course course) {
-        
-        return true; 
+        return true;  // Assuming course is always completed for this example
     }
 
-    private void generateCertificate(int userId, Course course) throws SQLException{
-        
-        String url = "http://yourserver.com/generateCertificate?studentName=" + getLearnerName(userId) +
-                     "&courseName=" + course.getCourseName() +
-                     "&instructorName=" + getInstructorName(course.getCreatedBy());
+    private void generateCertificate(int userId, Course course) throws SQLException {
+        String url = "http://yourserver.com/generateCertificate?studentName=" + getLearnerName(userId)
+                + "&courseName=" + course.getCourseName()
+                + "&instructorName=" + getInstructorName(course.getCreatedBy());
         System.out.println("Certificate generation URL: " + url);
     }
 
@@ -68,8 +62,11 @@ public class CourseCompletionDAO {
                     return rs.getString("FirstName") + " " + rs.getString("LastName");
                 }
             }
+        } catch (SQLException e) {
+            Logger.getLogger(CourseCompletionDAO.class.getName()).log(Level.SEVERE, "SQL error: " + e.getMessage(), e);
+            throw e;
         }
-        return "Learner Name";
+        return null;
     }
 
     public String getInstructorName(int instructorId) throws SQLException {
@@ -81,7 +78,10 @@ public class CourseCompletionDAO {
                     return rs.getString("FirstName") + " " + rs.getString("LastName");
                 }
             }
+        } catch (SQLException e) {
+            Logger.getLogger(CourseCompletionDAO.class.getName()).log(Level.SEVERE, "SQL error: " + e.getMessage(), e);
+            throw e;
         }
-        return "Instructor Name";
+        return null;
     }
 }

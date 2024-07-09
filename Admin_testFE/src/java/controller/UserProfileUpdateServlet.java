@@ -15,18 +15,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.User;
 
-/**
- *
- * @author Khoi
- */
 @WebServlet(name = "UserProfileUpdateServlet", urlPatterns = {"/user-profile/update"})
 public class UserProfileUpdateServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UserDAO userDAO = new UserDAO();
-        
-        User currentUser = (User)request.getSession().getAttribute("user");
+
+        User currentUser = (User) request.getSession().getAttribute("user");
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
@@ -39,8 +35,14 @@ public class UserProfileUpdateServlet extends HttpServlet {
         user.setEmail(email);
         user.setBio(bio);
 
-        boolean success = userDAO.updateUserProfile(user);
-        if(success){
+        boolean success = false;
+        try {
+            success = userDAO.updateUserProfile(user);
+        } catch (Exception ex) {
+            Logger.getLogger(UserProfileUpdateServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (success) {
             User updatedUser = null;
             try {
                 updatedUser = userDAO.getUserByUsername(currentUser.getUserName());
@@ -53,4 +55,5 @@ public class UserProfileUpdateServlet extends HttpServlet {
 
         response.sendRedirect(request.getContextPath() + "/pages/user-profile.jsp?status=" + (success ? "success" : "fail"));
     }
+
 }

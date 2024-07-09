@@ -32,9 +32,11 @@ public class UploadAvatarServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Part filePart = request.getPart("avatar");
         String fileName = filePart.getSubmittedFileName();
+        Logger.getLogger(UploadAvatarServlet.class.getName()).log(Level.INFO, "Received file: " + fileName);
 
         // Ensure the file is read as a byte array before uploading
         byte[] fileContent = filePart.getInputStream().readAllBytes();
+        Logger.getLogger(UploadAvatarServlet.class.getName()).log(Level.INFO, "File content length: " + fileContent.length);
 
         try {
             // Upload the file to Cloudinary
@@ -42,9 +44,11 @@ public class UploadAvatarServlet extends HttpServlet {
                     "public_id", "avatars/" + fileName,
                     "folder", "avatars"
             ));
+            Logger.getLogger(UploadAvatarServlet.class.getName()).log(Level.INFO, "Upload result: " + uploadResult);
 
             // Get the URL of the uploaded file
             String avatarUrl = uploadResult.get("secure_url").toString();
+            Logger.getLogger(UploadAvatarServlet.class.getName()).log(Level.INFO, "Avatar URL: " + avatarUrl);
 
             User user = (User) request.getSession().getAttribute("user");
             int userId = user.getUserID();
@@ -52,14 +56,15 @@ public class UploadAvatarServlet extends HttpServlet {
             // Update the database with the new avatar URL
             UserDAO userDAO = new UserDAO();
             boolean updateSuccess = userDAO.updateUserAvatar(userId, avatarUrl);
+            Logger.getLogger(UploadAvatarServlet.class.getName()).log(Level.INFO, "Database update success: " + updateSuccess);
 
-            user.setAvatar(avatarUrl);
-            request.getSession().setAttribute("user", user);
-
-            response.setContentType("application/json");
             if (updateSuccess) {
+                user.setAvatar(avatarUrl);
+                request.getSession().setAttribute("user", user);
+                response.setContentType("application/json");
                 response.getWriter().write("{\"success\": true, \"avatarUrl\": \"" + avatarUrl + "\"}");
             } else {
+                response.setContentType("application/json");
                 response.getWriter().write("{\"success\": false, \"message\": \"Database update failed.\"}");
             }
         } catch (Exception ex) {

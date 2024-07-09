@@ -34,6 +34,7 @@
             }
             h3 {
                 margin-bottom: 20px;
+                font-family: Garamond;
             }
             select {
                 padding: 10px;
@@ -49,8 +50,10 @@
     </head>
     <body>
         <div class="container">
-            <h3>Select Year</h3>
+            <h2 style="font-family: Lucida Console">Revenue Statistic</h2>
+            
             <select id="yearSelect" onchange="fetchStatistics()">
+                <option value="" disabled selected>Select Year</option>
                 <option value="2021">2021</option>
                 <option value="2022">2022</option>
                 <option value="2023">2023</option>
@@ -65,7 +68,7 @@
             function fetchStatistics() {
                 var year = document.getElementById("yearSelect").value;
                 var contextPath = '<%= request.getContextPath() %>';
-                fetch(contextPath + '/statistical?year=' + year)
+                fetch(contextPath + '/statistical?year=' + year + '&type=revenue')
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error('Network response was not ok ' + response.statusText);
@@ -82,7 +85,7 @@
                                     datasets: [{
                                             label: "Revenue",
                                             data: data,
-                                            backgroundColor: "rgb(187, 233, 255, 0.2)",
+                                            backgroundColor: "rgba(187, 233, 255, 0.2)",
                                             borderColor: "rgb(83, 131, 146)",
                                             borderWidth: 1
                                         }]
@@ -92,9 +95,30 @@
                                     scales: {
                                         yAxes: [{
                                                 ticks: {
-                                                    beginAtZero: true
+                                                    beginAtZero: true,
+                                                    callback: function(value, index, values) {
+                                                        return '$' + value; // Add $ symbol to the y-axis ticks
+                                                    }
                                                 }
                                             }]
+                                    },
+                                    tooltips: {
+                                        callbacks: {
+                                            label: function(tooltipItem, data) {
+                                                return '$' + tooltipItem.yLabel; // Add $ symbol to the tooltip
+                                            }
+                                        }
+                                    },
+                                    plugins: {
+                                        afterDraw: function(chart) {
+                                            var ctx = chart.chart.ctx;
+                                            ctx.save();
+                                            ctx.font = "12px Arial";
+                                            ctx.fillStyle = "rgb(83, 131, 146)";
+                                            ctx.textAlign = "center";
+                                            ctx.fillText("$", chart.chartArea.left - 20, chart.chartArea.top + 10); // Adjust the position as needed
+                                            ctx.restore();
+                                        }
                                     }
                                 }
                             });

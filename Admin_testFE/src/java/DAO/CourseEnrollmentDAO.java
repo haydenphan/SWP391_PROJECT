@@ -188,6 +188,33 @@ public class CourseEnrollmentDAO {
         return false;
     }
 
+    public List<Integer> getMonthlyCourseEnrolled(int year) {
+        String sql = "SELECT MONTH(EnrollmentDate) as Month, COUNT(*) as Total "
+                + "FROM CourseEnrollments "
+                + "WHERE YEAR(EnrollmentDate) = ? "
+                + "GROUP BY MONTH(EnrollmentDate)";
+        List<Integer> monthlyEnrollments = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            monthlyEnrollments.add(0);
+        }
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, year);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int month = rs.getInt("Month");
+                int total = rs.getInt("Total");
+                monthlyEnrollments.set(month - 1, total);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return monthlyEnrollments;
+    }
+
     public static void main(String[] args) {
 //        CourseEnrollmentDAO dao = new CourseEnrollmentDAO();
 

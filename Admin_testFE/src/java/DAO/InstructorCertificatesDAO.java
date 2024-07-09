@@ -13,7 +13,7 @@ public class InstructorCertificatesDAO extends DAO<InstructorCertificates> {
 
     @Override
     public int insert(InstructorCertificates t) {
-        String sql = "INSERT INTO CourseCertificates (UserID, CourseId, CertificateURL, UploadDate) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO LecturerCertificates (UserID, CourseId, CertificateURL, UploadDate) VALUES (?, ?, ?, ?)";
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, t.getUserID());
             ps.setInt(2, t.getCourseID());
@@ -35,13 +35,13 @@ public class InstructorCertificatesDAO extends DAO<InstructorCertificates> {
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception ex) {
-            Logger.getLogger(CourseSectionDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InstructorCertificatesDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
     }
 
     public InstructorCertificates getCertificateByCourseAndUser(int courseId, int userId) throws Exception {
-        String sql = "SELECT * FROM CourseCertificates WHERE CourseId = ? AND UserID = ?";
+        String sql = "SELECT * FROM LecturerCertificates WHERE CourseId = ? AND UserID = ?";
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, courseId);
             ps.setInt(2, userId);
@@ -62,7 +62,7 @@ public class InstructorCertificatesDAO extends DAO<InstructorCertificates> {
     }
 
     public void update(InstructorCertificates t) throws Exception {
-        String sql = "UPDATE CourseCertificates SET CertificateURL = ?, UploadDate = ? WHERE CertificateID = ?";
+        String sql = "UPDATE LecturerCertificates SET CertificateURL = ?, UploadDate = ? WHERE CertificateID = ?";
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, t.getCertificateUrl());
             ps.setDate(2, Date.valueOf(t.getUploadDate().toLocalDate()));
@@ -74,7 +74,7 @@ public class InstructorCertificatesDAO extends DAO<InstructorCertificates> {
     }
 
     public void delete(int certificateId) throws Exception {
-        String sql = "DELETE FROM CourseCertificates WHERE CertificateID = ?";
+        String sql = "DELETE FROM LecturerCertificates WHERE CertificateID = ?";
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, certificateId);
             ps.executeUpdate();

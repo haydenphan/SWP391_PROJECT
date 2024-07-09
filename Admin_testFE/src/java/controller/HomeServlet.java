@@ -18,7 +18,18 @@ import model.Category;
 
 @WebServlet(name = "HomeServlet", urlPatterns = {"/home"})
 public class HomeServlet extends HttpServlet {
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String role = request.getParameter("role");
+        String url = switch (role) {
+            case "3" ->
+                "/admin/adminHome.jsp";
+            case "2" ->
+                "/pages/instructorHome.jsp";
+            default ->
+                "/pages/home.jsp";
+        };
         CategoryDAO categoryDAO = new CategoryDAO();
         ArrayList<Category> categories = null;
         try {
@@ -27,6 +38,11 @@ public class HomeServlet extends HttpServlet {
             Logger.getLogger(HomeServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
         request.setAttribute("categories", categories);
-        request.getRequestDispatcher("/pages/home.jsp").forward(request, response);
+        request.getRequestDispatcher(url).forward(request, response);
+    }
+    
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
     }
 }

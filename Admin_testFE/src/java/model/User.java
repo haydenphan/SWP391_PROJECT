@@ -2,6 +2,7 @@ package model;
 
 import com.google.gson.annotations.SerializedName;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class User {
     @SerializedName("id")
@@ -31,6 +32,16 @@ public class User {
     private String bio;
     
     private byte[] storedSalt;
+    
+    private int providerID;
+
+    public int getProviderID() {
+        return providerID;
+    }
+
+    public void setProviderID(int providerID) {
+        this.providerID = providerID;
+    }
 
     public byte[] getStoredSalt() {
         return storedSalt;
@@ -145,24 +156,10 @@ public class User {
         this.bio = bio;
         this.storedSalt = storedSalt;
     }
-    public User(int userID, String username, String passwordHash, String firstName, String lastName, String email, int roleID, LocalDateTime registrationDate, boolean isActive, String avatar, String bio, byte[] storedSalt) {
-        this.userID = userID;
-        this.userName = username;
-        this.passwordHash = passwordHash;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.roleID = roleID;
-        this.registrationDate = registrationDate;
-        this.isActive = isActive;
-        this.avatar = avatar;
-        this.bio = bio;
-        this.storedSalt = storedSalt;
-    }
 
     @Override
     public String toString() {
-        return "User{" + "userID=" + userID + ", userName=" + userName + ", passwordHash=" + passwordHash + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", roleID=" + roleID + ", registrationDate=" + registrationDate + ", isActive=" + isActive + ", avatar=" + avatar + ", bio=" + bio + ", storedSalt=" + storedSalt + '}';
+        return "User{" + "userID=" + userID + ", userName=" + userName + ", passwordHash=" + passwordHash + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", roleID=" + roleID + ", registrationDate=" + registrationDate + ", isActive=" + isActive + ", avatar=" + avatar + ", bio=" + bio + ", storedSalt=" + Arrays.toString(storedSalt) + '}' + ", providerID=" + providerID;
     }
     
     public String getRoleName() {

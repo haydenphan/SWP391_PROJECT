@@ -42,7 +42,7 @@ public class Transaction {
         
     }
 
-    // Getters and Setters
+
     public int getTransactionID() {
         return TransactionID;
     }

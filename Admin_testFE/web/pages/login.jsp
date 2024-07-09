@@ -22,7 +22,7 @@
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-xl-10 col-lg-10">
-                            <form action="${pageContext.request.contextPath}/dang-nhap" method="POST">
+                            <form action="${pageContext.request.contextPath}/dang-nhap" method="post">
                                 <div class="row">
                                     <div class="col-md-5">
                                         <div class="signup-box text-center">
@@ -51,7 +51,7 @@
                                                 </div>
                                             </div>
                                             <div class="sing-buttom mb-20">
-                                                <button type="submit" class="sing-btn">Signin now</button>
+                                                <button type="submit" class="sing-btn">Sign In</button>
                                             </div>
                                             <div class="registered wrapper">
                                                 <div class="not-register">
