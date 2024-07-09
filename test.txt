@@ -1,0 +1,9 @@
+CREATE TABLE [Certificates] (
+    CertificateID int primary key identity(1,1),
+    LearnerID INT,
+    LearnerName VARCHAR(255),
+    InstructorName VARCHAR(255),
+    CourseName VARCHAR(255),
+    CertificateUrl VARCHAR(255),
+    FOREIGN KEY (LearnerID) REFERENCES Users(UserID)
+);
