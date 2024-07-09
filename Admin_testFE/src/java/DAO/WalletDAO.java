@@ -49,6 +49,15 @@ public class WalletDAO {
         return wallet;
     }
 
+    public void updateWallet(Wallet wallet) throws SQLException {
+        String sql = "UPDATE Wallet SET Balance = ? WHERE WalletID = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setDouble(1, wallet.getBalance());
+            stmt.setInt(2, wallet.getWalletID());
+            stmt.executeUpdate();
+        }
+    }
+
     public void updateWalletBalance(int userId, double amount) throws Exception {
         String sql = "UPDATE Wallet SET Balance = Balance + ? WHERE UserID = ?";
         try (PreparedStatement st = connection.prepareStatement(sql)) {
@@ -58,15 +67,6 @@ public class WalletDAO {
         } catch (SQLException e) {
             Logger.getLogger(WalletDAO.class.getName()).log(Level.SEVERE, "Error updating wallet balance", e);
             throw e;
-        }
-    }
-
-    public void updateWallet(Wallet wallet) throws SQLException {
-        String sql = "UPDATE Wallet SET Balance = ? WHERE WalletID = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setDouble(1, wallet.getBalance());
-            stmt.setInt(2, wallet.getWalletID());
-            stmt.executeUpdate();
         }
     }
 
@@ -95,7 +95,7 @@ public class WalletDAO {
         }
         return null;
     }
-
+    
     public static void main(String[] args) throws Exception {
         WalletDAO dao = new WalletDAO(JDBC.getConnectionWithSqlJdbc());
         System.out.println(dao.getWalletByUserId(2));

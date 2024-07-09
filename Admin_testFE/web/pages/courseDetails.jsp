@@ -58,7 +58,7 @@
                 var courseID = urlParams.get('id');
                 $.ajax({
                     type: "GET",
-                    url: "/testFE/courseFeedbacks?courseID=" + courseID + "&page=" + page,
+                    url: "/Admin_testFE/courseFeedbacks?courseID=" + courseID + "&page=" + page,
                     success: function (data) {
                         $("#feedbacks").html(data);
                         updatePaginationButtons();

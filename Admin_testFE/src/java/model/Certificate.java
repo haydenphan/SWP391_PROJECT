@@ -8,7 +8,26 @@ public class Certificate {
     private String courseName;
     private String certificateUrl;
 
+    // Constructor for new Certificate without ID
+    public Certificate(int learnerID, String learnerName, String instructorName, String courseName, String certificateUrl) {
+        this.learnerID = learnerID;
+        this.learnerName = learnerName;
+        this.instructorName = instructorName;
+        this.courseName = courseName;
+        this.certificateUrl = certificateUrl;
+    }
 
+    // Constructor with all fields including ID
+    public Certificate(int certificateID, int learnerID, String learnerName, String instructorName, String courseName, String certificateUrl) {
+        this.certificateID = certificateID;
+        this.learnerID = learnerID;
+        this.learnerName = learnerName;
+        this.instructorName = instructorName;
+        this.courseName = courseName;
+        this.certificateUrl = certificateUrl;
+    }
+
+    // Getters and Setters
     public int getCertificateID() {
         return certificateID;
     }

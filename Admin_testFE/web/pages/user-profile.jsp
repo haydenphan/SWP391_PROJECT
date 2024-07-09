@@ -213,17 +213,13 @@
                                         <p>No question completed yet.</p>
                                     </div>
                                     <div class="tab-pane fade" id="cert" role="tabpanel" aria-labelledby="cert-tab">
-                                        <h4 class='mb-25'>Certificates</h4>
-                                        <div class="row">
+                                        <h1>Certificates</h1>
+                                        <div class="certificate-list">
                                             <c:forEach var="certificate" items="${certificates}">
-                                                <div class="col-md-4">
-                                                    <div class="card mb-4">
-                                                        <div class="card-body">
-                                                            <h5 class="card-title">${certificate.courseName}</h5>
-                                                            <p class="card-text">Instructor: ${certificate.instructorName}</p>
-                                                            <a href="${certificate.certificateUrl}" target="_blank" class="btn btn-primary">View Certificate</a>
-                                                        </div>
-                                                    </div>
+                                                <div class="certificate-item">
+                                                    <h2>${certificate.courseName}</h2>
+                                                    <p>Instructor: ${certificate.instructorName}</p>
+                                                    <a href="${pageContext.request.contextPath}${certificate.certificateUrl}" target="_blank">View Certificate</a>
                                                 </div>
                                             </c:forEach>
                                         </div>
