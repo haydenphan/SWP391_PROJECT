@@ -1,19 +1,26 @@
 package controller;
 
-import DAO.CourseCompletionDAO;
+import DAO.CertificateDAO;
 import DAO.CourseDAO;
 import DAO.JDBC;
+import DAO.UserDAO;
+import config.CloudinaryConfig;
+import model.Certificate;
 import model.Course;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.*;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,19 +42,34 @@ public class CompleteCourseServlet extends HttpServlet {
         int courseId = Integer.parseInt(request.getParameter("courseId"));
 
         try (Connection connection = JDBC.getConnectionWithSqlJdbc()) {
-            CourseCompletionDAO completionDAO = new CourseCompletionDAO(connection);
             CourseDAO courseDAO = new CourseDAO();
+            UserDAO userDAO = new UserDAO();
 
             // Retrieve course information
             Course course = courseDAO.getCourseByID(courseId);
-            String learnerName = completionDAO.getLearnerName(userId);
-            String instructorName = completionDAO.getInstructorName(course.getCreatedBy());
+            String learnerName = userDAO.getUserByID(userId).getFirstName() + " " + userDAO.getUserByID(userId).getLastName();
+            String instructorName = userDAO.getUserByID(course.getCreatedBy()).getFirstName() + " " + userDAO.getUserByID(course.getCreatedBy()).getLastName();
 
-            // Complete the course
-            completionDAO.completeCourse(userId, course);
+            // Generate the certificate PDF and upload to Cloudinary
+            String certificateUrl = generateCertificate(learnerName, course.getCourseName(), instructorName);
 
-            // Generate the certificate PDF
-            generateCertificate(response, learnerName, course.getCourseName(), instructorName);
+            // Save certificate details to the database
+            Certificate certificate = new Certificate();
+            certificate.setLearnerID(userId);
+            certificate.setInstructorID(course.getCreatedBy());
+            certificate.setCourseID(courseId);
+            certificate.setCertificateUrl(certificateUrl);
+
+            CertificateDAO certificateDAO = new CertificateDAO();
+            certificateDAO.insert(certificate);
+
+            // Set response content type to application/pdf
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "inline; filename=\"certificate.pdf\"");
+
+            // Redirect to the URL of the uploaded certificate
+            response.sendRedirect(certificateUrl);
+
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while completing the course.");
@@ -56,15 +78,19 @@ public class CompleteCourseServlet extends HttpServlet {
         }
     }
 
-    private void generateCertificate(HttpServletResponse response, String learnerName, String courseName, String instructorName) throws DocumentException, IOException {
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "inline; filename=\"certificate.pdf\"");
-
+    private String generateCertificate(String learnerName, String courseName, String instructorName) throws DocumentException, IOException {
         String systemAdminName = "Eduman";
+        String certificateDir = getServletContext().getRealPath("certificates");
+        String certificatePath = certificateDir + "/" + learnerName.replace(" ", "_") + "_" + courseName.replace(" ", "_") + ".pdf";
+
+        // Ensure the directory exists
+        File dir = new File(certificateDir);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
 
         Document document = new Document(PageSize.A4);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PdfWriter writer = PdfWriter.getInstance(document, baos);
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(certificatePath));
 
         document.open();
 
@@ -149,9 +175,11 @@ public class CompleteCourseServlet extends HttpServlet {
 
         document.close();
 
-        OutputStream os = response.getOutputStream();
-        baos.writeTo(os);
-        os.flush();
-        os.close();
+        // Upload the generated PDF to Cloudinary
+        Cloudinary cloudinary = CloudinaryConfig.getCloudinary();
+        Map uploadResult = cloudinary.uploader().upload(new File(certificatePath), ObjectUtils.emptyMap());
+
+        // Return the URL of the uploaded certificate
+        return (String) uploadResult.get("url");
     }
 }

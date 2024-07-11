@@ -76,22 +76,11 @@
                                                 data-bs-target="#profile" type="button" role="tab" aria-controls="profile"
                                                 aria-selected="false"><i class="fas fa-user"></i> My Profile</button>
                                     </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab"
-                                                data-bs-target="#contact" type="button" role="tab" aria-controls="contact"
-                                                aria-selected="false"><i class="fas fa-graduation-cap"></i> My
-                                            Courses</button>
-                                    </li>
+
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="reviews-tab" data-bs-toggle="tab"
                                                 data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews"
                                                 aria-selected="false"><i class="fas fa-star"></i> Reviews</button>
-                                    </li>
-
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="ques-tab" data-bs-toggle="tab" data-bs-target="#ques"
-                                                type="button" role="tab" aria-controls="ques" aria-selected="false"><i
-                                                class="fas fa-fist-raised"></i> Materials</button>
                                     </li>
 
                                     <li class="nav-item" role="presentation">
@@ -158,19 +147,6 @@
                                                 <span><%=user.getBio()%></span>
                                             </li>
                                         </ul>
-                                    </div>
-                                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                                        <h4 class='mb-25'>My Courses</h4>
-                                        <form style="margin-bottom: 50px" action="${pageContext.request.contextPath}/course-adding-servlet/create-course" method="POST">
-                                            <button type='submit' class="cont-btn">New course</button>
-                                        </form>
-
-                                        <div class="row">
-                                            <c:forEach var="course" items="<%=coursesList%>">
-                                                <c:set var="currentCourse" value="${course}" scope="request" />
-                                                <jsp:include page="../template/course/instructorCourseComponent.jsp" />
-                                            </c:forEach>
-                                        </div>
                                     </div>
 
                                     <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">

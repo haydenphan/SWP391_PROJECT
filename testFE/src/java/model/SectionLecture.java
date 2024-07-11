@@ -83,7 +83,7 @@ public class SectionLecture {
     public void setLectureMaterials(List<LectureMaterial> lectureMaterials) {
         this.lectureMaterials = lectureMaterials;
     }
-
+    
     // Override toString() method for debugging
     @Override
     public String toString() {

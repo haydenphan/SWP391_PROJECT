@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.CourseSection;
-import model.SectionLecture;
 
 public class CourseSectionDAO extends DAO<CourseSection> {
 
@@ -131,5 +130,46 @@ public class CourseSectionDAO extends DAO<CourseSection> {
             Logger.getLogger(CourseSectionDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public static int getTotalLectures(int sectionId) {
+        String sql = "SELECT COUNT(*) FROM Lectures WHERE SectionID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, sectionId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(CourseSectionDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    public static List<String> getSectionDescriptionsByCourseID(int courseId) {
+        List<String> descriptions = new ArrayList<>();
+        String sql = "SELECT SectionDescription FROM CourseSections WHERE CourseID = ? ORDER BY SectionOrder";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, courseId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    descriptions.add(rs.getString("SectionDescription"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(CourseSectionDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return descriptions;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(CourseSectionDAO.getTotalLectures(1));
     }
 }

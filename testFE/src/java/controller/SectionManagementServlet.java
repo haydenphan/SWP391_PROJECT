@@ -46,12 +46,14 @@ public class SectionManagementServlet extends HttpServlet {
         String name = request.getParameter("sectionName");
         int order = Integer.parseInt(request.getParameter("sectionOrder"));
         int courseId = Integer.parseInt(request.getParameter("courseId"));
+        String description = request.getParameter("sectionDescription");
         
         CourseSection newSection = new CourseSection();
         newSection.setSectionName(name);
         newSection.setSectionOrder(order);
         newSection.setCourseID(courseId);
         newSection.setCreatedDate(LocalDateTime.now());
+        newSection.setSectionDescription(description);
         
         CourseSectionDAO dao = new CourseSectionDAO();
         int isAdded = dao.insert(newSection);

@@ -46,7 +46,7 @@
 <div class="col-xl-6 col-lg-6 col-md-6 col-md-6">
     <div class="eduman-course-main-wrapper mb-30 position-relative">
         <div class="eduman-course-img w-img position-relative">
-            <a href="course-details.html">
+            <a href="${pageContext.request.contextPath}/CourseDetail?id=${currentCourse.getCourseID()}">
                 <img class="fixed-size-img" src="<%= currentCourse.getImageURL()%>" alt="course-img">
             </a>
             <div class="dropdown course-menu">
@@ -55,7 +55,13 @@
                 </button>
                 <div style="padding: 0px" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="${pageContext.request.contextPath}/edit-course-info-servlet?courseId=<%= currentCourse.getCourseID()%>">Edit Course Info</a>
-                    <a class="dropdown-item" href="${pageContext.request.contextPath}/course-section-servlet?courseId=<%= currentCourse.getCourseID()%>">Manage Course Details</a>
+                    <c:if test="${!currentCourse.IsPublished()}">
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/course-section-servlet?courseId=<%= currentCourse.getCourseID()%>">Manage Course Details</a>
+                    </c:if>
+                    <c:if test="${currentCourse.IsPublished()}">
+                        <a class="dropdown-item" href="javascript:void(0);" onclick="confirmEditRequest(<%= currentCourse.getCourseID()%>)">Request Edit Details</a>
+                    </c:if>
+
                 </div>
             </div>
         </div>
@@ -93,7 +99,6 @@
             <div class="course-lessson-svg">
                 <span class="course-link-color-<%= currentCourse.IsPublished() ? "1" : "5"%>">
                     <%= currentCourse.IsPublished() ? "Published" : "Pending"%>
-
                 </span>
                 <% if (!currentCourse.IsPublished()) {%>
                 <div style="margin: 10px 0px" class="course-deteals-btn">
@@ -105,7 +110,7 @@
                 <% }%>
             </div>
             <div class="course-deteals-btn">
-                <a href="${pageContext.request.contextPath}/view-section-servlet?courseId=<%= currentCourse.getCourseID()%>">
+                <a href="${pageContext.request.contextPath}/CourseDetail?id=${currentCourse.getCourseID()}">
                     <i class="fas fa-eye"></i>
                     <span class="me-2">View</span>
                 </a>
@@ -113,3 +118,12 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    function confirmEditRequest(courseId) {
+        var confirmation = confirm("Are you sure you want to request to edit the course details? If you proceed, the course will become unpublished and will need to be reviewed by an admin.");
+        if (confirmation) {
+            window.location.href = '<%= request.getContextPath()%>/edit-request?action=requestEdit&courseId=' + courseId;
+        }
+    }
+</script>

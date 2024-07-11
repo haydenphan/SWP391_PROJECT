@@ -38,7 +38,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
         user.setLastName(lastName);
         user.setEmail(email);
         user.setBio(bio);
-
+        
         boolean success = userDAO.updateUserProfile(user);
         if(success){
             User updatedUser = null;

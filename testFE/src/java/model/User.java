@@ -5,34 +5,35 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public class User {
+
     @SerializedName("id")
     private int userID;
-    
+
     @SerializedName("name")
     private String userName;
-    
+
     private String passwordHash;
-    
+
     @SerializedName("given_name")
     private String firstName;
-    
-     @SerializedName("family_name")
+
+    @SerializedName("family_name")
     private String lastName;
-    
+
     @SerializedName("email")
     private String email;
-    
+
     private int roleID;
     private LocalDateTime registrationDate;
     private boolean isActive;
-    
+
     @SerializedName("picture")
     private String avatar;
-        
+
     private String bio;
-    
+
     private byte[] storedSalt;
-    
+
     private int providerID;
 
     public int getProviderID() {
@@ -138,9 +139,9 @@ public class User {
     public void setBio(String bio) {
         this.bio = bio;
     }
-    
+
     public User() {
-        
+
     }
 
     public User(String userName, String passwordHash, String firstName, String lastName, String email, int roleID, LocalDateTime registrationDate, boolean isActive, String avatar, String bio, byte[] storedSalt) {
@@ -161,8 +162,8 @@ public class User {
     public String toString() {
         return "User{" + "userID=" + userID + ", userName=" + userName + ", passwordHash=" + passwordHash + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", roleID=" + roleID + ", registrationDate=" + registrationDate + ", isActive=" + isActive + ", avatar=" + avatar + ", bio=" + bio + ", storedSalt=" + Arrays.toString(storedSalt) + '}' + ", providerID=" + providerID;
     }
-    
+
     public String getRoleName() {
-        return (this.roleID == 1? "Learner" : "Instructor");
+        return (this.roleID == 1 ? "Learner" : "Instructor");
     }
 }

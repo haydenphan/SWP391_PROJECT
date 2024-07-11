@@ -8,6 +8,8 @@ import java.sql.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import utils.PasswordUtils;
 import model.User;
 
@@ -412,6 +414,24 @@ public class UserDAO extends DAO<User> {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return instructorId;
+    }
+
+    public List<Integer> getAllAdminIds() {
+        List<Integer> adminIds = new ArrayList<>();
+        String sql = "SELECT UserID FROM Users WHERE RoleID = 3";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql); ResultSet rs = st.executeQuery()) {
+            while (rs.next()) {
+                adminIds.add(rs.getInt("UserID"));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return adminIds;
     }
 
 //    public boolean updateGoogleUser(String userId, String lastname, String firstname) throws Exception {

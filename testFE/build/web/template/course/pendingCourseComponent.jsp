@@ -63,7 +63,11 @@
                 </p>	
             </div>
             <div style="display: flex" class="col-md-12">
-                <button class="btn blue outline radius-xl ">View details</button>
+                <button class="btn blue outline radius-xl ">
+                    <a href="${pageContext.request.contextPath}/CourseDetail?id=${currentCourse.getCourseID()}">
+                        View details
+                    </a>
+                </button>
                 <form style="margin: 0px 10px" id="approveForm${currentCourse.getCourseID()}" action="AdminCourseManage/approve" method="post">
                     <input type="hidden" name="courseID" value="${currentCourse.getCourseID()}">
                     <button class="btn green radius-xl outline" type="button" onclick="confirmApproval(${currentCourse.getCourseID()})">Approve</button>
@@ -81,7 +85,7 @@
                 No credential available.
 
                 <% } else {%>
-                <a class="viewcer" href="<%= certificate.getCertificateUrl()%>" target="_blank">View Certificate</a>
+                <a class="viewcer" href="<%= certificate.getCertificateUrl()%>" target="_blank">View Instructor Certificate</a>
                 <% }%>
             </div>
         </div>

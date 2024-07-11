@@ -37,10 +37,12 @@ public class HomeServlet extends HttpServlet {
         } catch (Exception ex) {
             Logger.getLogger(HomeServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        request.setAttribute("role", Integer.parseInt(role));
         request.setAttribute("categories", categories);
         request.getRequestDispatcher(url).forward(request, response);
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);

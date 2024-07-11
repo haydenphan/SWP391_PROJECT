@@ -4,6 +4,7 @@ import DAO.CartDAO;
 import DAO.CourseDAO;
 import DAO.CourseEnrollmentDAO;
 import DAO.JDBC;
+import DAO.NotificationDAO;
 import DAO.TransactionDAO;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -18,15 +19,16 @@ import model.Cart;
 import model.CartDetails;
 import model.Course;
 import model.CourseEnrollment;
+import model.Notification;
 import model.Transaction;
 import model.TransactionDetails;
 import model.User;
 
 @WebServlet("/paymentHandler")
 public class PaymentHandlerServlet extends HttpServlet {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String isPaymentSuccessfulStr = request.getParameter("isPaymentSuccessful");
@@ -87,6 +89,19 @@ public class PaymentHandlerServlet extends HttpServlet {
                 request.getSession().removeAttribute("cart");
                 CartDAO dao = new CartDAO(JDBC.getConnectionWithSqlJdbc());
                 dao.deleteCart(cart.getCartID());
+
+                // Notify the learner
+                NotificationDAO notiDAO = new NotificationDAO();
+                Notification notification = new Notification();
+                notification.setUserId(user.getUserID());
+                notification.setMessage("Successful Payment! Start Learning!");
+                notification.setType("PaymentSuccessful");
+                notification.setTimeStamp(LocalDateTime.now());
+                notification.setTarget("PaymentSuccessful");
+                notification.setTargetId(user.getUserID());
+                notification.setIsRead(false);
+                notiDAO.insertNotification(notification);
+
                 response.sendRedirect(request.getContextPath() + "/pages/user-profile.jsp#courses?status=success");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -110,7 +125,7 @@ public class PaymentHandlerServlet extends HttpServlet {
             response.sendRedirect("paymentResult.jsp?status=failed");
         }
     }
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);

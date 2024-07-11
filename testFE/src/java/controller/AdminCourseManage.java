@@ -1,17 +1,19 @@
 package controller;
 
 import DAO.CourseDAO;
+import DAO.NotificationDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
+import model.Course;
+import model.Notification;
 
 @WebServlet(name = "AdminCourseManage", urlPatterns = {"/AdminCourseManage/*"})
 public class AdminCourseManage extends HttpServlet {
@@ -50,7 +52,21 @@ public class AdminCourseManage extends HttpServlet {
             case "/approve" -> {
                 if (courseIDParam != null) {
                     int courseID = Integer.parseInt(courseIDParam);
+                    Course course = CourseDAO.getCoursesByID(courseID);
                     cdao.updateCourseStatus(courseID, true);
+
+                    // Notify the instructor
+                    NotificationDAO notiDAO = new NotificationDAO();
+                    Notification notification = new Notification();
+                    notification.setUserId(course.getCreatedBy());
+                    notification.setMessage("Your course publication request has been approved!");
+                    notification.setType("CourseApproved");
+                    notification.setTimeStamp(LocalDateTime.now());
+                    notification.setTarget("Course");
+                    notification.setTargetId(courseID);
+                    notification.setIsRead(false);
+                    notiDAO.insertNotification(notification);
+
                     url = "../pending-course-list";
                 }
             }
@@ -59,6 +75,20 @@ public class AdminCourseManage extends HttpServlet {
                     int courseID = Integer.parseInt(courseIDParam);
                     try {
                         cdao.cancelCourse(courseID);
+
+                        Course course = CourseDAO.getCoursesByID(courseID);
+                        // Notify the instructor
+                        NotificationDAO notiDAO = new NotificationDAO();
+                        Notification notification = new Notification();
+                        notification.setUserId(course.getCreatedBy());
+                        notification.setMessage("Your course publication request has been rejected!");
+                        notification.setType("CourseRejected");
+                        notification.setTimeStamp(LocalDateTime.now());
+                        notification.setTarget("CourseRejected");
+                        notification.setTargetId(courseID);
+                        notification.setIsRead(false);
+                        notiDAO.insertNotification(notification);
+
                     } catch (Exception ex) {
                         Logger.getLogger(AdminCourseManage.class.getName()).log(Level.SEVERE, null, ex);
                     }

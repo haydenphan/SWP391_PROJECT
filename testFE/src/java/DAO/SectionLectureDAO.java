@@ -142,6 +142,36 @@ public class SectionLectureDAO extends DAO<SectionLecture> {
         }
     }
 
+    public static SectionLecture getLectureById(int lectureId) {
+        String sql = "SELECT * FROM Lectures WHERE LectureID = ?";
+        SectionLecture lecture = null;
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, lectureId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    lecture = new SectionLecture();
+                    lecture.setLectureID(rs.getInt("LectureID"));
+                    lecture.setSectionID(rs.getInt("SectionID"));
+                    lecture.setLectureName(rs.getString("LectureName"));
+                    lecture.setLectureURL(rs.getString("LectureURL"));
+                    lecture.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
+
+                    // Assuming you have a method to fetch materials by lecture ID
+                    LectureMaterialDAO dao = new LectureMaterialDAO();
+                    lecture.setLectureMaterials(dao.getLectureMaterialsByLectureID(lecture.getLectureID()));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(SectionLectureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return lecture;
+    }
+
     public static void main(String[] args) {
         for (SectionLecture lecture : SectionLectureDAO.getLecturesBySectionId(1)) {
             System.out.println(lecture.toString());

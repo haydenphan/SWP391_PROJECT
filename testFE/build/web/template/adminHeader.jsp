@@ -1,3 +1,5 @@
+<script src="<c:url value='/js/notifications.js'/>"></script>
+<link rel="stylesheet" href="<c:url value='/css/notifications.css'/>">
 <header>
     <div class="header-area header-transparent sticky-header">
         <div class="container-fluid">
@@ -24,47 +26,11 @@
                                                 <li><a href="${pageContext.request.contextPath}/AdminCategory">Category Management</a></li>
                                             </ul>
                                         </li>
-                                        <li class="menu-item-has-children"><a href="#!">Pages</a>
-                                            <!--                                    <ul class="sub-menu">
-                                                                                   <li><a href="about.jsp">About</a></li>
-                                                                                   <li class="menu-item-has-children"><a href="instructor.jsp">instructor</a>
-                                                                                      <ul class="sub-menu">
-                                                                                         <li><a href="instructor.jsp">instructor</a></li>
-                                                                                         <li><a href="instructor-profile.jsp">instructor profile</a></li>
-                                                                                         <li><a href="user-profile.jsp">Student profile</a></li>
-                                                                                         <li><a href="become-instructor.jsp">become instructor</a></li>
-                                                                                      </ul>
-                                                                                   </li>
-                                                                                   <li class="menu-item-has-children"><a href="zoom-class.jsp">zoom class</a>
-                                                                                      <ul class="sub-menu">
-                                                                                         <li><a href="zoom-class.jsp">zoom class</a></li>
-                                                                                         <li><a href="zoom-class-detalis.jsp">zoom class details</a></li>
-                                                                                      </ul>
-                                                                                   </li>
-                                                                                   <li class="menu-item-has-children"><a href="blog.jsp">blog</a>
-                                                                                      <ul class="sub-menu">
-                                                                                         <li><a href="blog.jsp">blog</a></li>
-                                                                                         <li><a href="blog-details.jsp">blog details</a></li>
-                                                                                      </ul>
-                                                                                   </li>
-                                                                                   <li class="menu-item-has-children"><a href="event.jsp">event</a>
-                                                                                      <ul class="sub-menu">
-                                                                                         <li><a href="event.jsp">event</a></li>
-                                                                                         <li><a href="event-details.jsp">event details</a></li>
-                                                                                      </ul>
-                                                                                   </li>
-                                                                                   <li class="menu-item-has-children"><a href="faq-page.jsp">FAQ page</a>
-                                                                                      <ul class="sub-menu">
-                                                                                         <li><a href="faq-page.jsp">FAQ page</a></li>
-                                                                                         <li><a href="faq-details.jsp">FAQ details</a></li>
-                                                                                      </ul>
-                                                                                   </li>
-                                                                                   <li><a href="membership.jsp">membership plan</a></li>
-                                                                                   <li><a href="login.jsp">SignIn</a></li>
-                                                                                   <li><a href="registration.jsp">Sign Up</a></li>
-                                                                                   <li><a href="404-page.jsp">404 page</a></li>
-                                                                                   <li><a href="contact.jsp">contact</a></li>
-                                                                                </ul>-->
+                                        <li class="menu-item-has-children"><a href="#!">Statistics</a>
+                                            <ul class="sub-menu">
+                                                <li><a href="${pageContext.request.contextPath}/admin/statistics.jsp?statistics=transaction">Revenue Statistics</a></li>
+                                                <li><a href="${pageContext.request.contextPath}/admin/statistics.jsp">Enrolled Course Statistics</a></li>
+                                            </ul>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="#" id="walletIcon">
@@ -84,6 +50,7 @@
                                 <c:when test="${user != null}">
                                     <div class="notification-bell">
                                         <i class="fa fa-bell" onclick="toggleNotificationPopup()"></i>
+                                        <span class="notification-count">${NotificationDAO.getUnreadNotificationCount(user.getUserID())}</span>
                                         <div class="notification-popup" id="notificationPopup">
                                             <div class="notification-header">Notifications</div>
                                             <div id="notification-list"></div>
