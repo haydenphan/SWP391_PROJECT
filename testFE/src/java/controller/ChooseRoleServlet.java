@@ -44,7 +44,6 @@ public class ChooseRoleServlet extends HttpServlet {
             user.setUserName(username);
             user.setRole(roleID);
             System.out.println(roleID);
-            System.out.println(user.toString());
             // Update user role in the database
             UserDAO userDAO = new UserDAO();
             try {

@@ -5,14 +5,12 @@
 <!doctype html>
 <html class="no-js" lang="zxx">
 
-
     <head>
         <%-- HEAD --%>
         <%@ include file="../template/head.jsp" %>
     </head>
 
     <body>
-
 
         <%-- SIDE TOGGLE --%>
         <%@ include file="../template/sideToggle.jsp" %>
@@ -35,6 +33,24 @@
                 <div class="container">
                     <div class="row mb-10">
                         <div class="col-xl-3 col-lg-4 col-md-8">
+                            <div class="course-sidebar-widget mb-20">
+                                <div class="course-sidebar-info">
+                                    <h3 class="drop-btn">Categories</h3>
+                                    <ul>
+                                        <c:forEach var="entry" items="${courseQuantityOfCategory}">
+                                            <li>
+                                                <div class="course-sidebar-list">
+                                                    <input class="edu-check-box" type="checkbox" id="category-${entry.key}" name="category" value="${entry.key}" onclick="onCategoryChange()">
+                                                    <label class="edu-check-label" for="category-${entry.key}">
+                                                        ${entry.key} (${entry.value})
+                                                    </label>
+                                                </div>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- Ratings filter -->
                             <div class="course-sidebar-widget mb-20">
                                 <div class="course-sidebar-info">
                                     <h3 class="drop-btn">Ratings</h3>
@@ -107,6 +123,7 @@
                                     </ul>
                                 </div>
                             </div>
+                            <!-- Price filter -->
                             <div class="course-sidebar-widget mb-20">
                                 <div class="course-sidebar-info">
                                     <h3 class="drop-btn">Price</h3>
@@ -132,6 +149,7 @@
                                     </ul>
                                 </div>
                             </div>
+                            <!-- Level filter -->
                             <div class="course-sidebar-widget mb-20">
                                 <div class="course-sidebar-info">
                                     <h3 class="drop-btn">Level</h3>
@@ -147,6 +165,7 @@
                                     </ul>
                                 </div>
                             </div>
+                            <!-- Language filter -->
                             <div class="course-sidebar-widget mb-20">
                                 <div class="course-sidebar-info">
                                     <h3 class="drop-btn">Language</h3>
@@ -164,7 +183,6 @@
                             </div>
                         </div>
 
-
                         <div class="col-xl-9 col-lg-8 col-md-12">
                             <div class="row">
                                 <c:forEach var="course" items="${courses}">
@@ -172,8 +190,15 @@
                                     <jsp:include page="../template/course/courseComponent.jsp" />
                                 </c:forEach>
                             </div>
-                        </div>
-
+                            <div class="edu-pagination mt-30 mb-20">
+                                <ul>
+                                    <li><a href="#"><i class="fal fa-angle-left"></i></a></li>
+                                    <li class="active"><a href="#"><span>01</span></a></li>
+                                    <li><a href="#"><span>02</span></a></li>
+                                    <li><a href="#"><i class="fal fa-angle-right"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>                        
                     </div>
                 </div>
             </section>
@@ -215,6 +240,11 @@
                     params.append('language', language.value);
                 });
 
+                // Get selected categories
+                document.querySelectorAll('input[name="category"]:checked').forEach(category => {
+                    params.append('category', category.value);
+                });
+
                 return params.toString();
             }
 
@@ -224,35 +254,41 @@
                 window.location.href = "/testFE/CourseList?" + queryString;
             }
 
-// Function to handle change in rating selection
+            // Function to handle change in category selection
+            function onCategoryChange() {
+                redirectToCourseList();
+            }
+
+            // Function to handle change in rating selection
             function onRatingChange() {
                 redirectToCourseList();
             }
 
-// Function to handle change in price selection
+            // Function to handle change in price selection
             function onPriceChange() {
                 redirectToCourseList();
             }
 
-// Function to handle change in level selection
+            // Function to handle change in level selection
             function onLevelChange() {
                 redirectToCourseList();
             }
 
-// Function to handle change in language selection
+            // Function to handle change in language selection
             function onLanguageChange() {
                 redirectToCourseList();
             }
 
-// Event listener for changes in checkboxes and radio buttons
+            // Event listener for changes in checkboxes and radio buttons
             document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
                 input.addEventListener('change', redirectToCourseList);
             });
-// Function to parse query parameters from URL
+
+            // Function to parse query parameters from URL
             function parseQueryParams() {
                 const queryParams = new URLSearchParams(window.location.search);
 
-// Select rating
+                // Select rating
                 const rating = queryParams.get('rating');
                 if (rating) {
                     const ratingInput = document.getElementById('e-' + rating);
@@ -284,7 +320,17 @@
                         languageInput.checked = true;
                     }
                 });
+
+                // Select categories
+                const categories = queryParams.getAll('category');
+                categories.forEach(category => {
+                    const categoryInput = document.getElementById('category-' + category);
+                    if (categoryInput) {
+                        categoryInput.checked = true;
+                    }
+                });
             }
+
             // Parse query parameters on page load
             parseQueryParams();
         </script>

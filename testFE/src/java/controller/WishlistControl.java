@@ -1,4 +1,4 @@
-package controller;
+package controller.Wishlist;
 
 import DAO.CourseDAO;
 import jakarta.servlet.RequestDispatcher;

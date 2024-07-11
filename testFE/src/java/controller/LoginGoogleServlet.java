@@ -23,7 +23,7 @@
 //        String state = request.getParameter("state");
 //
 //        if (code == null || code.isEmpty()) {
-//            RequestDispatcher dis = request.getRequestDispatcher("/pages/home.jsp");
+//            RequestDispatcher dis = request.getRequestDispatcher("/home?role=0");
 //            dis.forward(request, response);
 //        } else {
 //            try {
@@ -44,15 +44,11 @@
 //                        dis.forward(request, response);
 //                    }
 //                } else {
-//                    User existingUser = userDAO.checkExistedGGAccount(googleUser);
-//                    
-//                    if (existingUser != null) {
-//                        int role = existingUser.getRole();
+//                    User existingUser = userDAO.checkExistedAccount(googleUser);
+//
+//                    if (existingUser != null && existingUser.isIsActive()) {
 //                        request.getSession().setAttribute("user", existingUser);
-//                        if (role == 1) {
-//                            response.sendRedirect(request.getContextPath() + "/pages/home.jsp");
-//                        }
-//                        response.sendRedirect(request.getContextPath() + "/pages/instructor-profile.jsp");
+//                        response.sendRedirect(request.getContextPath() + "/home?role=" + existingUser.getRole());
 //                    } else {
 //                        request.setAttribute("error", "User not found. Please register.");
 //                        RequestDispatcher dis = request.getRequestDispatcher("/errors/errorAlert.jsp");

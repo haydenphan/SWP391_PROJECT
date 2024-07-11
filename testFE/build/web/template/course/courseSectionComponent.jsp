@@ -77,10 +77,7 @@
     <div class="eduman-course-main-wrapper mb-30 position-relative">
         <div class="eduman-course-wraper">
             <div class="eduman-course-meta">
-                <div style="margin-bottom: 20px">
-                    <span>Created Date: <fmt:formatDate value="<%= createdDate%>" pattern="dd MMM yyyy"/> </span>
-                </div>
-                <div class="eduman-course-tutor">
+                <div  style="margin-bottom: 20px" class="eduman-course-tutor">
                     <a href="instructor-profile.html">
                         <img width="35" style="border-radius: 30px" src="<%= user != null ? user.getAvatar() : ""%>" alt="tutor-img">
                     </a>
@@ -90,19 +87,23 @@
                         </span>
                     </a>
                 </div>
+                <div>
+                    <span>Created Date: <fmt:formatDate value="<%= createdDate%>" pattern="dd MMM yyyy"/> </span>
+                </div>
             </div>
         </div>
         <div class="eduman-course-footer d-flex justify-content-between">
             <div class="course-lessson-svg">
-                <a href="${pageContext.request.contextPath}/edit-section-info?sectionId=<%= currentSection.getSectionID()%>">
-                    <i class="fas fa-edit"></i>
-                    <span class="me-2">Edit Section Info</span>
-                </a>
+                <form method="POST" action="${pageContext.request.contextPath}/lecture-management">
+                    <input type="hidden" name="action" value="view">
+                    <input type="hidden" name="sectionId" value="<%= currentSection.getSectionID()%>">
+                    <button type="submit"><i class="fas fa-edit">Edit Lecture</i></button>
+                </form>
             </div>
             <div class="course-deteals-btn">
                 <a href="${pageContext.request.contextPath}/pages/quizManagement.jsp?sectionId=<%= currentSection.getSectionID()%>">
                     <i class="fas fa-clipboard-list"></i>
-                    <span class="me-2">Manage Quiz</span>
+                    <span class="me-2">Quiz</span>
                 </a>
             </div>
         </div>

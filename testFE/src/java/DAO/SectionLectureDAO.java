@@ -75,6 +75,40 @@ public class SectionLectureDAO extends DAO<SectionLecture> {
         return lectures;
     }
 
+    public static boolean updateLectureName(int lectureId, String name) {
+        String sql = "UPDATE Lectures SET LectureName = ? WHERE LectureID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ps.setInt(2, lectureId);
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0; // Return true if update was successful
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return false; // Return false in case of error
+        } catch (Exception ex) {
+            Logger.getLogger(SectionLectureDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false; // Return false in case of error
+        }
+    }
+
+    public static boolean updateLectureVideo(int lectureId, String videoUrl) {
+        String sql = "UPDATE Lectures SET LectureURL = ? WHERE LectureID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, videoUrl);
+            ps.setInt(2, lectureId);
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0; // Return true if update was successful
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return false; // Return false in case of error
+        } catch (Exception ex) {
+            Logger.getLogger(SectionLectureDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false; // Return false in case of error
+        }
+    }
+
     public boolean updateLecture(SectionLecture lecture) {
         String sql = "UPDATE Lectures SET SectionID = ?, LectureName = ?, LectureURL = ? WHERE LectureID = ?";
 
@@ -105,6 +139,12 @@ public class SectionLectureDAO extends DAO<SectionLecture> {
         } catch (SQLException | ClassNotFoundException e) {
             Logger.getLogger(SectionLectureDAO.class.getName()).log(Level.SEVERE, null, e);
             return -1; // Return -1 in case of error
+        }
+    }
+
+    public static void main(String[] args) {
+        for (SectionLecture lecture : SectionLectureDAO.getLecturesBySectionId(1)) {
+            System.out.println(lecture.toString());
         }
     }
 }

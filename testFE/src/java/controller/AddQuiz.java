@@ -46,14 +46,12 @@ public class AddQuiz extends HttpServlet {
             String quizName = request.getParameter("quizName");
             boolean isGraded = request.getParameter("isGraded") != null;
             LocalDateTime createdDate = LocalDateTime.now();
-            int timeLimitInSeconds = Integer.parseInt(request.getParameter("timeLimitInSeconds")); // Get time limit from request
 
             Quiz newQuiz = new Quiz();
             newQuiz.setSectionId(sectionId);
             newQuiz.setQuizName(quizName);
             newQuiz.setGraded(isGraded);
             newQuiz.setCreatedDate(createdDate);
-            newQuiz.setTimeLimitInSeconds(timeLimitInSeconds); // Set time limit
 
             QuizDAO.createQuiz(newQuiz);
 
@@ -72,6 +70,6 @@ public class AddQuiz extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }
+    }// </editor-fold>
 
 }

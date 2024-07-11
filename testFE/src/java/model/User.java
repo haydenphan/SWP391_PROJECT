@@ -2,18 +2,11 @@ package model;
 
 import com.google.gson.annotations.SerializedName;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class User {
     @SerializedName("id")
     private int userID;
-
-    public int getRoleID() {
-        return roleID;
-    }
-
-    public void setRoleID(int roleID) {
-        this.roleID = roleID;
-    }
     
     @SerializedName("name")
     private String userName;
@@ -40,8 +33,16 @@ public class User {
     
     private byte[] storedSalt;
     
-    private int status;
-    
+    private int providerID;
+
+    public int getProviderID() {
+        return providerID;
+    }
+
+    public void setProviderID(int providerID) {
+        this.providerID = providerID;
+    }
+
     public byte[] getStoredSalt() {
         return storedSalt;
     }
@@ -138,44 +139,29 @@ public class User {
         this.bio = bio;
     }
     
-    
-    
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
     public User() {
         
     }
 
-   
-
-    public User(String userName, String passwordHash, String firstName, String lastName, String email, int roleID, LocalDateTime registrationDate, boolean isActive, String avatar, String bio, byte[] storedSalt, int status) {
-    this.userName = userName;
-    this.passwordHash = passwordHash;
-    this.firstName = (firstName == null ? "" : firstName);
-    this.lastName = (lastName == null ? "" : lastName);
-    this.email = email;
-    this.roleID = roleID;
-    this.registrationDate = registrationDate;
-    this.isActive = isActive;
-    this.avatar = avatar;
-    this.bio = bio;
-    this.storedSalt = storedSalt;
-    this.status = status;
-}
-
+    public User(String userName, String passwordHash, String firstName, String lastName, String email, int roleID, LocalDateTime registrationDate, boolean isActive, String avatar, String bio, byte[] storedSalt) {
+        this.userName = userName;
+        this.passwordHash = passwordHash;
+        this.firstName = (firstName == null ? "" : firstName);
+        this.lastName = (lastName == null ? "" : lastName);
+        this.email = email;
+        this.roleID = roleID;
+        this.registrationDate = registrationDate;
+        this.isActive = isActive;
+        this.avatar = avatar;
+        this.bio = bio;
+        this.storedSalt = storedSalt;
+    }
 
     @Override
     public String toString() {
-        return "User{" + "userID=" + userID + ", userName=" + userName + ", passwordHash=" + passwordHash + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", roleID=" + roleID + ", registrationDate=" + registrationDate + ", isActive=" + isActive + ", avatar=" + avatar + ", bio=" + bio + ", storedSalt=" + storedSalt + ", status=" + status + '}';
+        return "User{" + "userID=" + userID + ", userName=" + userName + ", passwordHash=" + passwordHash + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", roleID=" + roleID + ", registrationDate=" + registrationDate + ", isActive=" + isActive + ", avatar=" + avatar + ", bio=" + bio + ", storedSalt=" + Arrays.toString(storedSalt) + '}' + ", providerID=" + providerID;
     }
-
     
-
     public String getRoleName() {
         return (this.roleID == 1? "Learner" : "Instructor");
     }

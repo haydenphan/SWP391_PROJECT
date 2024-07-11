@@ -20,15 +20,6 @@ import utils.PasswordUtils;
 @WebServlet(name = "Register", urlPatterns = {"/dang-ky"})
 public class Register extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -46,15 +37,6 @@ public class Register extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -65,13 +47,14 @@ public class Register extends HttpServlet {
         String username = (String) session.getAttribute("username");
         String password = (String) session.getAttribute("password");
         String roles = (String) session.getAttribute("roles");
-        int roleID = 0;
-        if (roles.equals("learner")) {
-            roleID = 1;
-        } else {
-            roleID = 2;
+
+        if (!roles.equals("learner") && !roles.equals("instructor")) {
+            response.sendRedirect(request.getContextPath() + "/errorPage.jsp");
+            return;
         }
 
+        int roleID = roles.equals("learner") ? 1 : 2;
+        int providerID = 1;
         String url = "";
 
         UserDAO userDAO = new UserDAO();
@@ -86,18 +69,25 @@ public class Register extends HttpServlet {
         }
         String defaultAvatarUrl = request.getContextPath() + "/img/avatar-default.png";
         String defaultBio = "No bio yet";
-        int status = 0; 
-User user = new User(username, hashedPassword, firstname, lastname, email, roleID, now, true, defaultAvatarUrl, defaultBio, salt, status);
+        User user = new User();
+        user.setUserName(username);
+        user.setPasswordHash(hashedPassword);
+        user.setFirstName(firstname);
+        user.setLastName(lastname);
+        user.setEmail(email);
+        user.setRole(roleID);
+        user.setRegistrationDate(now);
+        user.setIsActive(true);
+        user.setAvatar(defaultAvatarUrl);
+        user.setBio(defaultBio);
+        user.setStoredSalt(salt);
+        user.setProviderID(providerID);
 
         userDAO.insert(user);
         session.setAttribute("user", user);
-                    System.out.println(user.getRole());
-        if (user.getRole() == 1) {
-            url = "/${pageContext.request.contextPath}/../pages/user-profile.jsp";
-        } else {
-            url = "/${pageContext.request.contextPath}/../pages/instructor-profile.jsp";
-        }
-        
+
+        url = "/home?role=" + user.getRole();
+
         RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
         rd.forward(request, response);
     }
@@ -108,14 +98,8 @@ User user = new User(username, hashedPassword, firstname, lastname, email, roleI
         doGet(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
-
+    }
 }

@@ -1,7 +1,9 @@
 package controller;
 
+import DAO.CartDAO;
 import DAO.CourseDAO;
 import DAO.CourseEnrollmentDAO;
+import DAO.JDBC;
 import DAO.TransactionDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -22,9 +24,9 @@ import model.User;
 
 @WebServlet("/paymentHandler")
 public class PaymentHandlerServlet extends HttpServlet {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String isPaymentSuccessfulStr = request.getParameter("isPaymentSuccessful");
@@ -83,6 +85,8 @@ public class PaymentHandlerServlet extends HttpServlet {
 
                 // Clear the cart after successful enrollment
                 request.getSession().removeAttribute("cart");
+                CartDAO dao = new CartDAO(JDBC.getConnectionWithSqlJdbc());
+                dao.deleteCart(cart.getCartID());
                 response.sendRedirect(request.getContextPath() + "/pages/user-profile.jsp#courses?status=success");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -106,7 +110,7 @@ public class PaymentHandlerServlet extends HttpServlet {
             response.sendRedirect("paymentResult.jsp?status=failed");
         }
     }
-
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);

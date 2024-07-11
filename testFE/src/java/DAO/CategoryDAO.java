@@ -253,4 +253,51 @@ public class CategoryDAO extends DAO<Category> {
 
         return subcategories;
     }
+
+    public static int getQuantityOfCategory(int categoryID) throws Exception {
+        int quantity = 0;
+        String sql = "SELECT COUNT(*) AS Quantity FROM Courses c "
+                + "JOIN Subcategories sc ON c.SubcategoryID = sc.SubcategoryID "
+                + "WHERE sc.CategoryID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, categoryID);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    quantity = rs.getInt("Quantity");
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return quantity;
+    }
+
+    public static Category getCategoryBySubcategoryID(int subcategoryID) throws Exception {
+        Category category = null;
+        String sql = "SELECT c.CategoryID, c.CategoryName "
+                + "FROM Categories c "
+                + "JOIN Subcategories sc ON c.CategoryID = sc.CategoryID "
+                + "WHERE sc.SubCategoryID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, subcategoryID);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    int categoryId = rs.getInt("CategoryID");
+                    String categoryName = rs.getString("CategoryName");
+                    category = new Category(categoryId, categoryName, new ArrayList<>());
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return category;
+    }
+
+    public static void main(String[] args) throws Exception {
+        System.out.println(CategoryDAO.getCategoryIdByName("Development"));
+    }
 }

@@ -29,7 +29,7 @@
         <main>
             <%
                 int learnerID = ((User) session.getAttribute("user")).getUserID();
-                courses = CourseEnrollmentDAO.getCoursesByUserID(learnerID);
+                List<Course> courseList = CourseEnrollmentDAO.getCoursesByUserID(learnerID);
             %>
 
             <!-- hero-area -->
@@ -166,7 +166,7 @@
                                         <h4 class='mb-25'>My Enrolled Courses</h4>
 
                                         <div class="row">
-                                            <c:forEach var="course" items="<%=courses%>">
+                                            <c:forEach var="course" items="<%=courseList%>">
                                                 <c:set var="currentCourse" value="${course}" scope="request" />
                                                 <jsp:include page="../template/course/learnerCourseComponent.jsp" />
                                             </c:forEach>

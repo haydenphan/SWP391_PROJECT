@@ -7,7 +7,7 @@
 <%@ page import="DAO.*" %>
 
 <%
-    Course currentCourse = (Course)request.getAttribute("currentCourse");
+    Course currentCourse = (Course) request.getAttribute("currentCourse");
 %>
 
 <div class="col-xl-4 col-lg-6 col-md-6">
@@ -18,35 +18,38 @@
         <div class="course-cart">
             <div class="course-info-wrapper">
                 <div class="cart-info-body">
-                    <span class="category-color category-color-1"><a href="${pageContext.request.contextPath}/CourseList?subcategoryID=${currentCourse.subcategoryID}"><%=
-                        SubcategoryDAO.getCategoryNameBySubId(currentCourse.getSubcategoryID()) != null ? SubcategoryDAO.getCategoryNameBySubId(currentCourse.getSubcategoryID()) : "Others"
-                            %></a></span>
+                    <span class="category-color category-color-1">
+                        <c:url var="categoryUrl" value="/CourseList">
+                            <c:param name="category" value="${fn:escapeXml(SubcategoryDAO.getCategoryNameBySubId(currentCourse.getSubcategoryID()) != null ? SubcategoryDAO.getCategoryNameBySubId(currentCourse.getSubcategoryID()) : 'Others')}"/>
+                        </c:url>
+                        <a href="${categoryUrl}">
+                            ${fn:escapeXml(SubcategoryDAO.getCategoryNameBySubId(currentCourse.getSubcategoryID()) != null ? SubcategoryDAO.getCategoryNameBySubId(currentCourse.getSubcategoryID()) : 'Others')}
+                        </a>
+                    </span>
 
                     <h3>
-                        <%=currentCourse.getCourseName()%>
+                        ${fn:escapeXml(currentCourse.getCourseName())}
                     </h3>
 
                     <div class="cart-level">
                         <h5>Level : 
                             <span>
-                                <%=
-                                    LevelDAO.getLevelNameByID(currentCourse.getLevelID())
-                                %>
+                                ${fn:escapeXml(LevelDAO.getLevelNameByID(currentCourse.getLevelID()))}
                             </span>
                         </h5>
-                        <p>${currentCourse.description}</p>
+                        <p>${fn:escapeXml(currentCourse.getDescription())}</p>
                     </div>
                     <div class="info-cart-text">
                         <ul>
-                            <c:forEach items="${fn:split(currentCourse.requirements, ',')}" var="requirement">
-                                <li><i class="far fa-check"></i> <c:out value="${fn:trim(requirement)}"/></li>
+                            <c:forEach items="${fn:split(currentCourse.getRequirements(), ',')}" var="requirement">
+                                <li><i class="far fa-check"></i> ${fn:escapeXml(fn:trim(requirement))}</li>
                                 </c:forEach>
                         </ul>
                     </div>
                     <div class="course-action">
-                        <a href="${pageContext.request.contextPath}/CourseDetail?id=${currentCourse.courseID}" class="view-details-btn">View Details</a>
+                        <a href="${pageContext.request.contextPath}/CourseDetail?id=${currentCourse.getCourseID()}" class="view-details-btn">View Details</a>
                         <button class="wishlist-btn"><i class="flaticon-like"></i></button>
-                        <a href="${pageContext.request.contextPath}/pages/courseDetails.jsp?courseID=${currentCourse.courseID}" class="c-share-btn"><i class="flaticon-previous"></i></a>
+                        <a href="${pageContext.request.contextPath}/pages/courseDetails.jsp?courseID=${currentCourse.getCourseID()}" class="c-share-btn"><i class="flaticon-previous"></i></a>
                     </div>
                 </div>
             </div>
@@ -62,17 +65,17 @@
                     <span class="ms-2">12 Lessons</span>
                 </div>
                 <div class="portfolio-price">
-                    <span>$${currentCourse.price}</span>
+                    <span>$${currentCourse.getPrice()}</span>
                 </div>
             </div>
             <div class="student-course-text">
                 <h3>
-                    <a href="course-details.html">${currentCourse.courseName}</a>
+                    <a href="course-details.html">${fn:escapeXml(currentCourse.getCourseName())}</a>
                 </h3>
             </div>
             <div class="portfolio-user">
                 <div class="user-icon">
-                    <a href="instructor-profile.html"><i class="fas fa-user"></i>${CourseDAO.getInstructor(currentCourse.createdBy).getFirstName()} ${CourseDAO.getInstructor(currentCourse.createdBy).getLastName()}</a>
+                    <a href="instructor-profile.html"><i class="fas fa-user"></i> ${fn:escapeXml(CourseDAO.getInstructor(currentCourse.getCreatedBy()).getFirstName())} ${fn:escapeXml(CourseDAO.getInstructor(currentCourse.getCreatedBy()).getLastName())}</a>
                 </div>
                 <div class="course-icon">
                     (${currentCourse.avgRatingDisplay(1)})

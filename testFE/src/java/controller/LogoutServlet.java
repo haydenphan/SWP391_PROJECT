@@ -23,7 +23,7 @@ public class LogoutServlet extends HttpServlet {
         session.invalidate();
         
         // Redirect to homepage or login page
-        response.sendRedirect(request.getContextPath() + "/pages/home.jsp");
+        response.sendRedirect(request.getContextPath() + "/home?role=0");
     }
     
     @Override
@@ -32,3 +32,4 @@ public class LogoutServlet extends HttpServlet {
         doGet(request, response);
     }
 }
+

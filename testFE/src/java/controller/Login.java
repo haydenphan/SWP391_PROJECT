@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import DAO.UserDAO;
@@ -15,28 +11,32 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import model.User;
 
-/**
- *
- * @author ASUS-PRO
- */
 @WebServlet(name = "Login", urlPatterns = {"/dang-nhap"})
 public class Login extends HttpServlet {
 
-    public Login() {
-        super();
-    }
-
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String tendangnhap = request.getParameter("tendangnhap");
         String password = request.getParameter("password");
 
         User user = new User();
         user.setPasswordHash(password);
-        user.setUserName(tendangnhap);
+
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(tendangnhap);
+
+        if (matcher.matches()) {
+            user.setEmail(tendangnhap);
+        } else {
+            user.setUserName(tendangnhap);
+        }
+        user.setProviderID(1);
 
         UserDAO userDAO = new UserDAO();
         User res = null;
@@ -46,37 +46,36 @@ public class Login extends HttpServlet {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-//        request.setAttribute("UserName", res.getUserName());
         String url = "";
 
-        if (res != null) {
-            // Tao session luu thong tin user 
+        if (res != null && res.isIsActive()) {
             HttpSession session = request.getSession();
             session.setAttribute("user", res);
-            System.out.println(res.getRole());
-            url = switch (res.getRole()) {
-                case 1 -> "/pages/user-profile.jsp";
-                case 2 -> "/pages/instructor-profile.jsp";
-                default -> "/admin/adminHome.jsp";
+            url = "/home?role=" + switch (res.getRole()) {
+                case 1 ->
+                    "1";
+                case 2 ->
+                    "2";
+                default ->
+                    "3";
             };
-            
         } else {
             request.setAttribute("baoLoi", "Tên đăng nhập hoặc mật khẩu không đúng!");
             url = "/pages/login.jsp";
         }
-        RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
+        RequestDispatcher rd = request.getRequestDispatcher(url);
         rd.forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response);
+        // Forward to login page (or handle GET requests accordingly)
+        doPost(request, response);
     }
 
     @Override
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

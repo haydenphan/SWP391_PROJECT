@@ -104,13 +104,6 @@ public class LevelDAO extends DAO<Level> {
     }
 
     public static void main(String[] args) {
-        // Test insert method
-        LevelDAO levelDAO = new LevelDAO();
-        // Test getAllLevels method
-        List<Level> allLevels = levelDAO.getAllLevels();
-        System.out.println("All levels:");
-        for (Level level : allLevels) {
-            System.out.println(level.getLevelName());
-        }
+        System.out.println(LevelDAO.getLevelNameByID(1));
     }
 }
