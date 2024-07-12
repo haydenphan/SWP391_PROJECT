@@ -35,6 +35,16 @@ public class User {
     private byte[] storedSalt;
 
     private int providerID;
+    
+    private int walletID;
+
+    public int getWalletID() {
+        return walletID;
+    }
+
+    public void setWalletID(int walletID) {
+        this.walletID = walletID;
+    }
 
     public int getProviderID() {
         return providerID;

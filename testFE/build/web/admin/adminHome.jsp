@@ -11,6 +11,7 @@
         int role = (user != null) ? user.getRole() : 0;
         CourseDAO courseDAO = new CourseDAO();
         List<Course> topEnroll = courseDAO.listPopularCourse();
+        List<User> topInstructor = UserDAO.getTopInstructors();
     %>
 
     <head>
@@ -84,79 +85,51 @@
                     <!-- Main content -->
                     <section class="content">
                         <div class="row">
-                            <div class="col-xl-9 col-12">
+                            <div class="col-xl-12 col-12">
                                 <div class="box bg-success">
                                     <div class="box-body d-flex p-0">
                                         <div class="flex-grow-1 p-30 flex-grow-1 bg-img bg-none-md"
                                              style="background-position: right bottom; background-size: auto 100%; background-image: url(https://edulearn-lms-admin-template.multipurposethemes.com/images/svg-icon/color-svg/custom-30.svg)">
                                             <div class="row">
-                                                <div class="col-12 col-xl-7">
-                                                    <h1 class="mb-0 fw-600">Learn With Effectively With Us!</h1>
-                                                    <p class="my-10 fs-16 text-white-70">Get 30% off every course on January.</p>
+                                                <div class="col-12 col-xl-12">
+                                                    <h1 class="mb-0 fw-600">Manage Your Website</h1>
                                                     <div class="mt-45 d-md-flex align-items-center">
                                                         <div class="me-30 mb-30 mb-md-0">
                                                             <div class="d-flex align-items-center">
-                                                                <div
-                                                                    class="me-15 text-center fs-24 w-50 h-50 l-h-50 bg-danger b-1 border-white rounded-circle">
+                                                                <div style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center"
+                                                                     class="me-15 text-center fs-24  bg-danger b-1 border-white rounded-circle">
                                                                     <i class="fa fa-graduation-cap"></i>
                                                                 </div>
                                                                 <div>
-                                                                    <h5 class="mb-0">Students</h5>
-                                                                    <p class="mb-0 text-white-70">75,000+</p>
+                                                                    <h5 class="mb-0">Learners</h5>
+                                                                    <p class="mb-0 text-white-70">
+                                                                        <%= UserDAO.countUsersByRole(2)%>
+                                                                    </p>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div>
                                                             <div class="d-flex align-items-center">
-                                                                <div
-                                                                    class="me-15 text-center fs-24 w-50 h-50 l-h-50 bg-warning b-1 border-white rounded-circle">
+                                                                <div style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center"
+                                                                     class="me-15 text-center fs-24 bg-warning b-1 border-white rounded-circle">
                                                                     <i class="fa fa-user"></i>
                                                                 </div>
                                                                 <div>
-                                                                    <h5 class="mb-0">Expert Mentors</h5>
-                                                                    <p class="mb-0 text-white-70">200+</p>
+                                                                    <h5 class="mb-0">Instructors</h5>
+                                                                    <p class="mb-0 text-white-70">
+                                                                        <%= UserDAO.countUsersByRole(2)%>
+                                                                    </p>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-12 col-xl-5"></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-12">
-                                <div class="box bg-transparent no-shadow">
-                                    <div class="box-body p-xl-0 text-center">
-                                        <h3 class="px-30 mb-20">Have More<br>knowledge to share?</h3>
-                                        <a href="course.html" class="waves-effect waves-light w-p100 btn btn-primary"><i
-                                                class="fa fa-plus me-15"></i> Create New Course</a>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <a class="box box-link-shadow text-center pull-up" href="javascript:void(0)">
-                                            <div class="box-body py-5 bg-primary-light px-5">
-                                                <p class="fw-500 text-primary text-overflow">Courses in Progress</p>
-                                            </div>
-                                            <div class="box-body p-10">
-                                                <h1 class="countnm fs-40 m-0">5</h1>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-6">
-                                        <a class="box box-link-shadow text-center pull-up" href="javascript:void(0)">
-                                            <div class="box-body py-5 bg-primary-light px-5">
-                                                <p class="fw-500 text-primary text-overflow">Forum Discussion</p>
-                                            </div>
-                                            <div class="box-body p-10">
-                                                <h1 class="countnm fs-40 m-0">25</h1>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="col-xl-4 col-12">
                                 <div class="box no-shadow mb-0 bg-transparent">
                                     <div class="box-header no-border px-0">
@@ -176,12 +149,12 @@
                                                             <span style="padding: 0px 10px" class="fs-50">C</span>
                                                         </div>
                                                         <div class="d-flex flex-column fw-500" style="min-width: 200px;">
-                                                            <a href="course.html" class="text-dark hover-warning mb-1 fs-16">${c.getCourseName()}</a>
+                                                            <a href="${pageContext.request.contextPath}/CourseDetail?id=${c.getCourseID()}" class="text-dark hover-warning mb-1 fs-16">${c.getCourseName()}</a>
                                                             <span class="text-fade">${c.getTotalEnrolled()} ENROLLED</span>
                                                         </div>
                                                     </div>
                                                     <div class="d-flex align-items-center">
-                                                        <a href="${pageContext.request.contextPath}/AdminCourseDetail?id=${c.getCourseID()}" class="waves-effect waves-light btn btn-sm btn-warning-light me-10" style="min-width: 120px; text-align: center;">
+                                                        <a href="${pageContext.request.contextPath}/CourseDetail?id=${c.getCourseID()}" class="waves-effect waves-light btn btn-sm btn-warning-light me-10" style="min-width: 120px; text-align: center;">
                                                             View Courses
                                                         </a>
                                                     </div>
@@ -203,94 +176,30 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <div class="box mb-15 pull-up">
-                                        <div class="box-body">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="me-15 mb-1">
-                                                        <img src="${pageContext.request.contextPath}/images/avatar/avatar-1.png"
-                                                             class="bg-primary-light avatar avatar-lg rounded-circle" alt="">
+                                    <c:forEach var="c" items="<%=topInstructor%>">
+                                        <div class="box mb-15 pull-up">
+                                            <div class="box-body">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-15 mb-1">
+                                                            <img src="${c.getAvatar()}"
+                                                                 class="bg-primary-light avatar avatar-lg rounded-circle" alt="">
+                                                        </div>
+                                                        <div class="d-flex flex-column fw-500">
+                                                            <a href="extra_profile.html"
+                                                               class="text-dark hover-primary mb-1 fs-16">${c.getFirstName()} ${c.getLastName()}</a>
+                                                            <span class="text-fade">${CourseDAO.getCoursesByInstructor(c.getUserID()).size()}  Courses</span>
+                                                        </div>
                                                     </div>
-                                                    <div class="d-flex flex-column fw-500">
-                                                        <a href="extra_profile.html"
-                                                           class="text-dark hover-primary mb-1 fs-16">Nil Yeager</a>
-                                                        <span class="text-fade">5 Design Course</span>
-                                                    </div>
-                                                </div>
 
-                                                <div class="d-flex align-items-center">
-                                                    <a href="course.html"
-                                                       class="waves-effect waves-light btn btn-sm btn-secondary">Courses</a>
+                                                    <div class="d-flex align-items-center">
+                                                        <a href="${pageContext.request.contextPath}/InstructorProfileView?id=${c.getUserID()}"
+                                                           class="waves-effect waves-light btn btn-sm btn-secondary">View Instructor Profile</a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="box mb-15 pull-up">
-                                        <div class="box-body">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="me-15 mb-1">
-                                                        <img src="${pageContext.request.contextPath}/images/avatar/avatar-2.png"
-                                                             class="bg-primary-light avatar avatar-lg rounded-circle" alt="">
-                                                    </div>
-                                                    <div class="d-flex flex-column fw-500">
-                                                        <a href="extra_profile.html"
-                                                           class="text-dark hover-primary mb-1 fs-16">Theron Trump</a>
-                                                        <span class="text-fade">5 Design Course</span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="d-flex align-items-center">
-                                                    <a href="course.html"
-                                                       class="waves-effect waves-light btn btn-sm btn-secondary">Courses</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="box mb-15 pull-up">
-                                        <div class="box-body">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="me-15" style="margin-bottom: 1px;">
-                                                        <img src="${pageContext.request.contextPath}/images/avatar/avatar-3.png"
-                                                             class="bg-primary-light avatar avatar-lg rounded-circle" alt="">
-                                                    </div>
-                                                    <div class="d-flex flex-column fw-500">
-                                                        <a href="extra_profile.html"
-                                                           class="text-dark hover-primary mb-1 fs-16">Tyler Mark</a>
-                                                        <span class="text-fade">5 Design Course</span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="d-flex align-items-center">
-                                                    <a href="course.html"
-                                                       class="waves-effect waves-light btn btn-sm btn-secondary">Courses</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="box mb-15 pull-up">
-                                        <div class="box-body">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="me-15">
-                                                        <img src="${pageContext.request.contextPath}/images/avatar/avatar-4.png"
-                                                             class="bg-primary-light avatar avatar-lg rounded-circle" alt="">
-                                                    </div>
-                                                    <div class="d-flex flex-column fw-500">
-                                                        <a href="extra_profile.html"
-                                                           class="text-dark hover-primary mb-1 fs-16">Johen Mark</a>
-                                                        <span class="text-fade">5 Design Course</span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="d-flex align-items-center">
-                                                    <a href="course.html"
-                                                       class="waves-effect waves-light btn btn-sm btn-secondary">Courses</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </c:forEach>
 
                                 </div>
                             </div>
@@ -322,7 +231,9 @@
                                     <div class="col-7">
                                         <div class="box bg-warning">
                                             <div class="box-body">
-                                                <h2 class="my-0 fw-600 text-white">450K+</h2>
+                                                <h2 class="my-0 fw-600 text-white">
+                                                    <%= CourseEnrollmentDAO.countCompletedEnrollments()%>
+                                                </h2>
                                                 <p class="mb-10 text-white-80">Completed Course</p>
                                                 <div class="d-flex align-items-center justify-content-between">
                                                     <p class="mb-0 text-white-70">This is the latest Data</p>
@@ -336,7 +247,9 @@
                                     <div class="col-5">
                                         <div class="box bg-danger">
                                             <div class="box-body">
-                                                <h2 class="my-0 fw-600 text-white">200K+</h2>
+                                                <h2 class="my-0 fw-600 text-white">
+                                                    <%= SectionLectureDAO.countLectures()%>
+                                                </h2>
                                                 <p class="mb-10 text-white-80">Video Course</p>
                                                 <div class="d-flex align-items-center justify-content-end">
                                                     <button type="button"
@@ -395,11 +308,6 @@
                 </div>
             </div>
         </div>
-                                        
-                                        <%@ include file="statisticalCourseEnrolled.jsp" %>
-
-        <%-- FOOTER --%>
-        <%@ include file="../template/footer.jsp" %>
 
         <%-- BACK TO TOP --%>
         <%@ include file="../template/backToTop.jsp" %>

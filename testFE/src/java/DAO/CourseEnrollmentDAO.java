@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -259,6 +258,42 @@ public class CourseEnrollmentDAO {
             Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return monthlyEnrollments;
+    }
+
+    public static boolean isCertificateGenerated(int learnerID, int courseID) {
+        String sql = "SELECT COUNT(*) AS certificateCount FROM CourseCertificates WHERE LearnerID = ? AND CourseID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, learnerID);
+            st.setInt(2, courseID);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next() && rs.getInt("certificateCount") > 0) {
+                    return true;
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public static int countCompletedEnrollments() throws Exception {
+        String sql = "SELECT COUNT(*) AS CompletedCount "
+                + "FROM [OnlineLearningV2].[dbo].[CourseEnrollments] "
+                + "WHERE IsCompleted = 1";
+        int completedCount = 0;
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql); ResultSet rs = st.executeQuery()) {
+
+            if (rs.next()) {
+                completedCount = rs.getInt("CompletedCount");
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+        }
+
+        return completedCount;
     }
 
     public static void main(String[] args) {

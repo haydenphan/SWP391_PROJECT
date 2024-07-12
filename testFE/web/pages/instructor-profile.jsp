@@ -16,9 +16,14 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+            const contextPath = '${pageContext.request.contextPath}';
+        </script>
     </head>
 
     <body>
+        <script src="${pageContext.request.contextPath}/js/instructorWallet.js"></script>
 
         <%-- PRE LOADER --%>
         <%@ include file="../template/preLoader.jsp" %>
@@ -153,7 +158,7 @@
                                         <h4 class='mb-25'>Reviews</h4>
 
                                     </div>
-                                   
+
                                     <div class="tab-pane fade" id="certificate" role="tabpanel" aria-labelledby="certificate-tab">
                                         <h4 class='mb-25'>Instructor Certificate</h4>
 
@@ -351,7 +356,7 @@
         <!-- JS here -->
         <%@ include file="../template/script.jsp" %>
 
-        <script src="${pageContext.request.contextPath}/js/instructorWallet.js"></script>
+
     </body>
 
 </html>

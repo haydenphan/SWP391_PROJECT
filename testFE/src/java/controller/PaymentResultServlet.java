@@ -114,7 +114,8 @@ public class PaymentResultServlet extends HttpServlet {
                         int courseID = course.getCourseID();
                         int adminId = UserDAO.getAdminId();
                         int instructorId = UserDAO.getInstructorIdForCourse(courseID);
-                        paymentController.processPayment(adminId, instructorId, amount);
+                        paymentController.processPaymentAdmin(walletDAO.getWalletByUserId(adminId).getWalletID(), amount);
+                        paymentController.processPaymentInstructor(walletDAO.getWalletByUserId(instructorId).getWalletID(), amount);
                     }
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, "Error updating wallets: ", e);

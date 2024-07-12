@@ -148,6 +148,9 @@
                                                 }
                                             };
         </script>
+        <%-- Include jQuery and Bootstrap JavaScript --%>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     </head>
 
@@ -172,7 +175,7 @@
             <%-- Check if the showAlert flag is set in the session --%>
             <c:if test="${not empty sessionScope.showAlert}">
                 <script>
-                    alert("Your edit request has been sent successfully!");
+                                            alert("Your edit request has been sent successfully!");
                 </script>
                 <%-- Remove the alert flag from the session after displaying it --%>
                 <c:remove var="showAlert" scope="session"/>
@@ -489,7 +492,7 @@
                                             <div class="comment-input-box mb-15">
                                                 <form id="feedbackForm" action="courseFeedbacks" method="Post">
                                                     <input type="hidden" id="rating" name="rating" value="1">
-                                                    <input type="hidden" id="courseID" name="courseID" value="<%= request.getParameter("courseID")%>">
+                                                    <input type="hidden" id="courseID" name="courseID" value="${course.getCourseID()}">
                                                     <div class="row">
                                                         <div class="col-xxl-12">
                                                             <textarea id="content" name="content" placeholder="Your review" class="comment-input comment-textarea mb-20"></textarea>
@@ -632,6 +635,41 @@
 
         <!-- JS here -->
         <%@ include file="../template/script.jsp" %>
-    </body>
 
+        <c:if test="${courseCompleted}">
+            <script>
+                $(document).ready(function () {
+                    $('#completionModal').modal('show');
+                });
+            </script>
+        </c:if>
+
+        <div class="modal fade" id="completionModal" tabindex="-1" role="dialog" aria-labelledby="completionModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="completionModalLabel">Course Completed</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Congratulations! You have completed the course.
+                        <c:if test="${!certificateGenerated}">
+                            <form action="${pageContext.request.contextPath}/completeCourse" method="get">
+                                <input type="hidden" name="userId" value="${user.userID}">
+                                <input type="hidden" name="courseId" value="${course.courseID}">
+                                <button type="submit" class="btn btn-primary">Generate Certificate</button>
+                            </form>
+                        </c:if>
+                        <c:if test="${certificateGenerated}">
+                            <a href="${pageContext.request.contextPath}/user-profile" class="btn btn-primary">View Certificate</a>
+                        </c:if>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+
+    </body>
 </html>

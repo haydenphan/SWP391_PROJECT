@@ -172,6 +172,22 @@ public class SectionLectureDAO extends DAO<SectionLecture> {
         return lecture;
     }
 
+    public static int countLectures() {
+        String sql = "SELECT COUNT(LectureID) AS LectureCount FROM Lectures";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt("LectureCount");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+        } catch (Exception ex) {
+            Logger.getLogger(SectionLectureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return -1; // Trả về -1 nếu có lỗi xảy ra
+    }
+
     public static void main(String[] args) {
         for (SectionLecture lecture : SectionLectureDAO.getLecturesBySectionId(1)) {
             System.out.println(lecture.toString());

@@ -1,6 +1,8 @@
 package controller;
 
+import DAO.JDBC;
 import DAO.UserDAO;
+import DAO.WalletDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.Wallet;
 import utils.PasswordUtils;
 
 @WebServlet(name = "Register", urlPatterns = {"/dang-ky"})
@@ -83,7 +86,28 @@ public class Register extends HttpServlet {
         user.setStoredSalt(salt);
         user.setProviderID(providerID);
 
-        userDAO.insert(user);
+        int userID = userDAO.insert(user);
+        if (user.getRole() == 2) {
+            Wallet uWallet = new Wallet();
+            uWallet.setBalance(0);
+            WalletDAO wDAO = null;
+            try {
+                wDAO = new WalletDAO(JDBC.getConnectionWithSqlJdbc());
+            } catch (Exception ex) {
+                Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                int walletID = wDAO.insert(uWallet);
+                if (walletID > 0) {
+                    user.setWalletID(walletID);
+                    userDAO.updateUserWalletID(userID, walletID);
+                }
+                System.out.println(walletID + "Wallet Status");
+
+            } catch (Exception ex) {
+                Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         session.setAttribute("user", user);
 
         url = "/home?role=" + user.getRole();

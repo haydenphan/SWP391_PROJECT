@@ -34,6 +34,7 @@ public class WalletBalanceServlet extends HttpServlet {
         try (Connection connection = JDBC.getConnectionWithSqlJdbc()) {
             WalletDAO walletDAO = new WalletDAO(connection);
             Wallet wallet = walletDAO.getWalletByUserId(user.getUserID());
+            System.out.println(wallet.getBalance());
 
             JSONObject json = new JSONObject();
             if (wallet != null) {

@@ -1,3 +1,56 @@
+document.addEventListener('DOMContentLoaded', function () {
+    // Check if the elements exist before adding event listeners or fetching data
+    const walletTab = document.getElementById("wallet-tab");
+    const withdrawForm = document.getElementById("withdrawForm");
+
+    if (walletTab) {
+        walletTab.addEventListener("click", fetchWalletBalance);
+    } else {
+        console.error('Element with ID "wallet-tab" not found.');
+    }
+
+    if (withdrawForm) {
+        withdrawForm.onsubmit = function () {
+            alert('Withdrawal successful');
+        };
+    } else {
+        console.error('Element with ID "withdrawForm" not found.');
+    }
+
+    // Fetch wallet balance on page load
+    fetch(contextPath + '/walletBalance')
+            .then(response => {
+                if (response.headers.get('content-type').includes('application/json')) {
+                    return response.json();
+                } else {
+                    throw new Error('Server returned non-JSON response');
+                }
+            })
+            .then(data => {
+                document.getElementById("walletBalance").innerText = "Balance: " + data.balance + " VND";
+            })
+            .catch(error => {
+                document.getElementById("walletBalance").innerText = "Error loading balance";
+            });
+
+    // Fetch bank account details on page load
+    fetch(contextPath + '/getBankAccount')
+            .then(response => {
+                if (response.headers.get('content-type').includes('application/json')) {
+                    return response.json();
+                } else {
+                    throw new Error('Server returned non-JSON response');
+                }
+            })
+            .then(data => {
+                if (data.accountNumber) {
+                    document.getElementById('accountNumber').value = data.accountNumber;
+                    document.getElementById('bankName').value = data.bankName;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+});
+
 function changeAva() {
     const fileInput = document.getElementById('avatarUpload');
     const avatarImage = document.getElementById('avatarImage');
@@ -12,7 +65,7 @@ function changeAva() {
         formData.append('avatar', file);
 
         // Send the file to the server
-        fetch('${pageContext.request.contextPath}/uploadAvatar', {
+        fetch(contextPath + '/uploadAvatar', {
             method: 'POST',
             body: formData
         })
@@ -31,12 +84,13 @@ function changeAva() {
 }
 
 function fetchWalletBalance() {
-    fetch('${pageContext.request.contextPath}/walletBalance')
+    fetch(contextPath + '/walletBalance')
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                if (response.headers.get('content-type').includes('application/json')) {
+                    return response.json();
+                } else {
+                    throw new Error('Server returned non-JSON response');
                 }
-                return response.json();
             })
             .then(data => {
                 document.getElementById("walletBalance").innerText = "Balance: " + data.balance + " VND";
@@ -45,29 +99,3 @@ function fetchWalletBalance() {
                 document.getElementById("walletBalance").innerText = "Error loading balance";
             });
 }
-
-document.getElementById("wallet-tab").addEventListener("click", fetchWalletBalance);
-
-document.getElementById("withdrawForm").onsubmit = function () {
-    alert('Withdrawal successful');
-};
-document.addEventListener('DOMContentLoaded', function () {
-    fetch('${pageContext.request.contextPath}/walletBalance')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("walletBalance").innerText = "Balance: " + data.balance + " VND";
-            })
-            .catch(error => {
-                document.getElementById("walletBalance").innerText = "Error loading balance";
-            });
-
-    fetch('${pageContext.request.contextPath}/getBankAccount')
-            .then(response => response.json())
-            .then(data => {
-                if (data.accountNumber) {
-                    document.getElementById('accountNumber').value = data.accountNumber;
-                    document.getElementById('bankName').value = data.bankName;
-                }
-            })
-            .catch(error => console.error('Error:', error));
-});

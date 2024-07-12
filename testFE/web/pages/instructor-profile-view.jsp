@@ -317,7 +317,7 @@
                                         <div class="comment-input-box mb-15">
                                             <form id="feedbackForm" action="instructorFeedbacks" method="Post">
                                                 <input type="hidden" id="rating" name="rating" value="1">
-                                                <input type="hidden" id="instructorID" name="instructorID" value="<%= request.getParameter("instructorID")%>">
+                                                <input type="hidden" id="instructorID" name="instructorID" value="${instructor.getUserID()}">
                                                 <div class="row">
                                                     <div class="col-xxl-12">
                                                         <textarea id="content" name="content" placeholder="Your review" class="comment-input comment-textarea mb-20"></textarea>
