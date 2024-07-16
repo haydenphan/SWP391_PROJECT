@@ -220,6 +220,10 @@
                                 <label for="newSectionName">Section Name</label>
                                 <input type="text" class="form-control" id="newSectionName" name="sectionName" required>
                             </div>
+                            <div class="form-group">
+                                <label for="newSectionDescription">Section Description</label>
+                                <textarea class="form-control" id="newSectionDescription" name="sectionDescription" rows="5" cols="10" required></textarea>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

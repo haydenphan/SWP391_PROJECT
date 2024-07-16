@@ -45,6 +45,8 @@ public class AddQuiz extends HttpServlet {
             int sectionId = Integer.parseInt(request.getParameter("sectionId"));
             String quizName = request.getParameter("quizName");
             boolean isGraded = request.getParameter("isGraded") != null;
+            String duration = request.getParameter("duration"); // Get duration as MM:SS
+
             LocalDateTime createdDate = LocalDateTime.now();
 
             Quiz newQuiz = new Quiz();
@@ -52,8 +54,10 @@ public class AddQuiz extends HttpServlet {
             newQuiz.setQuizName(quizName);
             newQuiz.setGraded(isGraded);
             newQuiz.setCreatedDate(createdDate);
+            newQuiz.setDuration(duration);
 
-            QuizDAO.createQuiz(newQuiz);
+            int quizId = QuizDAO.createQuiz(newQuiz); // Changed to int
+            newQuiz.setQuizId(quizId); // Set the quiz ID after creation
 
             request.setAttribute("newQuiz", newQuiz);
 

@@ -21,7 +21,7 @@ public class AddQuizQuestion extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("UTF-8");
         response.setCharacterEncoding("UTF-8");
-        
+
         int quizID = Integer.parseInt(request.getParameter("quizId"));
 
         // Loop through each question

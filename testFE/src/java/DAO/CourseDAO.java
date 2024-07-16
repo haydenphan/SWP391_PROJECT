@@ -544,42 +544,33 @@ public class CourseDAO extends DAO<Course> {
         return courses;
     }
 
-    public List<Course> searchCourse(String searchText) {
-    List<Course> list = new ArrayList<>();
-    String sql = "SELECT c.*, u.FirstName, u.LastName " +
-                 "FROM Courses c " +
-                 "JOIN Users u ON c.CreatedBy = u.UserID " +
-                 "WHERE c.CourseName LIKE ? OR c.Description LIKE ? OR u.FirstName LIKE ? OR u.LastName LIKE ?";
-    try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
-        ps.setString(1, "%" + searchText + "%");
-        ps.setString(2, "%" + searchText + "%");
-        ps.setString(3, "%" + searchText + "%");
-        ps.setString(4, "%" + searchText + "%");
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            Course course = new Course();
-            // Populate the course object with data from result set
-            course.setCourseID(rs.getInt("CourseID"));
-            course.setCourseName(rs.getString("CourseName"));
-            course.setDescription(rs.getString("Description"));
-            course.setCreatedBy(rs.getInt("CreatedBy"));
-            course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
-            course.setIsPublished(rs.getBoolean("IsPublished"));
-            course.setSubcategoryID(rs.getInt("SubcategoryID"));
-            course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
-            course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime());
-            course.setRequirements(rs.getString("Requirements"));
-            course.setPrice(rs.getDouble("Price"));
-            // Add the creator's name to the course object (if needed)
-            String creatorName = rs.getString("FirstName") + " " + rs.getString("LastName");
-            course.setCreatorName(creatorName); // Assuming Course class has a setCreatorName method
-            list.add(course);
+    public List<Course> SearchCourseByName(String name) {
+        List<Course> list = new ArrayList<>();
+        String sql = "SELECT * FROM Courses WHERE [CourseName] LIKE ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, "%" + name + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                // populate the course object with data from result set
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setCourseName(rs.getString("CourseName"));
+                course.setDescription(rs.getString("Description"));
+                course.setCreatedBy(rs.getInt("CreatedBy"));
+                course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
+                course.setIsPublished(rs.getBoolean("IsPublished"));
+                course.setSubcategoryID(rs.getInt("SubcategoryID"));
+                course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
+                course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime());
+                course.setRequirements(rs.getString("Requirements"));
+                course.setPrice(rs.getDouble("Price"));
+                list.add(course);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return list;
     }
-    return list;
-}
 
     public static Course getCoursesByIDForCart(int id) {
         String sql = "SELECT * FROM Courses WHERE CourseID = ?";
@@ -807,6 +798,16 @@ public class CourseDAO extends DAO<Course> {
         }
     }
 
+    public void uncancelledCourse(int courseId) throws Exception {
+        String sql = "UPDATE Courses SET isCancelled = 0 WHERE CourseID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, courseId);
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static List<Course> getCoursesSortedByEnrollment() {
         List<Course> courses = new ArrayList<>();
         String sql = "SELECT * FROM Courses WHERE IsPublished = 1 ORDER BY TotalEnrolled DESC";
@@ -887,6 +888,44 @@ public class CourseDAO extends DAO<Course> {
         }
 
         return totalEnrollments;
+    }
+
+    public static int getTotalLecturesByCourseID(int courseID) {
+        String sql = "SELECT COUNT(*) AS TotalLectures "
+                + "FROM Lectures l "
+                + "JOIN CourseSections cs ON l.SectionID = cs.SectionID "
+                + "WHERE cs.CourseID = ?";
+        int totalLectures = 0;
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, courseID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    totalLectures = rs.getInt("TotalLectures");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return totalLectures;
+    }
+
+    public void setCourseUnpublished(int courseID) {
+        String sql = "UPDATE Courses SET IsPublished = 0 WHERE CourseID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, courseID);
+            st.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error setting course unpublished: " + e.getMessage());
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static void main(String[] args) {

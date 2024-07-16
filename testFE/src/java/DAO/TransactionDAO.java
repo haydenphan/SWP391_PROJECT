@@ -187,4 +187,29 @@ public class TransactionDAO {
             System.out.println("Transaction insertion failed");
         }
     }
+
+    public List<Double> getMonthlyRevenue(int year) {
+        String sql = "SELECT MONTH(TransactionDate) as Month, SUM(Amount) as Total "
+                + "FROM Transactions "
+                + "WHERE YEAR(TransactionDate) = ? "
+                + "GROUP BY MONTH(TransactionDate)";
+        List<Double> monthlyRevenue = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            monthlyRevenue.add(0.0);
+        }
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, year);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int month = rs.getInt("Month");
+                double total = rs.getDouble("Total");
+                monthlyRevenue.set(month - 1, total);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return monthlyRevenue;
+    }
 }

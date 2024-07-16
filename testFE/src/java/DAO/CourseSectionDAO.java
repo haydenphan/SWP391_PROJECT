@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.CourseSection;
-import model.SectionLecture;
+import model.Quiz;
 
 public class CourseSectionDAO extends DAO<CourseSection> {
 
@@ -131,5 +131,90 @@ public class CourseSectionDAO extends DAO<CourseSection> {
             Logger.getLogger(CourseSectionDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public static int getTotalLectures(int sectionId) {
+        String sql = "SELECT COUNT(*) FROM Lectures WHERE SectionID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, sectionId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(CourseSectionDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    public static List<String> getSectionDescriptionsByCourseID(int courseId) {
+        List<String> descriptions = new ArrayList<>();
+        String sql = "SELECT SectionDescription FROM CourseSections WHERE CourseID = ? ORDER BY SectionOrder";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, courseId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    descriptions.add(rs.getString("SectionDescription"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(CourseSectionDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return descriptions;
+    }
+    public static List<CourseSection> getCourseSectionsWithQuizzes(int courseId) {
+        List<CourseSection> sections = new ArrayList<>();
+        try (Connection connection = JDBC.getConnectionWithSqlJdbc();
+             PreparedStatement ps = connection.prepareStatement(
+                     "SELECT cs.SectionID, cs.SectionDescription, cs.CourseID, cs.SectionName, cs.SectionOrder, cs.CreatedDate, " +
+                     "q.QuizID, q.QuizName, q.IsGraded, q.CreatedDate as QuizCreatedDate " +
+                     "FROM CourseSections cs " +
+                     "LEFT JOIN Quizzes q ON cs.SectionID = q.SectionID " +
+                     "WHERE cs.CourseID = ?")) {
+            ps.setInt(1, courseId);
+            try (ResultSet rs = ps.executeQuery()) {
+                CourseSection currentSection = null;
+                while (rs.next()) {
+                    int sectionID = rs.getInt("SectionID");
+                    if (currentSection == null || currentSection.getSectionID() != sectionID) {
+                        currentSection = new CourseSection();
+                        currentSection.setSectionID(sectionID);
+                        currentSection.setSectionDescription(rs.getString("SectionDescription"));
+                        currentSection.setCourseID(rs.getInt("CourseID"));
+                        currentSection.setSectionName(rs.getString("SectionName"));
+                        currentSection.setSectionOrder(rs.getInt("SectionOrder"));
+                        currentSection.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
+                        currentSection.setQuizzes(new ArrayList<>());  // Initialize the quizzes list
+                        sections.add(currentSection);
+                    }
+                    int quizID = rs.getInt("QuizID");
+                    if (quizID > 0) {
+                        Quiz quiz = new Quiz();
+                        quiz.setQuizId(quizID);
+                        quiz.setSectionId(rs.getInt("SectionID"));
+                        quiz.setQuizName(rs.getString("QuizName"));
+                        quiz.setGraded(rs.getBoolean("IsGraded"));
+                        quiz.setCreatedDate(rs.getTimestamp("QuizCreatedDate").toLocalDateTime());
+                        currentSection.getQuizzes().add(quiz);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sections;
+    }
+
+    
+
+    public static void main(String[] args) {
+        System.out.println(CourseSectionDAO.getTotalLectures(1));
     }
 }

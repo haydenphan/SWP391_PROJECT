@@ -11,6 +11,7 @@ public class CourseSection {
     private LocalDateTime createdDate;
     private String sectionDescription;
     private List<SectionLecture> lectures;
+    private List<Quiz> quizzes;  // Add quizzes field
 
     public String getSectionDescription() {
         return sectionDescription;
@@ -26,6 +27,14 @@ public class CourseSection {
 
     public void setLectures(List<SectionLecture> lectures) {
         this.lectures = lectures;
+    }
+    
+    public List<Quiz> getQuizzes() {
+        return quizzes;
+    }
+
+    public void setQuizzes(List<Quiz> quizzes) {
+        this.quizzes = quizzes;
     }
 
     // Constructor
@@ -90,7 +99,9 @@ public class CourseSection {
                 ", sectionName='" + sectionName + '\'' +
                 ", sectionOrder=" + sectionOrder +
                 ", createdDate=" + createdDate +
-                ", sectionDescription=" + sectionDescription +
+                ", sectionDescription='" + sectionDescription + '\'' +
+                ", lectures=" + lectures +
+                ", quizzes=" + quizzes +
                 '}';
     }
 }

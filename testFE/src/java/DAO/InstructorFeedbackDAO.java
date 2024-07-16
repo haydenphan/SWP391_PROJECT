@@ -143,6 +143,50 @@ public class InstructorFeedbackDAO extends DAO<InstructorFeedback> {
         return result;
     }
 
+    public static double getAverageRatingForInstructor(int instructorID) {
+        double averageRating = 0;
+        String sql = "SELECT AVG(Rating) AS AverageRating FROM InstructorFeedback WHERE InstructorID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, instructorID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    averageRating = rs.getDouble("AverageRating");
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return averageRating;
+    }
+
+    public static boolean hasSubmittedFeedback(int instructorID, int learnerID) {
+        String sql = "SELECT COUNT(*) AS count FROM InstructorFeedback WHERE InstructorID = ? AND LearnerID = ?";
+        boolean hasSubmitted = false;
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, instructorID);
+            ps.setInt(2, learnerID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next() && rs.getInt("count") > 0) {
+                    hasSubmitted = true;
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(InstructorFeedbackDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(InstructorFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return hasSubmitted;
+    }
+
     public static void main(String[] args) {
         InstructorFeedbackDAO feedbackDAO = new InstructorFeedbackDAO();
 

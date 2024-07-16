@@ -16,9 +16,14 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+            const contextPath = '${pageContext.request.contextPath}';
+        </script>
     </head>
 
     <body>
+        <script src="${pageContext.request.contextPath}/js/instructorWallet.js"></script>
 
         <%-- PRE LOADER --%>
         <%@ include file="../template/preLoader.jsp" %>
@@ -76,22 +81,11 @@
                                                 data-bs-target="#profile" type="button" role="tab" aria-controls="profile"
                                                 aria-selected="false"><i class="fas fa-user"></i> My Profile</button>
                                     </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab"
-                                                data-bs-target="#contact" type="button" role="tab" aria-controls="contact"
-                                                aria-selected="false"><i class="fas fa-graduation-cap"></i> My
-                                            Courses</button>
-                                    </li>
+
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="reviews-tab" data-bs-toggle="tab"
                                                 data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews"
                                                 aria-selected="false"><i class="fas fa-star"></i> Reviews</button>
-                                    </li>
-
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="ques-tab" data-bs-toggle="tab" data-bs-target="#ques"
-                                                type="button" role="tab" aria-controls="ques" aria-selected="false"><i
-                                                class="fas fa-fist-raised"></i> Materials</button>
                                     </li>
 
                                     <li class="nav-item" role="presentation">
@@ -159,25 +153,12 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                                        <h4 class='mb-25'>My Courses</h4>
-                                        <form style="margin-bottom: 50px" action="${pageContext.request.contextPath}/course-adding-servlet/create-course" method="POST">
-                                            <button type='submit' class="cont-btn">New course</button>
-                                        </form>
-
-                                        <div class="row">
-                                            <c:forEach var="course" items="<%=coursesList%>">
-                                                <c:set var="currentCourse" value="${course}" scope="request" />
-                                                <jsp:include page="../template/course/instructorCourseComponent.jsp" />
-                                            </c:forEach>
-                                        </div>
-                                    </div>
 
                                     <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                                         <h4 class='mb-25'>Reviews</h4>
 
                                     </div>
-                                   
+
                                     <div class="tab-pane fade" id="certificate" role="tabpanel" aria-labelledby="certificate-tab">
                                         <h4 class='mb-25'>Instructor Certificate</h4>
 
@@ -375,7 +356,7 @@
         <!-- JS here -->
         <%@ include file="../template/script.jsp" %>
 
-        <script src="${pageContext.request.contextPath}/js/instructorWallet.js"></script>
+
     </body>
 
 </html>

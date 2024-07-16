@@ -8,6 +8,9 @@
 
 <script src="<c:url value='/js/notifications.js'/>"></script>
 <link rel="stylesheet" href="<c:url value='/css/notifications.css'/>">
+    <style>
+        
+    </style>
 
     <%
         // String userName = (String)request.getAttribute("UserName");
@@ -158,6 +161,7 @@
                                     <c:when test="${user != null}">
                                         <div class="notification-bell">
                                             <i class="fa fa-bell" onclick="toggleNotificationPopup()"></i>
+                                            <span class="notification-count">${NotificationDAO.getUnreadNotificationCount(user.getUserID())}</span>
                                             <div class="notification-popup" id="notificationPopup">
                                                 <div class="notification-header">Notifications</div>
                                                 <div id="notification-list"></div>

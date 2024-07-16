@@ -94,6 +94,64 @@
                 });
             });
         </script>
+
+        <%-- Check if the alert flag is set in localStorage and show the alert --%>
+        <script>
+            window.onload = function () {
+                if (localStorage.getItem('showEditCourseRequestAlert') === 'true') {
+                    localStorage.removeItem('showEditCourseRequestAlert'); // Remove the flag
+                    if (confirm("Do you accept the content edit request?")) {
+                        // Handle confirmation (e.g., send a request to the server)
+                        fetch('<%= request.getContextPath()%>/edit-request?action=approveEdit&courseId=<%= request.getParameter("id")%>', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            }
+                                        })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    if (data.success) {
+                                                        alert('The edit request has been approved.');
+                                                        // Optionally redirect or reload the page
+                                                        window.location.reload();
+                                                    } else {
+                                                        alert('There was an error processing your request.');
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error('Error:', error);
+                                                    alert('There was an error processing your request.');
+                                                });
+                                    } else {
+                                        // Handle rejection (e.g., send a request to the server)
+                                        fetch('<%= request.getContextPath()%>/edit-request?action=rejectEdit&courseId=<%= request.getParameter("id")%>', {
+                                                            method: 'POST',
+                                                            headers: {
+                                                                'Content-Type': 'application/json'
+                                                            }
+                                                        })
+                                                                .then(response => response.json())
+                                                                .then(data => {
+                                                                    if (data.success) {
+                                                                        alert('The edit request has been rejected.');
+                                                                        // Optionally redirect or reload the page
+                                                                        window.location.reload();
+                                                                    } else {
+                                                                        alert('There was an error processing your request.');
+                                                                    }
+                                                                })
+                                                                .catch(error => {
+                                                                    console.error('Error:', error);
+                                                                    alert('There was an error processing your request.');
+                                                                });
+                                                    }
+                                                }
+                                            };
+        </script>
+        <%-- Include jQuery and Bootstrap JavaScript --%>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     </head>
 
     <body>
@@ -104,9 +162,30 @@
         <%@ include file="../template/sideToggle.jsp" %>
 
         <%-- HEADER --%>
-        <%@ include file="../template/header.jsp" %>
-
+        <c:choose>
+            <c:when test="${user.getRole() == 3}">
+                <%@ include file="../template/adminHeader.jsp" %>
+            </c:when>
+            <c:otherwise>
+                <%@ include file="../template/header.jsp" %>
+            </c:otherwise>
+        </c:choose>
         <main>
+
+            <%-- Check if the showAlert flag is set in the session --%>
+            <c:if test="${not empty sessionScope.showAlert}">
+                <script>
+                                            alert("Your edit request has been sent successfully!");
+                </script>
+                <%-- Remove the alert flag from the session after displaying it --%>
+                <c:remove var="showAlert" scope="session"/>
+            </c:if>
+
+            <%
+                InstructorFeedbackDAO iDAO = new InstructorFeedbackDAO();
+                int instructorID = (int) request.getAttribute("instructorID");
+                int reviewNum = iDAO.getTotalFeedbacksForInstructor(instructorID);
+            %>
             <!-- hero-area -->
             <jsp:include page="../template/heroArea.jsp">
                 <jsp:param name="title" value="Courses" />
@@ -123,22 +202,23 @@
                                         ${course.courseName}
                                     </h2>
                                     <div class="course-star">
-                                        <ul>
-                                            <li><i class="fas fa-star"></i></li>
-                                        </ul>
-                                        <ul>
-                                            <li><i class="fas fa-star"></i></li>
-                                        </ul>
-                                        <ul>
-                                            <li><i class="fas fa-star"></i></li>
-                                        </ul>
-                                        <ul>
-                                            <li><i class="fas fa-star"></i></li>
-                                        </ul>
-                                        <ul>
-                                            <li><i class="fal fa-star"></i></li>
+                                        <ul style="display: flex">
+                                            <c:set var="rating" value="${course.avgRatingDisplay(1)}" />
+                                            <c:forEach var="i" begin="1" end="5">
+                                                <li>
+                                                    <c:choose>
+                                                        <c:when test="${i <= rating}">
+                                                            <i class="fas fa-star"></i>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <i class="fal fa-star"></i>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </li>
+                                            </c:forEach>
                                         </ul>
                                     </div>
+
                                 </div>
                                 <div class="course-detelis-meta">
                                     <div class="course-meta-wrapper border-line-meta">
@@ -160,11 +240,13 @@
                                     <div class="course-update border-line-meta">
                                         <p>Last Update</p>
                                         <span>
-                                            ${course.lastUpdate}
+                                            <fmt:formatDate value="${lastUpdateDate}" pattern="yyyy-MM-dd" />
                                         </span>
                                     </div>
                                     <div class="course-category">
-                                        <p>${course.createdDate}</p>
+                                        <p>
+                                            <fmt:formatDate value="${createdDate}" pattern="yyyy-MM-dd" />
+                                        </p>
                                         <span>
                                             <a href="${pageContext.request.contextPath}/CourseList?subcategory=${course.subcategoryID}">
                                                 ${course.subcategoryName}
@@ -177,9 +259,11 @@
                                         <h4>Description</h4>
                                     </div>
                                     <p>
-                                        Description here
+                                        ${course.getDescription()}
                                     </p>
                                 </div>
+
+                                <!-- What you'll learn -->
                                 <div class="course-learn-wrapper">
                                     <div class="course-learn">
                                         <div class="course-leranm-tittle">
@@ -189,28 +273,30 @@
                                             <div class="col-xl-6">
                                                 <div class="course-leran-text f-left">
                                                     <ul>
-                                                        <li>Handle advanced techniques like Dimensionality Reduction</li>
-                                                        <li>Handle specific topics like Reinforcement Learning best</li>
-                                                        <li>Know which Machine Learning model to choose for each type of
-                                                            problem</li>
+                                                        <c:forEach var="description" items="${sectionDescriptions}" varStatus="status">
+                                                            <c:if test="${status.count <= 3}">
+                                                                <li>${description}</li>
+                                                                </c:if>
+                                                            </c:forEach>
                                                     </ul>
                                                 </div>
                                             </div>
                                             <div class="col-xl-6">
                                                 <div class="course-leran-text">
                                                     <ul>
-                                                        <li>Reinforcement learning upper
-                                                            confidence bound Thompson sampling</li>
-                                                        <li>Model Selection & Boosting fold cross
-                                                            validation parameter</li>
-                                                        <li>Use Machine Learning for personal
-                                                            purpose of machine</li>
+                                                        <c:forEach var="description" items="${sectionDescriptions}" varStatus="status">
+                                                            <c:if test="${status.count > 3 && status.count <= 6}">
+                                                                <li>${description}</li>
+                                                                </c:if>
+                                                            </c:forEach>
                                                     </ul>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Requirements -->
                                 <div class="course-requirements pt-45">
                                     <h4>Requirements</h4>
                                     <div class="course-requirements-text">
@@ -221,294 +307,47 @@
                                         </ul>
                                     </div>
                                 </div>
+
+                                <!-- CURRICULUM -->
                                 <div class="course-curriculum pt-40 pb-50">
                                     <div class="course-curriculam">
                                         <h4>Curriculum</h4>
                                     </div>
                                     <ul>
-                                        <li>15 lectures ? 2h 29m 12s total length</li>
+                                        <li>${CourseDAO.getTotalLecturesByCourseID(course.getCourseID())} lectures</li>
                                     </ul>
-                                    <div class="course-curriculam-accodion mt-30">
-                                        <div class="accordion" id="accordionExample">
-                                            <div class="accordion-item">
-                                                <div class="accordion-body" id="headingOne">
-                                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                                            data-bs-target="#collapseOne" aria-expanded="true"
-                                                            aria-controls="collapseOne">
-                                                        <span class="accordion-header">
-                                                            <span class="accordion-tittle">
-                                                                <span>Welcome to the Course & Overview</span>
-                                                            </span>
-                                                            <span class="accordion-tittle-inner">
-                                                                <span>8 lectures ? 47m</span>
-                                                            </span>
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                                <div id="collapseOne" class="accordion-collapse collapse show"
-                                                     aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body">
-                                                        <div
-                                                            class="course-curriculum-content d-sm-flex justify-content-between align-items-center">
-                                                            <div class="course-curriculum-info">
-                                                                <i class="flaticon-youtube"></i>
-                                                                <h4>Importing the libraries</h4>
-                                                            </div>
-                                                            <div class="course-curriculum-meta">
-                                                                <span>5:30</span>
-                                                                <span class="time"> <i class="flaticon-lock"></i></span>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="course-curriculum-content d-sm-flex justify-content-between align-items-center">
-                                                            <div class="course-curriculum-info">
-                                                                <i class="flaticon-youtube"></i>
-                                                                <h4>Importing the libraries</h4>
-                                                            </div>
-                                                            <div class="course-curriculum-meta">
-                                                                <span>7:30</span>
-                                                                <span class="time"> <i class="flaticon-lock"></i></span>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="course-curriculum-content d-sm-flex justify-content-between align-items-center">
-                                                            <div class="course-curriculum-info">
-                                                                <i class="flaticon-youtube"></i>
-                                                                <h4>Importing the libraries</h4>
-                                                            </div>
-                                                            <div class="course-curriculum-meta">
-                                                                <span>3:30</span>
-                                                                <span class="time"> <i class="flaticon-lock"></i></span>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="course-curriculum-content d-sm-flex justify-content-between align-items-center">
-                                                            <div class="course-curriculum-info">
-                                                                <i class="flaticon-youtube"></i>
-                                                                <h4>Importing the libraries</h4>
-                                                            </div>
-                                                            <div class="course-curriculum-meta">
-                                                                <span>8:30</span>
-                                                                <span class="time"> <i class="flaticon-lock"></i></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item">
-                                                <div class="accordion-header" id="headingTwo">
-                                                    <button class="accordion-button collapsed" type="button"
-                                                            data-bs-toggle="collapse" data-bs-target="#collapseTwo"
-                                                            aria-expanded="true" aria-controls="collapseTwo">
-                                                        <span class="accordion-header">
-                                                            <span class="accordion-tittle">
-                                                                <span>Python Application Engine</span>
-                                                            </span>
-                                                            <span class="accordion-tittle-inner">
-                                                                <span>2 lectures ? 12m</span>
-                                                            </span>
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                                <div id="collapseTwo" class="accordion-collapse collapse"
-                                                     aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body">
-                                                        <div
-                                                            class="course-curriculum-content d-sm-flex justify-content-between align-items-center">
-                                                            <div class="course-curriculum-info">
-                                                                <i class="flaticon-youtube"></i>
-                                                                <h4>Data Manipulation Tools</h4>
-                                                            </div>
-                                                            <div class="course-curriculum-meta">
-                                                                <span>6:30</span>
-                                                                <span class="time"> <i class="flaticon-lock"></i></span>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="course-curriculum-content d-sm-flex justify-content-between align-items-center">
-                                                            <div class="course-curriculum-info">
-                                                                <i class="flaticon-youtube"></i>
-                                                                <h4>Importing the libraries</h4>
-                                                            </div>
-                                                            <div class="course-curriculum-meta">
-                                                                <span>8:30</span>
-                                                                <span class="time"> <i class="flaticon-lock"></i></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingThree">
-                                                    <button class="accordion-button collapsed" type="button"
-                                                            data-bs-toggle="collapse" data-bs-target="#collapseThree"
-                                                            aria-expanded="true" aria-controls="collapseThree">
-                                                        <span class="accordion-header">
-                                                            <span class="accordion-tittle">
-                                                                <span>Algorithm Comparison</span>
-                                                            </span>
-                                                            <span class="accordion-tittle-inner">
-                                                                <span>3 lectures ? 13m</span>
-                                                            </span>
-                                                        </span>
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseThree" class="accordion-collapse collapse"
-                                                     aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body">
-                                                        <div
-                                                            class="course-curriculum-content d-sm-flex justify-content-between align-items-center">
-                                                            <div class="course-curriculum-info">
-                                                                <i class="flaticon-youtube"></i>
-                                                                <h4>Importing the libraries</h4>
-                                                            </div>
-                                                            <div class="course-curriculum-meta">
-                                                                <span>3:30</span>
-                                                                <span class="time"> <i class="flaticon-lock"></i></span>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="course-curriculum-content d-sm-flex justify-content-between align-items-center">
-                                                            <div class="course-curriculum-info">
-                                                                <i class="flaticon-youtube"></i>
-                                                                <h4>Importing the libraries</h4>
-                                                            </div>
-                                                            <div class="course-curriculum-meta">
-                                                                <span>5:30</span>
-                                                                <span class="time"> <i class="flaticon-lock"></i></span>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="course-curriculum-content d-sm-flex justify-content-between align-items-center">
-                                                            <div class="course-curriculum-info">
-                                                                <i class="flaticon-youtube"></i>
-                                                                <h4>Importing the libraries</h4>
-                                                            </div>
-                                                            <div class="course-curriculum-meta">
-                                                                <span>7:30</span>
-                                                                <span class="time"> <i class="flaticon-lock"></i></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingFour">
-                                                    <button class="accordion-button collapsed" type="button"
-                                                            data-bs-toggle="collapse" data-bs-target="#collapseFour"
-                                                            aria-expanded="true" aria-controls="collapseFour">
-                                                        <span class="accordion-header">
-                                                            <span class="accordion-tittle">
-                                                                <span>Data Manipulation Tools</span>
-                                                            </span>
-                                                            <span class="accordion-tittle-inner">
-                                                                <span>7 lectures ? 35m</span>
-                                                            </span>
-                                                        </span>
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseFour" class="accordion-collapse collapse"
-                                                     aria-labelledby="headingFour" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body">
-                                                        <div
-                                                            class="course-curriculum-content d-sm-flex justify-content-between align-items-center">
-                                                            <div class="course-curriculum-info">
-                                                                <i class="flaticon-youtube"></i>
-                                                                <h4>Importing the libraries</h4>
-                                                            </div>
-                                                            <div class="course-curriculum-meta">
-                                                                <span>2:30</span>
-                                                                <span class="time"> <i class="flaticon-lock"></i></span>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="course-curriculum-content d-sm-flex justify-content-between align-items-center">
-                                                            <div class="course-curriculum-info">
-                                                                <i class="flaticon-youtube"></i>
-                                                                <h4>Importing the libraries</h4>
-                                                            </div>
-                                                            <div class="course-curriculum-meta">
-                                                                <span>4:30</span>
-                                                                <span class="time"> <i class="flaticon-lock"></i></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item">
-                                                <div class="accordion-header" id="headingFive">
-                                                    <button class="accordion-button collapsed" type="button"
-                                                            data-bs-toggle="collapse" data-bs-target="#collapseFive"
-                                                            aria-expanded="true" aria-controls="collapseFive">
-                                                        <span class="accordion-header">
-                                                            <span class="accordion-tittle">
-                                                                <span>Sorting- the Bubble Sort Algorithm</span>
-                                                            </span>
-                                                            <span class="accordion-tittle-inner">
-                                                                <span>10 lectures ? 55m</span>
-                                                            </span>
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                                <div id="collapseFive" class="accordion-collapse collapse"
-                                                     aria-labelledby="headingFive" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body">
-                                                        <div
-                                                            class="course-curriculum-content d-sm-flex justify-content-between align-items-center">
-                                                            <div class="course-curriculum-info">
-                                                                <i class="flaticon-youtube"></i>
-                                                                <h4>Importing the libraries</h4>
-                                                            </div>
-                                                            <div class="course-curriculum-meta">
-                                                                <span>6:30</span>
-                                                                <span class="time"> <i class="flaticon-lock"></i></span>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="course-curriculum-content d-sm-flex justify-content-between align-items-center">
-                                                            <div class="course-curriculum-info">
-                                                                <i class="flaticon-youtube"></i>
-                                                                <h4>Importing the libraries</h4>
-                                                            </div>
-                                                            <div class="course-curriculum-meta">
-                                                                <span>8:30</span>
-                                                                <span class="time"> <i class="flaticon-lock"></i></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <c:set var="sectionList" value="${sectionList}" scope="request" />
+                                    <c:set var="hasEnrolled" value="${hasEnrolled}" scope="request" />
+                                    <jsp:include page="../template/course/courseCurriculum.jsp" />
                                 </div>
+
+                                <!-- INSTRUCTOR INFORMATION -->
                                 <div class="course-instructors">
                                     <h3>instructors</h3>
                                     <div class="instructors-heading">
                                         <div class="instructors-img w-img">
-                                            <a href="instructor-profile.html"><img
+                                            <a href="InstructorProfileView?id=${CourseDAO.getInstructor(course.getCreatedBy()).getUserID()}"><img
                                                     src="${CourseDAO.getInstructor(course.getCreatedBy()).getAvatar()}"
                                                     alt="image not found"></a>
                                         </div>
                                         <div class="instructors-body">
-                                            <h5><a href="instructor-profile.html">${CourseDAO.getInstructor(course.getCreatedBy()).getFirstName()} ${CourseDAO.getInstructor(course.getCreatedBy()).getLastName()}</a></h5>
-                                            <span>Data Scientist, BDevs Ltd.</span>
+                                            <h5><a href="InstructorProfileView?id=${CourseDAO.getInstructor(course.getCreatedBy()).getUserID()}">${CourseDAO.getInstructor(course.getCreatedBy()).getFirstName()} ${CourseDAO.getInstructor(course.getCreatedBy()).getLastName()}</a></h5>
                                             <div class="intructors-review">
                                                 <i class="fas fa-star"></i>
-                                                <span>4.7 (54 reviews)</span>
+                                                <span> <%= InstructorFeedbackDAO.getAverageRatingForInstructor(instructorID)%> (<%=reviewNum%> reviews)</span>
                                             </div>
                                             <div class="instructors-footer">
                                                 <i class="fas fa-desktop"></i>
-                                                <span>3 Courses</span>
+                                                <span><%= CourseDAO.countCoursesByInstructor(instructorID)%> Courses</span>
                                                 <i class="far fa-user-friends"></i>
-                                                <span>78,742 Students</span>
+                                                <span><%= CourseDAO.countTotalEnrollmentsByInstructor(instructorID)%> Students</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="intructors-content">
-                                        <p>Professionally, I come from the Data Science consulting space with experience in
-                                            finance, retail, transport and other industries. I was trained by the best
-                                            analytics mentors at Deloitte Australia and since starting on Udemy I have
-                                            passed on my knowledge to spread around the world</p>
+                                        <p>
+                                            ${CourseDAO.getInstructor(course.getCreatedBy()).getBio()}
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="student-feedback pt-45 ">
@@ -536,13 +375,11 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(5)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${NumberUtils.round(course.getPercentageOfNStarRating(5), 1)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
-                                                        <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(5)}%</span>
-                                                        </div>
+
                                                     </div>
                                                     <div class="rating-row mb-10">
                                                         <div class="rating-star">
@@ -554,13 +391,11 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(4)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${NumberUtils.round(course.getPercentageOfNStarRating(4), 1)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
-                                                        <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(4)}%</span>
-                                                        </div>
+
                                                     </div>
                                                     <div class="rating-row mb-10">
                                                         <div class="rating-star">
@@ -572,13 +407,11 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(3)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${NumberUtils.round(course.getPercentageOfNStarRating(3), 1)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
-                                                        <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(3)}%</span>
-                                                        </div>
+
                                                     </div>
                                                     <div class="rating-row mb-10">
                                                         <div class="rating-star">
@@ -590,13 +423,11 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(2)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${NumberUtils.round(course.getPercentageOfNStarRating(2), 1)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
-                                                        <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(2)}%</span>
-                                                        </div>
+
                                                     </div>
                                                     <div class="rating-row mb-10">
                                                         <div class="rating-star">
@@ -608,105 +439,45 @@
                                                         </div>
                                                         <div class="progress">
                                                             <div class="progress-bar wow fadeInLeft" role="progressbar"
-                                                                 style="width: ${course.getPercentageOfNStarRating(1)}%;" aria-valuenow="25" aria-valuemin="0"
+                                                                 style="width: ${NumberUtils.round(course.getPercentageOfNStarRating(1), 1)}%;" aria-valuenow="25" aria-valuemin="0"
                                                                  aria-valuemax="100" data-wow-duration="1s"
                                                                  data-wow-delay="0.5s"></div>
                                                         </div>
-                                                        <div class="progress-tittle">
-                                                            <span>${course.getPercentageOfNStarRating(1)}%</span>
-                                                        </div>
+
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- View Reviews -->
                                 <div class="course-detalis-reviews pt-15" id="feedbacks">
                                     <div class="course-detalis-reviews-tittle">
                                         <h3>Reviews</h3>
                                     </div>
                                     <div class="course-review-item mb-30">
-                                        <div class="course-reviews-img">
-                                            <a href="#"><img src="${pageContext.request.contextPath}/img/course/course-reviews-1.png"
-                                                             alt="image not found"></a>
-                                        </div>
-                                        <div class="course-review-list">
-                                            <h5><a href="#">Sotapdi Kunda</a></h5>
-                                            <div class="course-start-icon">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>55 min ago</span>
-                                            </div>
-                                            <p>Very clean and organized with easy to follow tutorials, Exercises, and
-                                                solutions.
-                                                This course does start from the beginning with very little knowledge and
-                                                gives a
-                                                great overview of common tools used for data science and progresses into
-                                                more
-                                                complex concepts and ideas.</p>
-                                        </div>
+
                                     </div>
-                                    <div class="course-review-item mb-30">
-                                        <div class="course-reviews-img">
-                                            <a href="#"><img src="${pageContext.request.contextPath}/img/course/course-reviews-2.png"
-                                                             alt="image not found"></a>
-                                        </div>
-                                        <div class="course-review-list">
-                                            <h5><a href="#">Samantha</a></h5>
-                                            <div class="course-start-icon">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>45 min ago</span>
-                                            </div>
-                                            <p>The course is good at explaining very basic intuition of the concepts. It
-                                                will get
-                                                you scratching the surface so to say. where this course is unique is the
-                                                implementation methods are so well defined Thank you to the team !.</p>
-                                        </div>
-                                    </div>
-                                    <div class="course-review-item mb-30">
-                                        <div class="course-reviews-img">
-                                            <a href="#"><img src="${pageContext.request.contextPath}/img/course/course-reviews-3.png"
-                                                             alt="image not found"></a>
-                                        </div>
-                                        <div class="course-review-list">
-                                            <h5><a href="#">Michell Mariya</a></h5>
-                                            <div class="course-start-icon">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>30 min ago</span>
-                                            </div>
-                                            <p>This course is amazing..!
-                                                I started this course as a beginner and learnt a lot. Instructors are great.
-                                                Query
-                                                handling can be improved.Overall very happy with the course.</p>
-                                        </div>
-                                    </div>
+
                                 </div>
+
                                 <button id="prevBtn" class="pagination-btn" onclick="prevPage()">Back</button>
                                 <button id="nextBtn" class="pagination-btn" onclick="nextPage()">Next</button>
 
-
                                 <%
-                                    if ((boolean) request.getAttribute("hasEnrolled")) {
+                                    boolean hasEnrolled = (request.getAttribute("hasEnrolled") == null) ? false : (boolean) request.getAttribute("hasEnrolled");
+                                    boolean hasSubmittedFeedback = (request.getAttribute("hasSubmittedFeedback") == null) ? false : (boolean) request.getAttribute("hasSubmittedFeedback");
                                 %>
+
+                                <% if (hasEnrolled) { %>
                                 <div class="col-xl-12">
                                     <div class="course-review-btn">
+                                        <% if (!hasSubmittedFeedback) {%>
                                         <a id="show-review-box" class="edu-btn" href="javascript:void(0)">Write a Review</a>
-                                        <div id="review-box" class="review-comment mt-45">
+                                        <div id="review-box" class="review-comment mt-45" style="display: none;">
                                             <div class="comment-title mb-20">
-                                                <p>
-                                                    leave your rating and comment
-                                                </p>
+                                                <p>Leave your rating and comment</p>
                                             </div>
                                             <div class="comment-rating mb-20">
                                                 <span>Overall ratings</span>
@@ -721,7 +492,7 @@
                                             <div class="comment-input-box mb-15">
                                                 <form id="feedbackForm" action="courseFeedbacks" method="Post">
                                                     <input type="hidden" id="rating" name="rating" value="1">
-                                                    <input type="hidden" id="courseID" name="courseID" value="<%= request.getParameter("id")%>">
+                                                    <input type="hidden" id="courseID" name="courseID" value="${course.getCourseID()}">
                                                     <div class="row">
                                                         <div class="col-xxl-12">
                                                             <textarea id="content" name="content" placeholder="Your review" class="comment-input comment-textarea mb-20"></textarea>
@@ -735,31 +506,37 @@
                                                 </form>
                                             </div>
                                         </div>
+                                        <% } else { %>
+                                        <p>You have already submitted feedback for this course.</p>
+                                        <% } %>
                                     </div>
-
                                 </div>
-                                <%
-                                } else {
-                                %>
+                                <% } else { %>
                                 <p>Only those enrolling in the course can leave their feedbacks</p>
-                                <%
-                                    }
-                                %>
+                                <% } %>
                             </div>
                         </div>
                         <div class="col-xxl-4 col-xl-4 col-lg-8 col-md-8">
                             <div class="course-video-widget">
                                 <div class="course-widget-wrapper mb-30">
                                     <div class="course-video-thumb w-img">
-                                        <img src="${pageContext.request.contextPath}/img/course/course-video.png" alt="image not found">
-                                        <div class="sidber-video-btn">
-                                            <a class="popup-video" href="https://www.youtube.com/watch?v=F68sQYaS9XA"><i
-                                                    class="fas fa-play"></i></a>
-                                        </div>
+                                        <img src="${course.getImageURL()}" alt="image not found">
                                     </div>
+
+                                    <%
+                                        if ((boolean) request.getAttribute("hasEnrolled")) {
+                                    %>
+
+                                    <%
+                                    } else {
+                                    %>
                                     <div class="course-video-price">
                                         <span>${course.price}$</span>
                                     </div>
+                                    <%
+                                        }
+                                    %>     
+
                                     <div class="course-video-body">
                                         <ul>
                                             <li>
@@ -771,24 +548,7 @@
                                                     <span>${course.levelName}</span>
                                                 </div>
                                             </li>
-                                            <!--                                        <li>
-                                                                                            <div class="course-vide-icon">
-                                                                                                <i class="flaticon-computer"></i>
-                                                                                                <span>Lectures</span>
-                                                                                            </div>
-                                                                                            <div class="video-corse-info">
-                                                                                                <span>8 Lectures</span>
-                                                                                            </div>
-                                                                                        </li>-->
-                                            <!--                                            <li>
-                                                                                            <div class="course-vide-icon">
-                                                                                                <i class="flaticon-clock"></i>
-                                                                                                <span>Duration</span>
-                                                                                            </div>
-                                                                                            <div class="video-corse-info">
-                                                                                                <span>1h 30m 12s</span>
-                                                                                            </div>
-                                                                                        </li>-->
+
                                             <li>
                                                 <div class="course-vide-icon">
                                                     <i class="flaticon-menu-2"></i>
@@ -809,15 +569,6 @@
                                             </li>
                                             <li>
                                                 <div class="course-vide-icon">
-                                                    <i class="flaticon-bookmark-white"></i>
-                                                    <span>Access</span>
-                                                </div>
-                                                <div class="video-corse-info">
-                                                    <span>Full Lifetime</span>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="course-vide-icon">
                                                     <i class="flaticon-award"></i>
                                                     <span>Certificate</span>
                                                 </div>
@@ -825,17 +576,24 @@
                                                     <span>Yes </span>
                                                 </div>
                                             </li>
-                                            <!--                                            <li>
-                                                                                            <div class="course-vide-icon">
-                                                                                                <i class="flaticon-list"></i>
-                                                                                                <span>Recourse</span>
-                                                                                            </div>
-                                                                                            <div class="video-corse-info">
-                                                                                                <span>5 Downloadable Files </span>
-                                                                                            </div>
-                                                                                        </li>-->
+                                            <li>
+                                                <div class="course-vide-icon">
+                                                    <i class="flaticon-list"></i>
+                                                    <span>Resourses</span>
+                                                </div>
+                                                <div class="video-corse-info">
+                                                    <span>${materialNum} Downloadable Files </span>
+                                                </div>
+                                            </li>
                                         </ul>
                                     </div>
+
+                                    <%
+                                        if ((boolean) request.getAttribute("hasEnrolled")) {
+                                    %>
+                                    <%
+                                    } else {
+                                    %>
                                     <div class="button-container" style="display: flex; justify-content: flex-start;">
                                         <form style="width: 50%" action="${pageContext.request.contextPath}/Cart/add-to-cart" method="GET">
                                             <div class="video-wishlist" style="margin-right: 10px">
@@ -850,6 +608,10 @@
                                             </div>
                                         </form>
                                     </div>
+                                    <%
+                                        }
+                                    %>                
+
                                 </div>
                             </div>
                         </div>
@@ -860,13 +622,54 @@
         </main>
 
         <%-- FOOTER --%>
-        <%@ include file="../template/footer.jsp" %>
+        <c:choose>
+            <c:when test="${user.getRole() == 3}">
+            </c:when>
+            <c:otherwise>
+                <%@ include file="../template/footer.jsp" %>
+            </c:otherwise>
+        </c:choose>
 
         <%-- BACK TO TOP --%>
         <%@ include file="../template/backToTop.jsp" %>
 
         <!-- JS here -->
         <%@ include file="../template/script.jsp" %>
-    </body>
 
+        <c:if test="${courseCompleted}">
+            <script>
+                $(document).ready(function () {
+                    $('#completionModal').modal('show');
+                });
+            </script>
+        </c:if>
+
+        <div class="modal fade" id="completionModal" tabindex="-1" role="dialog" aria-labelledby="completionModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="completionModalLabel">Course Completed</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Congratulations! You have completed the course.
+                        <c:if test="${!certificateGenerated}">
+                            <form action="${pageContext.request.contextPath}/completeCourse" method="get">
+                                <input type="hidden" name="userId" value="${user.userID}">
+                                <input type="hidden" name="courseId" value="${course.courseID}">
+                                <button type="submit" class="btn btn-primary">Generate Certificate</button>
+                            </form>
+                        </c:if>
+                        <c:if test="${certificateGenerated}">
+                            <a href="${pageContext.request.contextPath}/user-profile" class="btn btn-primary">View Certificate</a>
+                        </c:if>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+
+    </body>
 </html>

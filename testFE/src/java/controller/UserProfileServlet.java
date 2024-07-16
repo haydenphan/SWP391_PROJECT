@@ -1,5 +1,6 @@
 package controller;
 
+import DAO.CertificateDAO;
 import DAO.TransactionDAO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import model.Certificate;
 import model.Transaction;
 import model.User;
 import utils.LocalDateTimeAdapter;
@@ -20,6 +22,7 @@ import utils.LocalDateTimeAdapter;
 public class UserProfileServlet extends HttpServlet {
 
     private TransactionDAO transactionDAO = new TransactionDAO();
+    private CertificateDAO certificateDAO = new CertificateDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -46,9 +49,6 @@ public class UserProfileServlet extends HttpServlet {
 
                     String transactionsJson = gson.toJson(transactions);
 
-                    // Logging the JSON output
-                    System.out.println("JSON Output: " + transactionsJson);
-
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
                     response.getWriter().write(transactionsJson);
@@ -57,6 +57,10 @@ public class UserProfileServlet extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while fetching transactions.");
                 }
             } else {
+                // Fetch certificates
+                List<Certificate> certificates = certificateDAO.getCertificatesByUserId(user.getUserID());
+                request.setAttribute("certificates", certificates);
+
                 // Any logic you want to perform before forwarding to the JSP
                 request.getRequestDispatcher("pages/user-profile.jsp").forward(request, response);
             }

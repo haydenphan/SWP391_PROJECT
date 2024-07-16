@@ -45,6 +45,4 @@
         <servlet-name>Login</servlet-name>
         <url-pattern>/dang-nhap</url-pattern>
     </servlet-mapping>
-    
-    
 </web-app>

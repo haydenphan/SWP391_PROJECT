@@ -1,24 +1,16 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Quiz {
     private int quizId;
     private int sectionId;
     private String quizName;
-    private  boolean isGraded;           
+    private boolean isGraded;
     private LocalDateTime createdDate;
-
-    // Default constructor
-    public Quiz() {}
-
-    // Parameterized constructor
-    public Quiz(int sectionId, String quizName, boolean isGraded, LocalDateTime createdDate) {
-        this.sectionId = sectionId;
-        this.quizName = quizName;
-        this.isGraded = isGraded;
-        this.createdDate = createdDate;
-    }
+    private List<QuizQuestion> questions;
+    private String duration; // Duration in MM:SS format
 
     // Getters and Setters
     public int getQuizId() {
@@ -61,14 +53,19 @@ public class Quiz {
         this.createdDate = createdDate;
     }
 
-    @Override
-    public String toString() {
-        return "Quiz{" +
-                "quizId=" + quizId +
-                ", sectionId=" + sectionId +
-                ", quizName='" + quizName + '\'' +
-                ", isGraded=" + isGraded +
-                ", createdDate=" + createdDate +
-                '}';
+    public List<QuizQuestion> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<QuizQuestion> questions) {
+        this.questions = questions;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 }

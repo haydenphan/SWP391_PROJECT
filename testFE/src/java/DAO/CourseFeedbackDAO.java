@@ -72,7 +72,7 @@ public class CourseFeedbackDAO extends DAO<CourseFeedback> {
 
     @Override
     public int insert(CourseFeedback feedback) {
-       int result = 0;
+        int result = 0;
         String sql = "INSERT INTO CourseFeedback (CourseID, StudentID, FeedbackText, Rating, FeedbackDate) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
@@ -91,7 +91,57 @@ public class CourseFeedbackDAO extends DAO<CourseFeedback> {
             Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return result; 
+        return result;
+    }
+
+    public static boolean hasSubmittedFeedback(int courseID, int userID) {
+        String sql = "SELECT COUNT(*) AS count FROM CourseFeedback WHERE CourseID = ? AND StudentID = ?";
+        boolean hasSubmitted = false;
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, courseID);
+            ps.setInt(2, userID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next() && rs.getInt("count") > 0) {
+                    hasSubmitted = true;
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return hasSubmitted;
+    }
+
+    public static List<CourseFeedback> getFeedbacksByCourse(String courseID) {
+        List<CourseFeedback> feedbacks = new ArrayList<>();
+        String sql = "SELECT * FROM CourseFeedback WHERE CourseID = ? ORDER BY FeedbackDate DESC";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, courseID);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CourseFeedback feedback = new CourseFeedback();
+                    feedback.setFeedbackID(rs.getInt("FeedbackID"));
+                    feedback.setCourseID(rs.getString("CourseID"));
+                    feedback.setUserID(rs.getInt("StudentID"));
+                    feedback.setRating(rs.getInt("Rating"));
+                    feedback.setComment(rs.getString("FeedbackText"));
+                    feedback.setFeedbackDate(rs.getTimestamp("FeedbackDate").toLocalDateTime());
+                    feedbacks.add(feedback);
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return feedbacks;
     }
 
     public static void main(String[] args) {
@@ -132,4 +182,5 @@ public class CourseFeedbackDAO extends DAO<CourseFeedback> {
             System.out.println("Failed to insert feedback.");
         }
     }
+
 }

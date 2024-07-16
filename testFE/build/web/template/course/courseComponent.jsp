@@ -49,7 +49,7 @@
                     <div class="course-action">
                         <a href="${pageContext.request.contextPath}/CourseDetail?id=${currentCourse.getCourseID()}" class="view-details-btn">View Details</a>
                         <button class="wishlist-btn"><i class="flaticon-like"></i></button>
-                        <a href="${pageContext.request.contextPath}/pages/courseDetails.jsp?courseID=${currentCourse.getCourseID()}" class="c-share-btn"><i class="flaticon-previous"></i></a>
+                        <a href="#" class="c-share-btn"><i class="flaticon-previous"></i></a>
                     </div>
                 </div>
             </div>

@@ -111,6 +111,12 @@
                                                 class="fas fa-fist-raised"></i> Question & Answer</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="cert-tab" data-bs-toggle="tab" data-bs-target="#cert"
+                                                type="button" role="tab" aria-controls="cert" aria-selected="false">
+                                            <i class="fas fa-award"></i> Certificate
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="setting-tab" data-bs-toggle="tab"
                                                 data-bs-target="#setting" type="button" role="tab" aria-controls="setting"
                                                 aria-selected="false"><i class="fas fa-cog"></i> Settings
@@ -203,6 +209,19 @@
                                     <div class="tab-pane fade" id="ques" role="tabpanel" aria-labelledby="ques-tab">
                                         <p>No question completed yet.</p>
                                     </div>
+
+                                    <!-- Certificates -->
+                                    <div class="tab-pane fade" id="cert" role="tabpanel" aria-labelledby="cert-tab">
+                                        <h1>Certificates</h1>
+                                        <div class="certificate-list">
+                                            <c:forEach var="certificate" items="${certificates}">
+                                                <div class="certificate-item">
+                                                    <a href="${certificate.certificateUrl}" target="_blank">View Certificate</a>
+                                                </div>
+                                            </c:forEach>
+                                        </div>
+                                    </div>
+
                                     <div class="tab-pane fade" id="setting" role="tabpanel" aria-labelledby="setting-tab">
                                         <h4 class='mb-25'>Settings</h4>
                                         <div class="student-profile-enroll">
@@ -397,8 +416,33 @@
                     }
                 });
             });
+
+            function changeAva() {
+                var formData = new FormData();
+                var fileInput = document.getElementById('avatarUpload');
+                var file = fileInput.files[0];
+                formData.append('avatar', file);
+
+                fetch('${pageContext.request.contextPath}/uploadAvatar', {
+                    method: 'POST',
+                    body: formData
+                })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                document.getElementById('avatarImage').src = data.avatarUrl;
+                            } else {
+                                console.error('Error updating avatar:', data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error uploading avatar:', error);
+                        });
+            }
         </script>
 
+        <script src="${pageContext.request.contextPath}/js/notifications.js">
+        </script>
     </body>
 
 </html>

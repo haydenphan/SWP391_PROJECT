@@ -1,6 +1,8 @@
 package controller;
 
+import DAO.JDBC;
 import DAO.UserDAO;
+import DAO.WalletDAO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,12 +15,14 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.User;
+import model.Wallet;
 
 @WebServlet(name = "ChooseRoleServlet", urlPatterns = {"/choose-role"})
 public class ChooseRoleServlet extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -47,7 +51,18 @@ public class ChooseRoleServlet extends HttpServlet {
             // Update user role in the database
             UserDAO userDAO = new UserDAO();
             try {
-                userDAO.insert(user);
+                int userID = userDAO.insert(user);
+                if (user.getRole() == 2) {
+                    Wallet uWallet = new Wallet();
+                    uWallet.setBalance(0);
+                    WalletDAO wDAO = new WalletDAO(JDBC.getConnectionWithSqlJdbc());
+                    int walletID = wDAO.insert(uWallet);
+                    if (walletID > 0) {
+                        user.setWalletID(walletID);
+                        userDAO.updateUserWalletID(userID, walletID);
+                    }
+                    System.out.println(walletID + "Wallet Status");
+                }
             } catch (Exception ex) {
                 Logger.getLogger(ChooseRoleServlet.class.getName()).log(Level.SEVERE, null, ex);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while updating user role.");
@@ -60,47 +75,26 @@ public class ChooseRoleServlet extends HttpServlet {
         session.setAttribute("user", user);
 
         // Forward to the user profile page
-        String url = "/pages/instructor-profile.jsp";
+        String url = "/home?role=2";
         if (user.getRole() == 1) {
-            url = "/pages/user-profile.jsp";
+            url = "/home?role=1";
         }
         RequestDispatcher rd = request.getRequestDispatcher(url);
         rd.forward(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Servlet that handles user role selection and updates";

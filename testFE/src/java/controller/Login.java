@@ -51,13 +51,11 @@ public class Login extends HttpServlet {
         if (res != null && res.isIsActive()) {
             HttpSession session = request.getSession();
             session.setAttribute("user", res);
+            session.setAttribute("studentId", res.getUserID()); // Ensure studentId is set
             url = "/home?role=" + switch (res.getRole()) {
-                case 1 ->
-                    "1";
-                case 2 ->
-                    "2";
-                default ->
-                    "3";
+                case 1 -> "1";
+                case 2 -> "2";
+                default -> "3";
             };
         } else {
             request.setAttribute("baoLoi", "Tên đăng nhập hoặc mật khẩu không đúng!");
@@ -77,5 +75,5 @@ public class Login extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 }

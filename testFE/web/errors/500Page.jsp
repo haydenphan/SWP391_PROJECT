@@ -54,7 +54,7 @@
                                     <p>Try to refresh this page or feel free to contact us if the problem persists.</p>
                                 </div>
                                 <div class="error-btn">
-                                    <a class="edu-btn" href="${pageContext.request.contextPath}/pages/home.jsp">Back to homepage</a>
+                                    <a class="edu-btn" href="${pageContext.request.contextPath}/home?role=${user.getRole()}">Back to homepage</a>
                                 </div>
                             </div>
                         </div>
