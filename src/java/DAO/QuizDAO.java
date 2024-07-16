@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -87,6 +88,20 @@ public class QuizDAO {
         }
     }
 
+    public static int numbersQuiz(int quizId) throws Exception {
+        String sql = " SELECT Count(QuizID) as count  FROM QuizQuestions WHERE QuizID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, quizId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("count");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
     public static boolean isSubmitionQuiz(int studentID, int quizzID) throws Exception {
         String query = "SELECT TOP 1 *\n"
                 + "  FROM QuizSubmissions s \n"
@@ -105,6 +120,27 @@ public class QuizDAO {
         return false;
     }
 
+    public static java.sql.Date DateSubmit(int studentID, int quizzID) throws Exception {
+    String query = "SELECT TOP 1 *\n"
+            + "  FROM QuizSubmissions s \n"
+            + "  WHERE s.StudentID = ? AND s.QuizID = ?";
+
+    try (Connection conn = JDBC.getConnectionWithSqlJdbc(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+        pstmt.setInt(1, studentID);
+        pstmt.setInt(2, quizzID);
+        ResultSet rs = pstmt.executeQuery();
+        if(rs.next()){
+            return rs.getDate("SubmissionDate");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return null;
+}
+
+
     public static boolean DetailQuizSubmit(int studentID, int quizzID) throws Exception {
         List<QuizDetailSubmit> quizzes = new ArrayList<>();
         String query = "SELECT d.QuestionID, d.AnswerID as answerUser\n"
@@ -118,9 +154,9 @@ public class QuizDAO {
             pstmt.setInt(2, quizzID);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                int questionID= rs.getInt("QuestionID");
-                int answerID= rs.getInt("answerUser");
-                QuizDetailSubmit detail = new QuizDetailSubmit(questionID,answerID);
+                int questionID = rs.getInt("QuestionID");
+                int answerID = rs.getInt("answerUser");
+                QuizDetailSubmit detail = new QuizDetailSubmit(questionID, answerID);
                 quizzes.add(detail);
             }
         } catch (SQLException e) {
@@ -129,81 +165,78 @@ public class QuizDAO {
 
         return false;
     }
-    
+
     public static List<QuizAnswer> getCorrectAnswersByQuizID(int quizID) throws Exception {
-    List<QuizAnswer> correctAnswers = new ArrayList<>();
-    String query = "SELECT a.AnswerID, a.QuestionID, a.AnswerText, a.IsCorrect " +
-                   "FROM QuizAnswers a " +
-                   "INNER JOIN QuizQuestions q ON a.QuestionID = q.QuestionID " +
-                   "WHERE q.QuizID = ? AND a.IsCorrect = 1";
+        List<QuizAnswer> correctAnswers = new ArrayList<>();
+        String query = "SELECT a.AnswerID, a.QuestionID, a.AnswerText, a.IsCorrect "
+                + "FROM QuizAnswers a "
+                + "INNER JOIN QuizQuestions q ON a.QuestionID = q.QuestionID "
+                + "WHERE q.QuizID = ? AND a.IsCorrect = 1";
 
-    try (Connection conn = JDBC.getConnectionWithSqlJdbc();
-         PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = JDBC.getConnectionWithSqlJdbc(); PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-        pstmt.setInt(1, quizID);
-        ResultSet rs = pstmt.executeQuery();
+            pstmt.setInt(1, quizID);
+            ResultSet rs = pstmt.executeQuery();
 
-        while (rs.next()) {
-            QuizAnswer answer = new QuizAnswer();
-            answer.setAnswerID(rs.getInt("AnswerID"));
-            answer.setQuestionID(rs.getInt("QuestionID"));
-            answer.setAnswerText(rs.getString("AnswerText"));
-            correctAnswers.add(answer);
+            while (rs.next()) {
+                QuizAnswer answer = new QuizAnswer();
+                answer.setAnswerID(rs.getInt("AnswerID"));
+                answer.setQuestionID(rs.getInt("QuestionID"));
+                answer.setAnswerText(rs.getString("AnswerText"));
+                correctAnswers.add(answer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+
+        return correctAnswers;
     }
 
-    return correctAnswers;
-}
-    
     public static List<QuizDetailSubmit> getSubmittedAnswersByQuizIDAndStudentID(int quizID, int studentID) throws Exception {
-    List<QuizDetailSubmit> submittedAnswers = new ArrayList<>();
-    String query = "SELECT * FROM QuizSubmissionDetails WHERE QuizSubmissionID IN " +
-                   "(SELECT SubmissionID FROM QuizSubmissions WHERE QuizID = ? AND StudentID = ?)";
+        List<QuizDetailSubmit> submittedAnswers = new ArrayList<>();
+        String query = "SELECT * FROM QuizSubmissionDetails WHERE QuizSubmissionID IN "
+                + "(SELECT SubmissionID FROM QuizSubmissions WHERE QuizID = ? AND StudentID = ?)";
 
-    try (Connection conn = JDBC.getConnectionWithSqlJdbc();
-         PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = JDBC.getConnectionWithSqlJdbc(); PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-        pstmt.setInt(1, quizID);
-        pstmt.setInt(2, studentID);
-        ResultSet rs = pstmt.executeQuery();
+            pstmt.setInt(1, quizID);
+            pstmt.setInt(2, studentID);
+            ResultSet rs = pstmt.executeQuery();
 
-        while (rs.next()) {
-            QuizDetailSubmit submissionDetail = new QuizDetailSubmit();
-            submissionDetail.setId(rs.getInt("ID"));
-            submissionDetail.setQuizSubmissionID(rs.getInt("QuizSubmissionID"));
-            submissionDetail.setQuestionID(rs.getInt("QuestionID"));
-            submissionDetail.setAnswerID(rs.getInt("AnswerID"));
-            submittedAnswers.add(submissionDetail);
+            while (rs.next()) {
+                QuizDetailSubmit submissionDetail = new QuizDetailSubmit();
+                submissionDetail.setId(rs.getInt("ID"));
+                submissionDetail.setQuizSubmissionID(rs.getInt("QuizSubmissionID"));
+                submissionDetail.setQuestionID(rs.getInt("QuestionID"));
+                submissionDetail.setAnswerID(rs.getInt("AnswerID"));
+                submittedAnswers.add(submissionDetail);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+
+        return submittedAnswers;
     }
 
-    return submittedAnswers;
-}
+    public static int calculateScore(int quizID, int studentID) throws Exception {
+        List<QuizAnswer> correctAnswers = QuizDAO.getCorrectAnswersByQuizID(quizID);
+        List<QuizDetailSubmit> submittedAnswers = getSubmittedAnswersByQuizIDAndStudentID(quizID, studentID);
 
- public static int calculateScore(int quizID, int studentID) throws Exception {
-    List<QuizAnswer> correctAnswers = QuizDAO.getCorrectAnswersByQuizID(quizID);
-    List<QuizDetailSubmit> submittedAnswers = getSubmittedAnswersByQuizIDAndStudentID(quizID, studentID);
+        int score = 0;
 
-    int score = 0;
-
-    for (QuizDetailSubmit submittedAnswer : submittedAnswers) {
-        for (QuizAnswer correctAnswer : correctAnswers) {
-            if (submittedAnswer.getAnswerID() == correctAnswer.getAnswerID()) {
-                score++;
-                break;
-            } 
+        for (QuizDetailSubmit submittedAnswer : submittedAnswers) {
+            for (QuizAnswer correctAnswer : correctAnswers) {
+                if (submittedAnswer.getAnswerID() == correctAnswer.getAnswerID()) {
+                    score++;
+                    break;
+                }
+            }
         }
+
+        return score;
     }
 
-    return score;
-}   
-    
-
-   public static void main(String[] args) {
+    public static void main(String[] args) {
         try {
             int quizID = 2;
             int studentID = 1;
@@ -214,8 +247,6 @@ public class QuizDAO {
             e.printStackTrace();
         }
     }
-   
-   
 
 //    public static void main(String[] args) {
 //        List<Quiz> list = QuizDAO.getQuizzesBySectionId(3);

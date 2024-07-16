@@ -51,19 +51,20 @@ public class ReportDAO {
         List<Report> reportList = new ArrayList<>();
         try {
             Connection conn = JDBC.getConnectionWithSqlJdbc();
-            String sql = "SELECT * FROM Report ORDER BY Time DESC";
+            String sql = "SELECT r.reportID,r.userID, r.time, r.title, isReaded, isNewComment, c.content \n" +
+                          "  FROM Report as r, Comment as c WHERE c.ReportID = r.ReportID  ORDER BY r.time DESC";
             PreparedStatement st = conn.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 reportList.add(new Report(
-                        rs.getInt("ReportID"),
-                        rs.getInt("UserID"),
-                        rs.getString("Time"),
-                        rs.getString("Title"),
-                        rs.getBoolean("IsRead"),
-                        rs.getBoolean("IsNewComment")));
+                        rs.getInt("reportID"),
+                        rs.getInt("userID"),
+                        rs.getString("time"),
+                        rs.getString("title"),
+                        rs.getBoolean("isReaded"),
+                        rs.getBoolean("isNewComment"),
+                        rs.getString("content")));
             }
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

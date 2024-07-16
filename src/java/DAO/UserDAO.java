@@ -405,6 +405,8 @@ public class UserDAO extends DAO<User> {
 
         return instructors;
     }
+    
+    
 
 //    public boolean updateGoogleUser(String userId, String lastname, String firstname) throws Exception {
 //        String sql = "UPDATE Users SET UserName = ?, FirstName = ?, LastName = ? WHERE UserID = ?";

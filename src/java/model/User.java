@@ -26,6 +26,7 @@ public class User {
     private LocalDateTime registrationDate;
     private boolean isActive;
     private int totalLearners;
+    private LocalDateTime enrollmentDate;
 
     @SerializedName("picture")
     private String avatar;
@@ -137,6 +138,14 @@ public class User {
     public void setTotalLearners(int totalLearners) {
         this.totalLearners = totalLearners;
     }
+    public LocalDateTime getEnrollmentDate() {
+        return enrollmentDate;
+    }
+
+    public void setEnrollmentDate(LocalDateTime enrollmentDate) {
+        this.enrollmentDate = enrollmentDate;
+    }
+
 
     public User() {
 

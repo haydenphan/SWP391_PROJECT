@@ -1,7 +1,7 @@
 package controller;
 
 import DAO.ReportDAO;
-import utils.EmailUtils;
+//import utils.EmailUtils;
 import utils.StringExtention;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -14,6 +14,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.Comment;
 import model.Report;
 import model.User;
@@ -25,39 +26,15 @@ public class ReportManageServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String action = request.getParameter("action");
         ObjectMapper objectMapper = new JsonMapper();
-        String objectJSON = "";
         ReportDAO reDao = new ReportDAO();
-        int idReport = 0;
+        String url = "";
         try {
             switch (action) {
-                case "search":
-                    idReport = Integer.parseInt(request.getParameter("idReport"));
-                    objectJSON = objectMapper.writeValueAsString(reDao.read(idReport));
-                    break;
-                case "edit":
-                    idReport = Integer.parseInt(request.getParameter("idReport"));
-                    String repContent = request.getParameter("repContent");
-                    Comment commentReply = null;
-                    if(request.getParameter("user")== null){
-                        commentReply = new Comment(true, repContent, StringExtention.GetCurrentDate());
-                        reDao.reply(idReport, false);
-                    }else{
-                        commentReply = new Comment(false, repContent, StringExtention.GetCurrentDate());
-                        reDao.reply(idReport, true);
-                    }
-                    
-                    boolean isSuccess = reDao.createComment(commentReply, idReport);
-                    if (!isSuccess) {
-                        objectJSON = objectMapper.writeValueAsString("fail");
-                        break;
-                    }
-                    
-                    break;
-                case "getList":
+                case "reports":
                     // Lấy danh sách feedback của người dùng
-                    List<model.Report> reports = reDao.getList();
-                    objectJSON = objectMapper.writeValueAsString(reports);
-                    
+                    List<model.Report> reports = reDao.Reports();
+                    request.setAttribute("reports", reports);
+                    url = "admin/manageReport.jsp";
                     break;
                 case "createReport":
                     // Tạo mới report
@@ -72,20 +49,13 @@ public class ReportManageServlet extends HttpServlet {
                     Rdao.create(sendReport);
                     Rdao.createComment(newComment, 0);
                     String mess = content +"\nThank for your report we will reply soon ";
-                    EmailUtils.sendEmail(title + " (do not rep this mail)", mess, user.getEmail());
-                    break;
-                case "getComment":
-                    idReport = Integer.parseInt(request.getParameter("idReport"));
-                    List<Comment> comments = reDao.getComments(idReport);
-                    objectJSON = objectMapper.writeValueAsString(comments);
-                    
+                    //EmailUtils.sendEmail(title + " (do not rep this mail)", mess, user.getEmail());
                     break;
             }
         } catch (Exception e) {
-            objectJSON = objectMapper.writeValueAsString("fail");
             e.printStackTrace();
         }finally{
-            response.getWriter().write(objectJSON);
+            request.getRequestDispatcher(url).forward(request, response);
         }
 
     }

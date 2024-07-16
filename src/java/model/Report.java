@@ -12,6 +12,7 @@ public class Report {
     private String title;
     private boolean isReaded;
     private boolean isNewComment;
+    private String content;
     
     public Report() {
     }
@@ -24,13 +25,14 @@ public class Report {
 
     }
     
-    public Report(int reportID, int userID, String time, String title, boolean isReaded, boolean isNewComment) {
+    public Report(int reportID, int userID, String time, String title, boolean isReaded, boolean isNewComment, String content) {
         this.reportID = reportID;
         this.userID = userID;
         this.time = time;
         this.title = title;
         this.isReaded = isReaded;
         this.isNewComment = isNewComment;
+        this.content = content;
     }
 
     public Report(int userID, String time, String title, boolean isReaded) {
@@ -40,6 +42,15 @@ public class Report {
         this.isReaded = isReaded;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    
     public int getReportID() {
         return reportID;
     }

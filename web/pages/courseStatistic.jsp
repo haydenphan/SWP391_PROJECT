@@ -1,11 +1,22 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%-- 
+    Document   : courseStatistic
+    Created on : Jul 15, 2024, 10:44:54 PM
+    Author     : quanhd
+--%>
+
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="model.*" %>
 <%@ page import="DAO.*" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 
+<%
+    Course currentCourse = (Course) request.getAttribute("currentCourse");
+%>
+
+<!DOCTYPE html>
 <html class="no-js" lang="zxx">
 
 
@@ -69,33 +80,29 @@
         <%@ include file="../template/sideToggle.jsp" %>
 
         <%-- HEADER --%>
-        <%@ include file="../template/adminHeader.jsp" %>
+
 
         <!-- Main content -->
         <div style="height: 100px"></div>
         <div class="container mt-5">
-            <h1 style="margin-bottom: 30px" class="text-lg font-semibold my-6">User Management</h1>
+            <h1 style="margin-bottom: 30px" class="text-lg font-semibold my-6">List Leaners</h1>
             <div class="bg-white shadow rounded-lg">
-                <table id="tableReport" class="table table-striped">
+                <table id="learnerList" class="table table-striped">
                     <thead>
                         <tr class="title">
-                            <th scope="col">ID</th>
-                            <th scope="col">User ID</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Content</th>
-                            <th scope="col">Time</th>
+                            <th scope="col">Learner Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Enrolled Date</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach items="${reports}" var="rp">
+                        <c:forEach items="${cls}" var="ln">
                             <tr>
-                                <td>${rp.getUserName()}</td>
-                                <td>${rp.getUserID()}</td>
-                                <td>${rp.getTitle()}</td>
-                                <td>${rp.getContent()}</td>
-                                <td>${rp.getTime()}</td>
-                                <td>action</td>
+                                <td>${ln.getUserName()}</td>
+                                <td>${ln.getEmail()}</td>
+                                <td>${ln.getEnrollmentDate()}</td>
+                                <a href="#">View Progress</a>
                             </tr>                                                                      
                         </c:forEach>
                     </tbody>
@@ -126,7 +133,7 @@
         <script src="js/datatables.min.js"></script>
         <script type="text/javascript">
             $(document).ready(function () {
-                $('#tableReport').DataTable({
+                $('#learnerList').DataTable({
                     "paging": true,
                     "lengthChange": true,
                     "searching": true,
@@ -139,3 +146,4 @@
         </script>
     </body>
 </html>
+

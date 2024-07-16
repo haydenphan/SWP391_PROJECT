@@ -77,5 +77,7 @@
                 </c:if>
             </table>
         </form>
+        <script src="../js/jquery-1.11.3.min.js" ></script>
+        <script src="../dataResponse/sendReport.js" ></script>
     </body>
 </html>

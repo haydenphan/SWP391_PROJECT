@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Course;
 import model.CourseEnrollment;
+import model.User;
 
 public class CourseEnrollmentDAO {
 
@@ -187,18 +188,58 @@ public class CourseEnrollmentDAO {
         }
         return false;
     }
+    
+    public List<User> getLearnersByCourseID(String courseID) {
+        List<User> learners = new ArrayList<>();
+        String sql = "SELECT u.*, ce.EnrollmentDate AS EnrollmentDate FROM Users u " +
+             "JOIN CourseEnrollments ce ON u.userID = ce.StudentID " +
+             "WHERE ce.CourseID = ?";
 
-    public static void main(String[] args) {
-//        CourseEnrollmentDAO dao = new CourseEnrollmentDAO();
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); 
+             PreparedStatement st = con.prepareStatement(sql)) {
+             
+            st.setString(1, courseID);
+            try (ResultSet rs = st.executeQuery()) {
 
-        // Check if user is enrolled in course
-//        boolean isEnrolled = dao.isUserEnrolledInCourse(1, 1);
-//        System.out.println("Is user enrolled in course: " + isEnrolled);
-        List<Course> courses = CourseEnrollmentDAO.getCoursesByUserID(6);
-        for (Course course : courses) {
-            System.out.println(course.toString());
+                while (rs.next()) {
+                    User learner = new User();
+                    learner.setUserID(rs.getInt("UserID"));
+                    learner.setUserName(rs.getString("Username"));
+                    learner.setEmail(rs.getString("Email"));
+                    learner.setEnrollmentDate(rs.getTimestamp("EnrollmentDate").toLocalDateTime());
+                    learners.add(learner);
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println(e.getMessage());
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-//        boolean isEnrolled = dao.isLearnerEnrolledInInstructorCourse(2, 3);
-//        System.out.println("Is user enrolled in course: " + isEnrolled);
+
+        return learners;
+    }
+
+public static void main(String[] args) {
+        CourseEnrollmentDAO enrollmentDAO = new CourseEnrollmentDAO();
+        
+        // Giả sử courseID là "1"
+        String courseID = "2";
+        
+        List<User> learners = enrollmentDAO.getLearnersByCourseID(courseID);
+        
+        if (learners.isEmpty()) {
+            System.out.println("Không có học viên nào trong khóa học này.");
+        } else {
+            System.out.println("Danh sách học viên trong khóa học ID = " + courseID + ":");
+            for (User learner : learners) {
+                System.out.println("UserID: " + learner.getUserID());
+                System.out.println("Username: " + learner.getUserName());
+                System.out.println("Email: " + learner.getEmail());
+                System.out.println(learner.getEnrollmentDate());
+                System.out.println("----------------------------");
+            }
+        }
     }
 }

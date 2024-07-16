@@ -56,6 +56,7 @@
                 <div style="padding: 0px" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="${pageContext.request.contextPath}/edit-course-info-servlet?courseId=<%= currentCourse.getCourseID()%>">Edit Course Info</a>
                     <a class="dropdown-item" href="${pageContext.request.contextPath}/course-section-servlet?courseId=<%= currentCourse.getCourseID()%>">Manage Course Details</a>
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/CourseStatistic?courseId=<%= currentCourse.getCourseID()%>">View Statistics</a>
                 </div>
             </div>
         </div>
