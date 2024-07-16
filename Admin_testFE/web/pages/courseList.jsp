@@ -251,7 +251,7 @@
             function redirectToCourseList() {
                 const queryString = getSelectedOptions();
                 console.log(queryString);
-                window.location.href = "/testFE/CourseList?" + queryString;
+                window.location.href = "/Admin_testFE/CourseList?" + queryString;
             }
 
             // Function to handle change in category selection

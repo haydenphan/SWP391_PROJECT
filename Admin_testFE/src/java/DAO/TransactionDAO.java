@@ -5,10 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Course;
 import model.Transaction;
 import model.TransactionDetails;
@@ -146,6 +149,48 @@ public class TransactionDAO {
         return new ArrayList<>(transactionMap.values());
     }
 
+    public static void main(String[] args) throws Exception {
+        TransactionDAO transactionDAO = new TransactionDAO();
+
+        // Create a mock user
+        User user = new User();
+        user.setUserID(1); // Set this to a valid user ID in your database
+
+        // Create a mock transaction
+        Transaction transaction = new Transaction();
+        transaction.setUserID(user);
+        transaction.setAmount(100.0);
+        transaction.setTransactionDate(new Date());
+        transaction.setStatus("Completed");
+
+        // Insert the transaction
+        int transactionID = transactionDAO.insertTransaction(transaction);
+        if (transactionID > 0) {
+            System.out.println("Transaction inserted successfully with ID: " + transactionID);
+
+            // Create a list of transaction details
+            List<TransactionDetails> items = new ArrayList<>();
+            Course course1 = CourseDAO.getCoursesByID(3);
+            System.out.println(course1);
+
+            if (course1 != null) {
+                items.add(new TransactionDetails(course1, 50.0));
+            } else {
+                System.out.println("Course with ID 3 not found.");
+            }
+
+            // Insert the transaction details
+            boolean result = transactionDAO.insertTransactionDetails(transactionID, items);
+            if (result) {
+                System.out.println("Transaction details inserted successfully");
+            } else {
+                System.out.println("Transaction details insertion failed");
+            }
+        } else {
+            System.out.println("Transaction insertion failed");
+        }
+    }
+
     public List<Double> getMonthlyRevenue(int year) {
         String sql = "SELECT MONTH(TransactionDate) as Month, SUM(Amount) as Total "
                 + "FROM Transactions "
@@ -171,54 +216,36 @@ public class TransactionDAO {
         return monthlyRevenue;
     }
 
-    public static void main(String[] args) throws Exception {
-        TransactionDAO transactionDAO = new TransactionDAO();
-        // Test the getMonthlyRevenue method for a specific year
-        int testYear = 2024; // Replace with the year you want to test
-        List<Double> monthlyRevenue = transactionDAO.getMonthlyRevenue(testYear);
-
-        // Print the monthly revenue
-        System.out.println("Monthly Revenue for the year " + testYear + ":");
-        for (int i = 0; i < monthlyRevenue.size(); i++) {
-            System.out.println("Month " + (i + 1) + ": " + monthlyRevenue.get(i));
+    public List<Double> getMonthlyIncomeForInstructorAndCourse(int instructorId, int courseId, int year) {
+        List<Double> monthlyIncome = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            monthlyIncome.add(0.0);
         }
 
-//        // Create a mock user
-//        User user = new User();
-//        user.setUserID(1); // Set this to a valid user ID in your database
-//
-//        // Create a mock transaction
-//        Transaction transaction = new Transaction();
-//        transaction.setUserID(user);
-//        transaction.setAmount(100.0);
-//        transaction.setTransactionDate(new Date());
-//        transaction.setStatus("Completed");
-//
-//        // Insert the transaction
-//        int transactionID = transactionDAO.insertTransaction(transaction);
-//        if (transactionID > 0) {
-//            System.out.println("Transaction inserted successfully with ID: " + transactionID);
-//
-//            // Create a list of transaction details
-//            List<TransactionDetails> items = new ArrayList<>();
-//            Course course1 = CourseDAO.getCoursesByID(3);
-//            System.out.println(course1);
-//
-//            if (course1 != null) {
-//                items.add(new TransactionDetails(course1, 50.0));
-//            } else {
-//                System.out.println("Course with ID 3 not found.");
-//            }
-//
-//            // Insert the transaction details
-//            boolean result = transactionDAO.insertTransactionDetails(transactionID, items);
-//            if (result) {
-//                System.out.println("Transaction details inserted successfully");
-//            } else {
-//                System.out.println("Transaction details insertion failed");
-//            }
-//        } else {
-//            System.out.println("Transaction insertion failed");
-//        }
+        String sql = "SELECT MONTH(ce.EnrollmentDate) AS Month, SUM(c.Price * 0.7) AS Income "
+                + "FROM Courses c "
+                + "JOIN CourseEnrollments ce ON c.CourseID = ce.CourseID "
+                + "WHERE c.CreatedBy = ? AND c.CourseID = ? AND YEAR(ce.EnrollmentDate) = ? "
+                + "GROUP BY MONTH(ce.EnrollmentDate)";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, instructorId);
+            stmt.setInt(2, courseId);
+            stmt.setInt(3, year);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int month = rs.getInt("Month") - 1;
+                double income = rs.getDouble("Income");
+                monthlyIncome.set(month, income);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(TransactionDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return monthlyIncome;
     }
+
 }

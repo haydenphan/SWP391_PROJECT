@@ -1,33 +1,27 @@
 package model;
 
+import java.util.Date;
+
 public class Certificate {
+
     private int certificateID;
     private int learnerID;
-    private String learnerName;
-    private String instructorName;
-    private String courseName;
+    private int instructorID;
+    private int courseID;
     private String certificateUrl;
+    private Date uploadDate;
 
-    // Constructor for new Certificate without ID
-    public Certificate(int learnerID, String learnerName, String instructorName, String courseName, String certificateUrl) {
-        this.learnerID = learnerID;
-        this.learnerName = learnerName;
-        this.instructorName = instructorName;
-        this.courseName = courseName;
-        this.certificateUrl = certificateUrl;
+    public Date getUploadDate() {
+        return uploadDate;
     }
 
-    // Constructor with all fields including ID
-    public Certificate(int certificateID, int learnerID, String learnerName, String instructorName, String courseName, String certificateUrl) {
-        this.certificateID = certificateID;
-        this.learnerID = learnerID;
-        this.learnerName = learnerName;
-        this.instructorName = instructorName;
-        this.courseName = courseName;
-        this.certificateUrl = certificateUrl;
+    public void setUploadDate(Date uploadDate) {
+        this.uploadDate = uploadDate;
     }
 
-    // Getters and Setters
+    public Certificate() {
+    }
+
     public int getCertificateID() {
         return certificateID;
     }
@@ -44,28 +38,20 @@ public class Certificate {
         this.learnerID = learnerID;
     }
 
-    public String getLearnerName() {
-        return learnerName;
+    public int getInstructorID() {
+        return instructorID;
     }
 
-    public void setLearnerName(String learnerName) {
-        this.learnerName = learnerName;
+    public void setInstructorID(int instructorID) {
+        this.instructorID = instructorID;
     }
 
-    public String getInstructorName() {
-        return instructorName;
+    public int getCourseID() {
+        return courseID;
     }
 
-    public void setInstructorName(String instructorName) {
-        this.instructorName = instructorName;
-    }
-
-    public String getCourseName() {
-        return courseName;
-    }
-
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
+    public void setCourseID(int courseID) {
+        this.courseID = courseID;
     }
 
     public String getCertificateUrl() {
@@ -75,4 +61,10 @@ public class Certificate {
     public void setCertificateUrl(String certificateUrl) {
         this.certificateUrl = certificateUrl;
     }
+
+    @Override
+    public String toString() {
+        return "Certificate{" + "certificateID=" + certificateID + ", learnerID=" + learnerID + ", instructorID=" + instructorID + ", courseID=" + courseID + ", certificateUrl=" + certificateUrl + '}';
+    }
+
 }

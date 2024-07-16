@@ -1,6 +1,6 @@
 package DAO;
 
-import controller.PaymentResultServlet;
+import java.beans.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -8,6 +8,8 @@ import java.sql.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import utils.PasswordUtils;
 import model.User;
 
@@ -15,10 +17,10 @@ public class UserDAO extends DAO<User> {
 
     @Override
     public int insert(User t) {
-        int res = 0;
+        int userId = 0; // To store the generated UserID
         String sql = "INSERT INTO Users (UserName, PasswordHash, FirstName, LastName, Email, RoleID, RegistrationDate, IsActive, Avatar, Bio, StoredSalt, ProviderID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             st.setString(1, t.getUserName());
             st.setString(2, t.getPasswordHash());
@@ -33,7 +35,16 @@ public class UserDAO extends DAO<User> {
             st.setBytes(11, t.getStoredSalt());
             st.setInt(12, t.getProviderID());
 
-            res = st.executeUpdate();
+            int affectedRows = st.executeUpdate();
+
+            if (affectedRows > 0) {
+                // Retrieve the generated key (UserID)
+                try (ResultSet generatedKeys = st.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        userId = generatedKeys.getInt(1);
+                    }
+                }
+            }
 
         } catch (SQLException | ClassNotFoundException e) {
             System.err.println("Error! " + e.getMessage());
@@ -42,7 +53,7 @@ public class UserDAO extends DAO<User> {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return res;
+        return userId;
     }
 
     public boolean checkExistedEmail(String email) throws Exception {
@@ -162,16 +173,9 @@ public class UserDAO extends DAO<User> {
                                 user.setAvatar(rs.getString("Avatar"));
                                 user.setBio(rs.getString("Bio"));
                                 user.setStoredSalt(rs.getBytes("StoredSalt"));
-                                System.out.println("Login successful for user: " + user.getUserName());
                                 return user;
-                            } else {
-                                System.out.println("Password does not match for user: " + user.getUserName());
                             }
-                        } else {
-                            System.out.println("Stored salt is null for user: " + user.getUserName());
                         }
-                    } else {
-                        System.out.println("User not found with email or username: " + user.getEmail() + " / " + user.getUserName());
                     }
                 }
             } catch (SQLException | ClassNotFoundException ex) {
@@ -197,10 +201,7 @@ public class UserDAO extends DAO<User> {
                         user.setAvatar(rs.getString("Avatar"));
                         user.setBio(rs.getString("Bio"));
                         user.setStoredSalt(rs.getBytes("StoredSalt"));
-                        System.out.println("Login successful for user: " + user.getUserName());
                         return user;
-                    } else {
-                        System.out.println("User not found with email: " + user.getEmail());
                     }
                 }
             } catch (SQLException | ClassNotFoundException ex) {
@@ -303,8 +304,13 @@ public class UserDAO extends DAO<User> {
         return result;
     }
 
-    public boolean updateUserProfile(User user) throws Exception {
-        String sql = "UPDATE Users SET FirstName = ?, LastName = ?, Email = ?, Bio = ? WHERE UserID = ?";
+    public boolean updateUserProfile(User user) {
+        String sql = "UPDATE [OnlineLearningV2].[dbo].[Users] SET "
+                + "[FirstName] = ?, "
+                + "[LastName] = ?, "
+                + "[Email] = ?, "
+                + "[Bio] = ? "
+                + "WHERE [UserID] = ?";
 
         try (Connection connection = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = connection.prepareStatement(sql)) {
 
@@ -314,21 +320,16 @@ public class UserDAO extends DAO<User> {
             st.setString(4, user.getBio());
             st.setInt(5, user.getUserID());
 
-            int rowsUpdated = st.executeUpdate();
-            Logger.getLogger(UserDAO.class.getName()).log(Level.INFO, "Rows updated: " + rowsUpdated);
-            return rowsUpdated > 0;
-        } catch (SQLException | ClassNotFoundException ex) {
+            return st.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
 
     public boolean updateUserPassword(User user) throws Exception {
-        byte[] salt = PasswordUtils.generateSalt();
-        String hashedPassword = PasswordUtils.hashPassword(user.getPasswordHash(), salt);
-        user.setPasswordHash(hashedPassword);
-        user.setStoredSalt(salt);
-
         String sql = "UPDATE Users SET PasswordHash = ?, StoredSalt = ? WHERE UserID = ?";
         try (Connection conn = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, user.getPasswordHash());
@@ -347,14 +348,14 @@ public class UserDAO extends DAO<User> {
         String sql = "UPDATE Users SET Avatar = ? WHERE UserID = ?";
 
         try (Connection conn = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, avatarUrl);
             stmt.setInt(2, userId);
 
             int rowsUpdated = stmt.executeUpdate();
-            Logger.getLogger(UserDAO.class.getName()).log(Level.INFO, "Rows updated: " + rowsUpdated);
             return rowsUpdated > 0;
         } catch (SQLException e) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+            e.printStackTrace();
             return false;
         }
     }
@@ -424,6 +425,250 @@ public class UserDAO extends DAO<User> {
         return instructorId;
     }
 
+    public List<Integer> getAllAdminIds() {
+        List<Integer> adminIds = new ArrayList<>();
+        String sql = "SELECT UserID FROM Users WHERE RoleID = 3";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql); ResultSet rs = st.executeQuery()) {
+            while (rs.next()) {
+                adminIds.add(rs.getInt("UserID"));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return adminIds;
+    }
+
+    public boolean updateUserWalletID(int userId, int walletID) throws Exception {
+        String sql = "UPDATE Users SET WalletID = ? WHERE UserID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, walletID);
+            st.setInt(2, userId);
+            return st.executeUpdate() > 0;
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+
+    // Method to get walletID for admin users
+    public int getAdminWalletID() throws SQLException, ClassNotFoundException {
+        int walletID = 0;
+        // Modify the SQL query to limit the result to one row using TOP 1 for SQL Server
+        String sql = "SELECT TOP 1 WalletID FROM Users WHERE (RoleID = 3 AND WalletID is not null)";
+        try (Connection connection = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                walletID = rs.getInt("WalletID");
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return walletID;
+    }
+
+    public List<User> filterUsers(String role, String banned, String newUser, String topPurchaser) {
+        List<User> userList = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = JDBC.getConnectionWithSqlJdbc();
+
+            StringBuilder query = new StringBuilder("SELECT * FROM Users WHERE 1=1");
+
+            if (role != null && !role.equals("all")) {
+                query.append(" AND RoleID = ?");
+            }
+            if (banned != null && !banned.equals("all")) {
+                query.append(" AND IsActive = ?");
+            }
+            if (newUser != null && newUser.equals("1")) {
+                query.append(" AND DATEDIFF(day, RegistrationDate, GETDATE()) <= 30");
+            }
+
+            if (topPurchaser != null && topPurchaser.equals("1")) {
+                query = new StringBuilder("SELECT u.*, COUNT(e.UserID) as courseCount FROM Users u ");
+                query.append("JOIN CourseEnrollments e ON u.UserID = e.UserID ");
+                query.append("WHERE 1=1");
+
+                if (role != null && !role.equals("all")) {
+                    query.append(" AND u.RoleID = ?");
+                }
+                if (banned != null && !banned.equals("all")) {
+                    query.append(" AND u.IsActive = ?");
+                }
+                if (newUser != null && newUser.equals("1")) {
+                    query.append(" AND DATEDIFF(day, u.RegistrationDate, GETDATE()) <= 30");
+                }
+
+                query.append(" GROUP BY u.UserID, u.Username, u.PasswordHash, u.FirstName, u.LastName, u.Email, u.RoleID, u.RegistrationDate, u.IsActive, u.Avatar, u.Bio, u.StoredSalt, u.ProviderID ");
+                query.append(" ORDER BY courseCount DESC");
+            }
+
+            ps = conn.prepareStatement(query.toString());
+
+            int index = 1;
+            if (role != null && !role.equals("all")) {
+                ps.setInt(index++, Integer.parseInt(role));
+            }
+            if (banned != null && !banned.equals("all")) {
+                ps.setBoolean(index++, banned.equals("1"));
+            }
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setUserID(rs.getInt("UserID"));
+                user.setUserName(rs.getString("Username"));
+                user.setPasswordHash(rs.getString("PasswordHash"));
+                user.setFirstName(rs.getString("FirstName"));
+                user.setLastName(rs.getString("LastName"));
+                user.setEmail(rs.getString("Email"));
+                user.setRole(rs.getInt("RoleID"));
+                user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
+                user.setIsActive(rs.getBoolean("IsActive"));
+                user.setAvatar(rs.getString("Avatar"));
+                user.setBio(rs.getString("Bio"));
+                user.setStoredSalt(rs.getBytes("StoredSalt"));
+                user.setProviderID(rs.getInt("ProviderID"));
+                userList.add(user);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) try {
+                rs.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (ps != null) try {
+                ps.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (conn != null) try {
+                conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return userList;
+    }
+
+    public void updateUserStatus(int userID, boolean enable) throws Exception {
+        String sql = "UPDATE Users SET isActive = ? WHERE userID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setBoolean(1, enable);
+            pstmt.setInt(2, userID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int countUsersByRole(int roleId) throws Exception {
+        String sql = "SELECT COUNT(*) FROM Users WHERE RoleID = ?";
+        int count = 0;
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, roleId);
+
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return count;
+    }
+
+    public static List<User> getTopInstructors() throws Exception {
+        List<User> instructors = new ArrayList<>();
+        String sql = "SELECT TOP 6 "
+                + "u.UserID, u.UserName, u.PasswordHash, u.FirstName, u.LastName, "
+                + "u.Email, u.RoleID, u.RegistrationDate, u.IsActive, u.Avatar, u.Bio, "
+                + "u.StoredSalt, u.ProviderID, COUNT(e.StudentID) AS StudentCount, "
+                + "AVG(f.Rating) AS AvgRating "
+                + "FROM Users u "
+                + "JOIN Courses c ON u.UserID = c.CreatedBy "
+                + "LEFT JOIN CourseEnrollments e ON c.CourseID = e.CourseID "
+                + "LEFT JOIN InstructorFeedback f ON u.UserID = f.InstructorID "
+                + "WHERE u.RoleID = 2 "
+                + "GROUP BY u.UserID, u.UserName, u.PasswordHash, u.FirstName, u.LastName, "
+                + "u.Email, u.RoleID, u.RegistrationDate, u.IsActive, u.Avatar, u.Bio, "
+                + "u.StoredSalt, u.ProviderID "
+                + "ORDER BY StudentCount DESC, AvgRating DESC";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql); ResultSet rs = st.executeQuery()) {
+
+            while (rs.next()) {
+                User instructor = new User();
+                instructor.setUserID(rs.getInt("UserID"));
+                instructor.setUserName(rs.getString("UserName"));
+                instructor.setPasswordHash(rs.getString("PasswordHash"));
+                instructor.setFirstName(rs.getString("FirstName"));
+                instructor.setLastName(rs.getString("LastName"));
+                instructor.setEmail(rs.getString("Email"));
+                instructor.setRole(rs.getInt("RoleID"));
+                instructor.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
+                instructor.setIsActive(rs.getBoolean("IsActive"));
+                instructor.setAvatar(rs.getString("Avatar"));
+                instructor.setBio(rs.getString("Bio"));
+                instructor.setStoredSalt(rs.getBytes("StoredSalt"));
+                instructor.setProviderID(rs.getInt("ProviderID"));
+
+                instructors.add(instructor);
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return instructors;
+    }
+
+    public List<int[]> getMonthlyUserCount(int year) {
+        String sql = "SELECT MONTH(RegistrationDate) as Month, RoleID, COUNT(*) as Total "
+                + "FROM Users "
+                + "WHERE YEAR(RegistrationDate) = ? "
+                + "GROUP BY MONTH(RegistrationDate), RoleID";
+        List<int[]> monthlyUserCounts = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            monthlyUserCounts.add(new int[]{0, 0}); // Initialize with [learners, instructors]
+        }
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, year);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int month = rs.getInt("Month") - 1;
+                int role = rs.getInt("RoleID");
+                int total = rs.getInt("Total");
+                if (role == 1) {
+                    monthlyUserCounts.get(month)[0] = total; // Learners
+                } else if (role == 2) {
+                    monthlyUserCounts.get(month)[1] = total; // Instructors
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return monthlyUserCounts;
+    }
+
 //    public boolean updateGoogleUser(String userId, String lastname, String firstname) throws Exception {
 //        String sql = "UPDATE Users SET UserName = ?, FirstName = ?, LastName = ? WHERE UserID = ?";
 //        Random rd = new Random();
@@ -446,7 +691,7 @@ public class UserDAO extends DAO<User> {
 //    }
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         UserDAO user = new UserDAO();
-        System.out.println(UserDAO.getAdminId());
+        System.out.println(user.getAdminId());
 //        user.insert(new User("4232", "gwgh", "fgrwgw", "gfaeg", "sgwG", "GFGW", "1", LocalDateTime.now(), true, null, null));
     }
 }

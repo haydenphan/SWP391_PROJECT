@@ -51,11 +51,11 @@
                 </div>
                 <div class="eduman-course-tutor">
                     <a href="instructor-profile.html">
-                        <img width="35" style="border-radius: 30px" src="<%= user != null ? user.getAvatar() : ""%>" alt="tutor-img">
+                        <img width="35" style="border-radius: 30px" src="${CourseDAO.getInstructor(currentCourse.createdBy).getAvatar()}" alt="tutor-img">
                     </a>
                     <a href="instructor-profile.html">
                         <span>
-                            <%= user != null ? user.getFirstName() + " " + user.getLastName() : ""%>
+                            ${CourseDAO.getInstructor(currentCourse.createdBy).getFirstName()} ${CourseDAO.getInstructor(currentCourse.createdBy).getLastName()}
                         </span>
                     </a>
                 </div>
@@ -71,7 +71,7 @@
             <div class="course-lessson-svg">
 
                 <div class="course-deteals-btn">
-                    <a href="${pageContext.request.contextPath}/view-section-servlet?courseId=<%= currentCourse.getCourseID()%>">
+                    <a href="${pageContext.request.contextPath}/CourseDetail?id=${currentCourse.getCourseID()}">
                         <span class="me-2">View Details</span>
                         <i class="far fa-arrow-right"></i>
                     </a>

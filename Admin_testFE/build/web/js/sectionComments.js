@@ -2,39 +2,40 @@
 let offset = 0;
 const limit = 10; // Number of comments to fetch per request
 let sortBy = 'latest';
-
-// Function to submit a comment
-function submitComment() {
-    var commentText = document.getElementById('comment-text').value;
-    if (commentText.trim() !== '') {
-        // Post the new reply to the backend
-        fetch('SectionComments?sectionID=' + sectionID + '&content=' + encodeURIComponent(commentText), {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json' // Ensure the content type is set correctly
-            },
-            body: JSON.stringify({
-                sectionID: sectionID,
-                content: commentText
-            })
-        })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to submit comment: ' + response.status);
-                    }
-                    return response.json();
-                })
-                .then(comment => {
-                    var commentsList = document.getElementById('comments-list');
-                    var newCommentElement = createCommentElement(comment, 0);
-                    commentsList.insertBefore(newCommentElement, commentsList.firstChild);
-                    document.getElementById('comment-text').value = ''; // Clear the textarea
-                })
-                .catch(error => {
-                    console.error('Error submitting comment:', error);
-                });
-    }
-}
+//const sectionID = document.querySelector('meta[name="sectionID"]').content;
+//
+//// Function to submit a comment
+//function submitComment() {
+//    var commentText = document.getElementById('comment-text').value;
+//    if (commentText.trim() !== '') {
+//        // Post the new reply to the backend
+//        fetch('SectionComments?sectionID=' + sectionID + '&content=' + encodeURIComponent(commentText), {
+//            method: 'POST',
+//            headers: {
+//                'Content-Type': 'application/json' // Ensure the content type is set correctly
+//            },
+//            body: JSON.stringify({
+//                sectionID: sectionID,
+//                content: commentText
+//            })
+//        })
+//                .then(response => {
+//                    if (!response.ok) {
+//                        throw new Error('Failed to submit comment: ' + response.status);
+//                    }
+//                    return response.json();
+//                })
+//                .then(comment => {
+//                    var commentsList = document.getElementById('comments-list');
+//                    var newCommentElement = createCommentElement(comment, 0);
+//                    commentsList.insertBefore(newCommentElement, commentsList.firstChild);
+//                    document.getElementById('comment-text').value = ''; // Clear the textarea
+//                })
+//                .catch(error => {
+//                    console.error('Error submitting comment:', error);
+//                });
+//    }
+//}
 
 // Function to submit a reply
 function submitReply(commentId, repliedToUserID, nearCommentId) {

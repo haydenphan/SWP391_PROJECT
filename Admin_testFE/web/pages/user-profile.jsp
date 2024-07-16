@@ -43,23 +43,20 @@
                     <div class="student-profile-author pb-30">
                         <div class="student-profile-author-img">
                             <img style="width: 200px; height: 200px" id="avatarImage" src="${user.getAvatar()}" alt="img not found" />
-                            <form action="${pageContext.request.contextPath}/uploadAvatar" method="post" enctype="multipart/form-data">
-                                <input type="file" id="avatarUpload" name="avatar" style="display: none;" onchange="uploadAvatar();">
-                                <label for="avatarUpload" style="cursor: pointer;">
-                                    <span style="
-                                          width: 30px;
-                                          height: 30px;
-                                          display: inline-block;
-                                          background-image: url('${pageContext.request.contextPath}/img/icon/upload.png');
-                                          background-size: cover;
-                                          position: relative;
-                                          top: -40px;
-                                          left: 150px;">
-                                    </span>
-                                </label>
-                            </form>
+                            <input type="file" id="avatarUpload" style="display: none;" onchange="changeAva();">
+                            <label for="avatarUpload" style="cursor: pointer;">
+                                <span style="
+                                      width: 30px;
+                                      height: 30px;
+                                      display: inline-block;
+                                      background-image: url('${pageContext.request.contextPath}/img/icon/upload.png');
+                                      background-size: cover;
+                                      position: relative;
+                                      top: -40px;
+                                      left: 150px;">
+                                </span>
+                            </label>
                         </div>
-
                         <div class="student-profile-author-text">
                             <span>Hello,</span>
                             <h3 class='student-profile-author-name'>
@@ -212,14 +209,14 @@
                                     <div class="tab-pane fade" id="ques" role="tabpanel" aria-labelledby="ques-tab">
                                         <p>No question completed yet.</p>
                                     </div>
+
+                                    <!-- Certificates -->
                                     <div class="tab-pane fade" id="cert" role="tabpanel" aria-labelledby="cert-tab">
                                         <h1>Certificates</h1>
                                         <div class="certificate-list">
                                             <c:forEach var="certificate" items="${certificates}">
                                                 <div class="certificate-item">
-                                                    <h2>${certificate.courseName}</h2>
-                                                    <p>Instructor: ${certificate.instructorName}</p>
-                                                    <a href="${pageContext.request.contextPath}${certificate.certificateUrl}" target="_blank">View Certificate</a>
+                                                    <a href="${certificate.certificateUrl}" target="_blank">View Certificate</a>
                                                 </div>
                                             </c:forEach>
                                         </div>
@@ -294,24 +291,27 @@
                                                 </div>
                                                 <div class="tab-pane fade" id="password" role="tabpanel"
                                                      aria-labelledby="password-tab">
-                                                    <form action="${pageContext.request.contextPath}/doi-mat-khau" method="POST">
+                                                    <form action="user-profile/changePassword" method="POST">
                                                         <div class="row">
                                                             <div class="col-md-6">
                                                                 <div class="contact-from-input mb-20">
                                                                     <label htmlFor="Current">Current Password</label>
-                                                                    <input name="oldPassword" id='Current' type="password" placeholder="Type password" />
+                                                                    <input name="oldPassword" id='Current' type="password"
+                                                                           placeholder="Type password" />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <div class="contact-from-input mb-20">
                                                                     <label htmlFor="New">New Password</label>
-                                                                    <input name="newPassword" id='New' type="password" placeholder="Type password" />
+                                                                    <input name="newPassword" id='New' type="password"
+                                                                           placeholder="Type password" />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <div class="contact-from-input mb-20">
                                                                     <label htmlFor="Retype">Re-type New Password</label>
-                                                                    <input name="confirmPassword" id='Retype' type="password" placeholder="Type password" />
+                                                                    <input name="confirmPassword" id='Retype' type="password"
+                                                                           placeholder="Type password" />
                                                                 </div>
                                                             </div>
                                                             <div class="col-sm-12">
@@ -321,7 +321,6 @@
                                                             </div>
                                                         </div>
                                                     </form>
-
                                                 </div>
                                                 <div class="tab-pane fade" id="completedA" role="tabpanel"
                                                      aria-labelledby="completedA-tab">
@@ -417,9 +416,8 @@
                     }
                 });
             });
-        </script>
-        <script>
-            function uploadAvatar() {
+
+            function changeAva() {
                 var formData = new FormData();
                 var fileInput = document.getElementById('avatarUpload');
                 var file = fileInput.files[0];
@@ -443,7 +441,8 @@
             }
         </script>
 
-
+        <script src="${pageContext.request.contextPath}/js/notifications.js">
+        </script>
     </body>
 
 </html>

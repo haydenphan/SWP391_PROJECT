@@ -1,9 +1,3 @@
-<%-- 
-    Document   : statisticalTransaction
-    Created on : Jul 2, 2024, 9:39:02 AM
-    Author     : Thunguyet
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -12,7 +6,7 @@
         <title>Transaction Statistics</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
         <style>
-            body {
+/*            body {
                 font-family: 'Arial', sans-serif;
                 background-color: #f4f4f9;
                 margin: 0;
@@ -35,7 +29,7 @@
             h3 {
                 margin-bottom: 20px;
                 font-family: Garamond;
-            }
+            }*/
             select {
                 padding: 10px;
                 border: 1px solid #ddd;
@@ -51,14 +45,14 @@
     <body>
         <div class="container">
             <h2 style="font-family: Lucida Console">Revenue Statistic</h2>
-            
+
             <select id="yearSelect" onchange="fetchStatistics()">
-                <option value="" disabled selected>Select Year</option>
+                <option value="" disabled>Select Year</option>
                 <option value="2021">2021</option>
                 <option value="2022">2022</option>
                 <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                
+                <option selected value="2024">2024</option>
+
                 <!-- Add more years as needed -->
             </select>
             <canvas id="sale-revenue"></canvas>
@@ -67,7 +61,7 @@
         <script type="text/javascript">
             function fetchStatistics() {
                 var year = document.getElementById("yearSelect").value;
-                var contextPath = '<%= request.getContextPath() %>';
+                var contextPath = '<%= request.getContextPath()%>';
                 fetch(contextPath + '/statistical?year=' + year + '&type=revenue')
                         .then(response => {
                             if (!response.ok) {
@@ -79,7 +73,7 @@
                             console.log('Data fetched:', data);
                             var ctx = document.getElementById("sale-revenue").getContext("2d");
                             new Chart(ctx, {
-                                type: "line",
+                                type: "bar",
                                 data: {
                                     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                                     datasets: [{
@@ -96,7 +90,7 @@
                                         yAxes: [{
                                                 ticks: {
                                                     beginAtZero: true,
-                                                    callback: function(value, index, values) {
+                                                    callback: function (value, index, values) {
                                                         return '$' + value; // Add $ symbol to the y-axis ticks
                                                     }
                                                 }
@@ -104,13 +98,13 @@
                                     },
                                     tooltips: {
                                         callbacks: {
-                                            label: function(tooltipItem, data) {
+                                            label: function (tooltipItem, data) {
                                                 return '$' + tooltipItem.yLabel; // Add $ symbol to the tooltip
                                             }
                                         }
                                     },
                                     plugins: {
-                                        afterDraw: function(chart) {
+                                        afterDraw: function (chart) {
                                             var ctx = chart.chart.ctx;
                                             ctx.save();
                                             ctx.font = "12px Arial";

@@ -26,12 +26,13 @@ public class NotificationServlet extends HttpServlet {
         NotificationDAO notifiDAO = new NotificationDAO();
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        user = new User();
+
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("UnAuthorized.");
             return;
         }
+
         String daysAgoStr = request.getParameter("daysAgo");
         // Default daysAgo to 7 days if not provided or invalid
         long daysAgo = 7; // Default to 7 days

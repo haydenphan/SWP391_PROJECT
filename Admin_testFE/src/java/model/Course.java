@@ -228,6 +228,14 @@ public class Course {
         this.LastUpdate = LastUpdate;
         this.Requirements = Requirements;
     }
+
+    public Course(int CourseID, String CourseName, double price, String imageURL) {
+        this.CourseID = CourseID;
+        this.CourseName = CourseName;
+        this.price = price;
+        this.imageURL = imageURL;
+    }
+    
 // New method to get the list of requirements
 
     public List<String> getRequirementsList() {
@@ -237,7 +245,7 @@ public class Course {
             return Arrays.asList();
         }
     }
-
+    
     @Override
     public String toString() {
         return "Course{" + "CourseID=" + CourseID + ", CourseName=" + CourseName + ", Description=" + Description + ", CreatedBy=" + CreatedBy + ", CreatedDate=" + CreatedDate + ", IsPublished=" + IsPublished + ", SubcategoryID=" + SubcategoryID + ", SubcategoryName=" + SubcategoryName + ", TotalEnrolled=" + TotalEnrolled + ", LastUpdate=" + LastUpdate + ", Requirements=" + Requirements + ", price=" + price + ", languageID=" + languageID + ", LanguageName=" + LanguageName + ", LevelID=" + LevelID + ", LevelName=" + LevelName + ", imageURL=" + imageURL + ", averageRating=" + averageRating + '}';

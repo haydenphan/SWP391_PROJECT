@@ -1,50 +1,58 @@
 package DAO;
 
+import model.Certificate;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.ResultSet;
 
-import model.Certificate;
+public class CertificateDAO extends DAO<Certificate> {
 
-public class CertificateDAO {
-    private Connection connection;
+    @Override
+    public int insert(Certificate certificate) {
+        String sql = "INSERT INTO CourseCertificates (LearnerID, InstructorID, CourseID, CertificateURL, UploadDate) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)";
 
-    public CertificateDAO(Connection connection) {
-        this.connection = connection;
-    }
+        try (Connection connection = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-    public void insertCertificate(Certificate certificate) throws SQLException {
-        String sql = "INSERT INTO Certificates (LearnerID, LearnerName, InstructorName, CourseName, CertificateUrl) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, certificate.getLearnerID());
-            stmt.setString(2, certificate.getLearnerName());
-            stmt.setString(3, certificate.getInstructorName());
-            stmt.setString(4, certificate.getCourseName());
-            stmt.setString(5, certificate.getCertificateUrl());
-            stmt.executeUpdate();
+            stmt.setInt(2, certificate.getInstructorID());
+            stmt.setInt(3, certificate.getCourseID());
+            stmt.setString(4, certificate.getCertificateUrl());
+
+            return stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return 0;
     }
 
-    public List<Certificate> getCertificatesByUserId(int userId) throws SQLException {
+    public static List<Certificate> getCertificatesByUserId(int userId) {
+        String sql = "SELECT * FROM CourseCertificates WHERE LearnerID = ?";
         List<Certificate> certificates = new ArrayList<>();
-        String sql = "SELECT * FROM Certificates WHERE LearnerID = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+        try (Connection connection = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Certificate certificate = new Certificate(
-                    rs.getInt("CertificateID"),
-                    rs.getInt("LearnerID"),
-                    rs.getString("LearnerName"),
-                    rs.getString("InstructorName"),
-                    rs.getString("CourseName"),
-                    rs.getString("CertificateUrl")
-                );
-                certificates.add(certificate);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Certificate certificate = new Certificate();
+                    certificate.setLearnerID(rs.getInt("LearnerID"));
+                    certificate.setInstructorID(rs.getInt("InstructorID"));
+                    certificate.setCourseID(rs.getInt("CourseID"));
+                    certificate.setCertificateUrl(rs.getString("CertificateURL"));
+                    certificate.setUploadDate(rs.getTimestamp("UploadDate"));
+
+                    certificates.add(certificate);
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return certificates;
     }

@@ -1,9 +1,3 @@
-<%-- 
-    Document   : statisticalCourseEnrolled
-    Created on : Jul 2, 2024, 9:39:02 AM
-    Author     : Thunguyet
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -12,7 +6,7 @@
         <title>Course Enrolled Statistics</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
         <style>
-            body {
+/*            body {
                 font-family: 'Arial', sans-serif;
                 background-color: #f4f4f9;
                 margin: 0;
@@ -22,8 +16,8 @@
                 align-items: center;
                 height: 100vh;
                 color: #333;
-            }
-            .container {
+            }*/
+/*            .container {
                 background: #fff;
                 border-radius: 8px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -31,11 +25,11 @@
                 max-width: 70%;
                 width: 100%;
                 text-align: center;
-            }
-            h3 {
+            }*/
+/*            h3 {
                 margin-bottom: 20px;
                 font-family: Garamond;
-            }
+            }*/
             select {
                 padding: 10px;
                 border: 1px solid #ddd;
@@ -43,7 +37,7 @@
                 margin-bottom: 20px;
             }
             canvas {
-                width: 100% !important;
+                width: 90% !important;
                 height: auto !important;
             }
         </style>
@@ -52,12 +46,12 @@
         <div class="container">
             <h2 style="font-family: Lucida Console">Enrolled Course Statistic</h2>
             <select id="yearSelect" onchange="fetchStatistics()">
-                <option value="" disabled selected>Select Year</option>
+                <option value="" disabled>Select Year</option>
                 <option value="2021">2021</option>
                 <option value="2022">2022</option>
                 <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                
+                <option selected="" value="2024">2024</option>
+
                 <!-- Add more years as needed -->
             </select>
             <canvas id="course-enrolled"></canvas>
@@ -66,7 +60,7 @@
         <script type="text/javascript">
             function fetchStatistics() {
                 var year = document.getElementById("yearSelect").value;
-                var contextPath = '<%= request.getContextPath() %>';
+                var contextPath = '<%= request.getContextPath()%>';
                 fetch(contextPath + '/statistical?year=' + year + '&type=enrollment')
                         .then(response => {
                             if (!response.ok) {
@@ -78,7 +72,7 @@
                             console.log('Data fetched:', data);
                             var ctx = document.getElementById("course-enrolled").getContext("2d");
                             new Chart(ctx, {
-                                type: "line",
+                                type: "bar",
                                 data: {
                                     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                                     datasets: [{

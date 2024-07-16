@@ -2,6 +2,7 @@ package controller;
 
 import DAO.CourseEnrollmentDAO;
 import DAO.TransactionDAO;
+import DAO.UserDAO;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,8 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @WebServlet(name = "StatisticalServlet", urlPatterns = {"/statistical"})
 public class StatisticalServlet extends HttpServlet {
@@ -49,13 +48,33 @@ public class StatisticalServlet extends HttpServlet {
             return;
         }
 
-        if ("revenue".equalsIgnoreCase(type)) {
-            handleRevenueRequest(response, year);
-        } else if ("enrollment".equalsIgnoreCase(type)) {
-            handleEnrollmentRequest(response, year);
-        } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("{\"error\": \"Invalid type\"}");
+        switch (type.toLowerCase()) {
+            case "revenue":
+                handleRevenueRequest(response, year);
+                break;
+            case "enrollment":
+                handleEnrollmentRequest(response, year);
+                break;
+            case "completion":
+                handleCompletionRequest(response, year);
+                break;
+            case "usercount":
+                handleUserCountRequest(response, year);
+                break;
+            case "income":
+                try {
+                int instructorId = Integer.parseInt(request.getParameter("instructorId"));
+                int courseId = Integer.parseInt(request.getParameter("courseId"));
+                handleIncomeRequest(response, year, instructorId, courseId);
+            } catch (NumberFormatException e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"error\": \"Invalid instructorId or courseId format\"}");
+            }
+            break;
+            default:
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"error\": \"Invalid type\"}");
+                break;
         }
     }
 
@@ -92,6 +111,78 @@ public class StatisticalServlet extends HttpServlet {
 
         try (PrintWriter out = response.getWriter()) {
             out.print(json);
+        }
+    }
+
+    private void handleCompletionRequest(HttpServletResponse response, int year) throws IOException {
+        CourseEnrollmentDAO enrollmentDAO = new CourseEnrollmentDAO();
+        List<Integer> monthlyCompletions = enrollmentDAO.getMonthlyCourseCompleted(year);
+
+        if (monthlyCompletions == null || monthlyCompletions.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            response.getWriter().write("{\"error\": \"No data found\"}");
+            return;
+        }
+
+        Gson gson = new Gson();
+        String json = gson.toJson(monthlyCompletions);
+
+        try (PrintWriter out = response.getWriter()) {
+            out.print(json);
+        }
+    }
+
+    private void handleUserCountRequest(HttpServletResponse response, int year) throws IOException {
+        UserDAO userDAO = new UserDAO();
+        List<int[]> monthlyUserCounts = userDAO.getMonthlyUserCount(year);
+
+        if (monthlyUserCounts == null || monthlyUserCounts.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            response.getWriter().write("{\"error\": \"No data found\"}");
+            return;
+        }
+
+        int[] learners = new int[12];
+        int[] instructors = new int[12];
+        for (int i = 0; i < 12; i++) {
+            learners[i] = monthlyUserCounts.get(i)[0];
+            instructors[i] = monthlyUserCounts.get(i)[1];
+        }
+
+        Gson gson = new Gson();
+        String json = gson.toJson(new UserCountResponse(learners, instructors));
+
+        try (PrintWriter out = response.getWriter()) {
+            out.print(json);
+        }
+    }
+
+    private void handleIncomeRequest(HttpServletResponse response, int year, int instructorId, int courseId) throws IOException {
+        TransactionDAO transactionDAO = new TransactionDAO();
+        List<Double> monthlyIncome = transactionDAO.getMonthlyIncomeForInstructorAndCourse(instructorId, courseId, year);
+
+        if (monthlyIncome == null || monthlyIncome.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            response.getWriter().write("{\"error\": \"No data found\"}");
+            return;
+        }
+
+        Gson gson = new Gson();
+        String json = gson.toJson(monthlyIncome);
+
+        try (PrintWriter out = response.getWriter()) {
+            out.print(json);
+        }
+    }
+
+    private static class UserCountResponse {
+
+        int[] learners;
+        int[] instructors;
+
+        UserCountResponse(int[] learners, int[] instructors) {
+            this.learners = learners;
+            this.instructors = instructors;
         }
     }
 

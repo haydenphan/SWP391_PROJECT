@@ -1,4 +1,4 @@
-<%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="model.*" %>
@@ -18,6 +18,7 @@
                 display: block;
             }
         </style>
+
     </head>
 
     <body>
@@ -31,6 +32,40 @@
         <main>
             <!-- BANNER -->
             <%@ include file="../template/homeBanner.jsp" %>
+
+            <!-- ENROLLED COURSES -->
+            <%
+                List<Course> coursesList = null;
+                if (role == 1) {
+                    coursesList = CourseEnrollmentDAO.getCoursesByUserID(user.getUserID());
+                }
+            %>
+            <c:choose>
+                <c:when test="${role == 1}">
+                    <div style="margin-top: 50px" class="container">
+                        <div class="row">
+                            <div class="my-course-info">
+                                <h3>My Enrolled Courses</h3>
+                            </div>
+                            <div class="row">
+                                <c:forEach var="course" items="<%=coursesList%>">
+                                    <c:set var="currentCourse" value="${course}" scope="request" />
+                                    <jsp:include page="../template/course/learnerCourseComponent.jsp" />
+                                </c:forEach>
+                            </div>
+                            <div class="edu-pagination mt-30 mb-20">
+                                <ul>
+                                    <li><a href="#"><i class="fal fa-angle-left"></i></a></li>
+                                    <li class="active"><a href="#"><span>01</span></a> </li>
+                                    <li><a href="#"><span>02</span></a></li>
+                                    <li><a href="#"><i class="fal fa-angle-right"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </c:when>
+            </c:choose>
+
             <!-- TOP CATEGORIES -->
             <%@ include file="../template/categoryArea.jsp" %>
             <!-- portfolio main area start  -->

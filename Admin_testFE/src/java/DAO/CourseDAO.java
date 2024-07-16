@@ -286,42 +286,42 @@ public class CourseDAO extends DAO<Course> {
         return instructor;
     }
 
-    public static ArrayList<Course> getCoursesByInstructor(int id) {
-        String sql = "SELECT * FROM Courses WHERE CreatedBy = ?";
-        ArrayList<Course> list = new ArrayList<>();
+        public static ArrayList<Course> getCoursesByInstructor(int id) {
+            String sql = "SELECT * FROM Courses WHERE CreatedBy = ?";
+            ArrayList<Course> list = new ArrayList<>();
 
-        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
-            st.setInt(1, id);
-            try (ResultSet rs = st.executeQuery()) {
-                while (rs.next()) {
-                    Course course = new Course();
-                    course.setCourseID(rs.getInt("CourseID"));
-                    course.setCourseName(rs.getString("CourseName"));
-                    course.setDescription(rs.getString("Description"));
-                    course.setCreatedBy(rs.getInt("CreatedBy"));
-                    course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime()); // Correct conversion from java.sql.Date to LocalDate
-                    course.setIsPublished(rs.getBoolean("IsPublished"));
-                    course.setSubcategoryID(rs.getInt("SubcategoryID"));
-                    course.setLevelID(rs.getInt("LevelID"));
-                    course.setLanguageID(rs.getInt("LanguageID"));
-                    course.setPrice(rs.getInt("Price"));
-                    course.setImageURL(rs.getString("ImageURL"));
-                    course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
-                    course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime()); // Correct conversion from java.sql.Date to LocalDate
-                    course.setRequirements(rs.getString("Requirements"));
-                    list.add(course);
+            try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+                st.setInt(1, id);
+                try (ResultSet rs = st.executeQuery()) {
+                    while (rs.next()) {
+                        Course course = new Course();
+                        course.setCourseID(rs.getInt("CourseID"));
+                        course.setCourseName(rs.getString("CourseName"));
+                        course.setDescription(rs.getString("Description"));
+                        course.setCreatedBy(rs.getInt("CreatedBy"));
+                        course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime()); // Correct conversion from java.sql.Date to LocalDate
+                        course.setIsPublished(rs.getBoolean("IsPublished"));
+                        course.setSubcategoryID(rs.getInt("SubcategoryID"));
+                        course.setLevelID(rs.getInt("LevelID"));
+                        course.setLanguageID(rs.getInt("LanguageID"));
+                        course.setPrice(rs.getInt("Price"));
+                        course.setImageURL(rs.getString("ImageURL"));
+                        course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
+                        course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime()); // Correct conversion from java.sql.Date to LocalDate
+                        course.setRequirements(rs.getString("Requirements"));
+                        list.add(course);
+                    }
                 }
+
+            } catch (SQLException | ClassNotFoundException e) {
+                System.err.println("Error! " + e.getMessage());
+                Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+            } catch (Exception ex) {
+                Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-        } catch (SQLException | ClassNotFoundException e) {
-            System.err.println("Error! " + e.getMessage());
-            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
-        } catch (Exception ex) {
-            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return list;
         }
-
-        return list;
-    }
 
     public static int getCourseIDByInstructorAndName(int id, String name) {
         String sql = "SELECT * FROM Courses WHERE CreatedBy = ? AND CourseName = ?";
@@ -798,6 +798,16 @@ public class CourseDAO extends DAO<Course> {
         }
     }
 
+    public void uncancelledCourse(int courseId) throws Exception {
+        String sql = "UPDATE Courses SET isCancelled = 0 WHERE CourseID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, courseId);
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static List<Course> getCoursesSortedByEnrollment() {
         List<Course> courses = new ArrayList<>();
         String sql = "SELECT * FROM Courses WHERE IsPublished = 1 ORDER BY TotalEnrolled DESC";
@@ -880,6 +890,44 @@ public class CourseDAO extends DAO<Course> {
         return totalEnrollments;
     }
 
+    public static int getTotalLecturesByCourseID(int courseID) {
+        String sql = "SELECT COUNT(*) AS TotalLectures "
+                + "FROM Lectures l "
+                + "JOIN CourseSections cs ON l.SectionID = cs.SectionID "
+                + "WHERE cs.CourseID = ?";
+        int totalLectures = 0;
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, courseID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    totalLectures = rs.getInt("TotalLectures");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return totalLectures;
+    }
+
+    public void setCourseUnpublished(int courseID) {
+        String sql = "UPDATE Courses SET IsPublished = 0 WHERE CourseID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, courseID);
+            st.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error setting course unpublished: " + e.getMessage());
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public static void main(String[] args) {
         CourseDAO dao = new CourseDAO();
 //        List<Course> list = dao.getFilteredCourses(null, null, null, null, null, null, null);
@@ -891,7 +939,7 @@ public class CourseDAO extends DAO<Course> {
 //        System.out.println("Star ratings count for course ID " + "3" + ": " + starCounts);
 //        System.out.println(CourseDAO.getCoursesByInstructor(3).size());
 
-        for (Course course : dao.listPopularCourse()) {
+        for (Course course : dao.getCoursesByInstructor(10)) {
             System.out.println(course.toString());
         }
     }

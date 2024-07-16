@@ -26,7 +26,7 @@ import model.Cart;
 import model.CartDetails;
 import model.Course;
 
-@WebServlet(name = "PaymentResultServlet", urlPatterns = {"/payment-result"})
+@WebServlet("/payment-result")
 public class PaymentResultServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -111,7 +111,8 @@ public class PaymentResultServlet extends HttpServlet {
                         int courseID = course.getCourseID();
                         int adminId = UserDAO.getAdminId();
                         int instructorId = UserDAO.getInstructorIdForCourse(courseID);
-                        paymentController.processPayment(adminId, instructorId, amount);
+                        paymentController.processPaymentAdmin(walletDAO.getWalletByUserId(adminId).getWalletID(), amount);
+                        paymentController.processPaymentInstructor(walletDAO.getWalletByUserId(instructorId).getWalletID(), amount);
                     }
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, "Error updating wallets: ", e);

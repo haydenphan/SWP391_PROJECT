@@ -1,4 +1,4 @@
-.content-wrapper {
+/*.content-wrapper {
     display: flex;
     flex-wrap: wrap;
 }
@@ -64,14 +64,15 @@ video {
     max-height: 450px;
     border: 1px solid #dee2e6;
     background-color: #000;
-}
+}*/
 .comment-section {
-    margin-top: 30px;
+    margin: 50px;
     border-top: 1px solid #dee2e6;
     padding-top: 20px;
+    
 }
 .comment-form textarea {
-    width: 100%;
+    width: 50%;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #dee2e6;
@@ -90,7 +91,7 @@ video {
     background-color: #0056b3;
 }
 .comment {
-    margin-bottom: 20px;
+    margin: 36px;
 }
 .comment .comment-author {
     font-weight: bold;

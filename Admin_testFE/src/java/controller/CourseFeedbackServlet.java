@@ -76,16 +76,35 @@ public class CourseFeedbackServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        CourseEnrollmentDAO ceDAO = new CourseEnrollmentDAO();
+
         String courseID = request.getParameter("courseID");
-        boolean hasEnrolled = user != null && ceDAO.isUserEnrolledInCourse(user.getUserID(), Integer.parseInt(courseID));
-        if (!hasEnrolled) {
+        String ratingStr = request.getParameter("rating");
+
+        // Check if courseID and ratingStr are not null
+        if (courseID == null || ratingStr == null) {
+            response.sendRedirect(request.getContextPath() + "/CourseDetail?id=" + courseID + "&res=fail");
             return;
         }
+
+        int rating;
+        try {
+            rating = Integer.parseInt(ratingStr);
+        } catch (NumberFormatException e) {
+            response.sendRedirect(request.getContextPath() + "/CourseDetail?id=" + courseID + "&res=fail");
+            return;
+        }
+
+        CourseEnrollmentDAO ceDAO = new CourseEnrollmentDAO();
+        boolean hasEnrolled = user != null && ceDAO.isUserEnrolledInCourse(user.getUserID(), Integer.parseInt(courseID));
+
+        if (!hasEnrolled) {
+            response.sendRedirect(request.getContextPath() + "/CourseDetail?id=" + courseID + "&res=fail");
+            return;
+        }
+
         CourseFeedbackDAO courseFbDAO = new CourseFeedbackDAO();
         // Receive parameters from the request
         String content = request.getParameter("content");
-        int rating = Integer.parseInt(request.getParameter("rating"));
 
         // Create a new feedback object
         CourseFeedback feedback = new CourseFeedback();

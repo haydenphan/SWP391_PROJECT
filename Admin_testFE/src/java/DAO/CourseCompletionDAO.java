@@ -4,10 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Course;
 
 public class CourseCompletionDAO {
 
@@ -60,6 +60,7 @@ public class CourseCompletionDAO {
             ps.executeUpdate();
         }
     }
+
     public String getLearnerName(int userId) throws SQLException {
         String sql = "SELECT FirstName, LastName FROM Users WHERE UserID = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -91,4 +92,30 @@ public class CourseCompletionDAO {
         }
         return null;
     }
+
+    public List<Integer> getMonthlyCourseCompleted(int year) {
+        String sql = "SELECT MONTH(completionDate) as Month, COUNT(*) as Total "
+                + "FROM CourseCompletions "
+                + "WHERE YEAR(completionDate) = ? "
+                + "GROUP BY MONTH(completionDate)";
+        List<Integer> monthlyCompletions = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            monthlyCompletions.add(0);
+        }
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, year);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int month = rs.getInt("Month");
+                int total = rs.getInt("Total");
+                monthlyCompletions.set(month - 1, total);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(CourseCompletionDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return monthlyCompletions;
+    }
+
 }

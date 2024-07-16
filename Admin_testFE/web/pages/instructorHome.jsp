@@ -5,7 +5,14 @@
 <%@ page import="DAO.*" %>
 <!doctype html>
 <html class="no-js" lang="zxx">
-
+    <%
+        int instructorID = 0;
+        if (session.getAttribute("user") != null) {
+        User user = (User) session.getAttribute("user");
+        instructorID = user.getUserID();
+        }
+        List<Course> coursesList = CourseDAO.getCoursesByInstructor(instructorID);
+    %>
     <head>
         <%-- HEAD --%>
         <%@ include file="../template/head.jsp" %>
@@ -33,6 +40,11 @@
                 opacity: 0.8;
             }
         </style>
+
+        <!-- jQuery and Bootstrap JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </head>
 
     <body>
@@ -44,10 +56,7 @@
         <%@ include file="../template/header.jsp" %>
 
         <main>
-            <%
-                int instructorID = user.getUserID();
-                List<Course> coursesList = CourseDAO.getCoursesByInstructor(instructorID);
-            %>
+
             <!-- hero-area start-->
             <div class="hero-area hero-height d-flex align-items-center position-relative" data-background="">
                 <img class="hero-shape-5" src="${pageContext.request.contextPath}/img/shape/shape-02.png" alt="shape">
@@ -83,7 +92,7 @@
                                         <form class="m-3" action="${pageContext.request.contextPath}/course-adding-servlet/create-course" method="POST">
                                             <button type="submit" class="btn btn-primary">New Course</button>
                                         </form>
-                                        <form class="m-3" action="${pageContext.request.contextPath}/course-adding-servlet/create-course" method="POST">
+                                        <form class="m-3" action="${pageContext.request.contextPath}/pages/statisticalInstructorIncome.jsp?instructorId=${instructorID}" method="GET">
                                             <button type="submit" class="btn btn-secondary">Manage Earnings</button>
                                         </form>
                                     </div>

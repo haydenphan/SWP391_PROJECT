@@ -41,7 +41,7 @@
                 border-radius: 0px 0px 15px 15px;
                 background-color: #fff;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                padding: 0px 20px 20px 20px;
+                padding: 20px;
                 margin-bottom: 20px;
                 transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
                 position: relative;
@@ -59,6 +59,36 @@
                 font-weight: 600;
                 border-top-left-radius: 15px;
                 border-top-right-radius: 15px;
+                background-color: #2467EC;
+                color: white;
+                padding: 10px 0;
+            }
+            .lecture-title form {
+                display: inline-flex;
+                align-items: center;
+            }
+            .lecture-title input[type="text"] {
+                border: none;
+                font-size: 1.5rem;
+                text-align: center;
+                background-color: transparent;
+                outline: none;
+                margin-right: 5px;
+                width: auto;
+                flex-grow: 1;
+                color: white;
+                padding: 10px;
+            }
+            .lecture-title button {
+                background: none;
+                border: none;
+                cursor: pointer;
+                color: white;
+                font-size: 1.5rem;
+                padding: 0;
+            }
+            .lecture-title button:hover {
+                color: #FFB013;
             }
             .lecture-link {
                 color: #007bff;
@@ -143,38 +173,8 @@
                 align-items: center;
                 font-size: 1rem;
                 font-weight: bold;
-                z-index: 2;
-            }
-            .lecture-title {
                 background-color: #2467EC;
-            }
-
-            .lecture-title form {
-                display: inline-flex;
-                align-items: center;
-            }
-            .lecture-title input[type="text"] {
-                border: none;
-                font-size: 1.5rem;
-                text-align: center;
-                background-color: transparent;
-                outline: none;
-                margin-right: 5px;
-                width: auto;
-                flex-grow: 1;
-                color: white;
-                padding: 10px;
-            }
-            .lecture-title button {
-                background: none;
-                border: none;
-                cursor: pointer;
-                color: white;
-                font-size: 1.5rem;
-                padding: 0;
-            }
-            .lecture-title button:hover {
-                color: #FFB013;
+                z-index: 2;
             }
             .edit-upload {
                 display: flex;
@@ -318,14 +318,6 @@
                                 <input name="lectureName" type="text" value="${lecture.lectureName}" oninput="adjustInputWidth(this)">
                                 <button type="submit"><i class="fas fa-edit"></i></button>
                             </form>
-                            <div style="position: absolute; top: 10px; left: 390px;">
-                                <form method="POST" action="${pageContext.request.contextPath}/lecture-management" style="display:inline;">
-                                    <input type="hidden" name="action" value="delete-material">
-                                    <input type="hidden" name="sectionId" value="${section.sectionID}">
-                                    <input type="hidden" name="materialId" value="${material.lectureMaterialId}">
-                                    <button type="submit" class="delete-material"><i class="fas fa-times"></i></button>
-                                </form>
-                            </div>
                         </div>
                         <div class="lecture-card">
                             <div class="edit-upload">

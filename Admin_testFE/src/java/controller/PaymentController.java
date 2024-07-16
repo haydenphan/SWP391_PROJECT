@@ -13,10 +13,13 @@ public class PaymentController {
         this.walletDAO = walletDAO;
     }
 
-    public void processPayment(int adminId, int instructorId, double amount) throws SQLException, Exception {
+    public void processPaymentAdmin(int walletID, double amount) throws SQLException, Exception {
         double adminShare = amount * ADMIN_PERCENTAGE;
+        walletDAO.updateWalletBalance(walletID, adminShare);
+    }
+
+    public void processPaymentInstructor(int walletID, double amount) throws SQLException, Exception {
         double instructorShare = amount * INSTRUCTOR_PERCENTAGE;
-        walletDAO.updateWalletBalance(adminId, adminShare);
-        walletDAO.updateWalletBalance(instructorId, instructorShare);
+        walletDAO.updateWalletBalance(walletID, instructorShare);
     }
 }
