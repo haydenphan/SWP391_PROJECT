@@ -16,8 +16,9 @@
                                     <ul>
                                         <li class="menu-item-has-children"><a href="#">User</a>
                                             <ul class="sub-menu">
-                                                <li><a href="${pageContext.request.contextPath}/manageuser?action=viewList">View User List</a></li>
+                                                <li><a href="${pageContext.request.contextPath}/manageuser?action=viewList">User Management</a></li>
                                                 <li><a href="${pageContext.request.contextPath}/manageuser?action=viewList">View User Report</a></li>
+                                                <li><a href="${pageContext.request.contextPath}/admin/instructorRegistrationRequest.jsp">Instructor Registration</a></li>
                                             </ul>
                                         </li>
                                         <li class="menu-item-has-children"><a href="#">Course</a>
@@ -29,7 +30,9 @@
                                         <li class="menu-item-has-children"><a href="#!">Statistics</a>
                                             <ul class="sub-menu">
                                                 <li><a href="${pageContext.request.contextPath}/admin/statistics.jsp?statistics=transaction">Revenue Statistics</a></li>
-                                                <li><a href="${pageContext.request.contextPath}/admin/statistics.jsp">Enrolled Course Statistics</a></li>
+                                                <li><a href="${pageContext.request.contextPath}/admin/statistics.jsp?statistics=enrollment">Enrolled Course Statistics</a></li>
+                                                <li><a href="${pageContext.request.contextPath}/admin/statistics.jsp?statistics=completion">Completed Course Statistics</a></li>
+                                                <li><a href="${pageContext.request.contextPath}/admin/statistics.jsp?statistics=usercount">User Count Statistics</a></li>
                                             </ul>
                                         </li>
                                         <li class="nav-item">
@@ -37,6 +40,7 @@
                                                 <i class="fas fa-wallet"></i> Wallet
                                             </a>
                                         </li>
+                                        <li class=""><a href="ReportManage?action=reports">Manage Report</a></li>
                                     </ul>
                                 </nav>
                             </div>

@@ -115,6 +115,7 @@ public class PaymentResultServlet extends HttpServlet {
                         int adminId = UserDAO.getAdminId();
                         int instructorId = UserDAO.getInstructorIdForCourse(courseID);
                         paymentController.processPaymentAdmin(walletDAO.getWalletByUserId(adminId).getWalletID(), amount);
+                        System.out.println("Instructor:" + instructorId);
                         paymentController.processPaymentInstructor(walletDAO.getWalletByUserId(instructorId).getWalletID(), amount);
                     }
                 } catch (Exception e) {

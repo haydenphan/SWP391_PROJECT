@@ -15,6 +15,38 @@ import model.User;
 
 public class UserDAO extends DAO<User> {
 
+    public List<int[]> getMonthlyUserCount(int year) {
+        String sql = "SELECT MONTH(RegistrationDate) as Month, RoleID, COUNT(*) as Total "
+                + "FROM Users "
+                + "WHERE YEAR(RegistrationDate) = ? "
+                + "GROUP BY MONTH(RegistrationDate), RoleID";
+        List<int[]> monthlyUserCounts = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            monthlyUserCounts.add(new int[]{0, 0}); // Initialize with [learners, instructors]
+        }
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, year);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int month = rs.getInt("Month") - 1;
+                int role = rs.getInt("RoleID");
+                int total = rs.getInt("Total");
+                if (role == 1) {
+                    monthlyUserCounts.get(month)[0] = total; // Learners
+                } else if (role == 2) {
+                    monthlyUserCounts.get(month)[1] = total; // Instructors
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return monthlyUserCounts;
+    }
+
     @Override
     public int insert(User t) {
         int userId = 0; // To store the generated UserID
@@ -631,6 +663,37 @@ public class UserDAO extends DAO<User> {
             }
 
         } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return instructors;
+    }
+
+    public List<User> getAllInstructors() throws Exception {
+        List<User> instructors = new ArrayList<>();
+        String sql = "SELECT * FROM Users WHERE roleID = 2";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User instructor = new User();
+                instructor.setUserID(rs.getInt("UserID"));
+                instructor.setUserName(rs.getString("UserName"));
+                instructor.setPasswordHash(rs.getString("PasswordHash"));
+                instructor.setFirstName(rs.getString("FirstName"));
+                instructor.setLastName(rs.getString("LastName"));
+                instructor.setEmail(rs.getString("Email"));
+                instructor.setRole(rs.getInt("RoleID"));
+                instructor.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
+                instructor.setIsActive(rs.getBoolean("IsActive"));
+                instructor.setAvatar(rs.getString("Avatar"));
+                instructor.setBio(rs.getString("Bio"));
+                instructor.setStoredSalt(rs.getBytes("StoredSalt"));
+                instructor.setProviderID(rs.getInt("ProviderID"));
+
+                instructors.add(instructor);
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 

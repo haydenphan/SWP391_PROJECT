@@ -59,7 +59,7 @@ public class QuizQuestionDAO extends JDBC {
         }
         return questions;
     }
-    
+
     public static boolean deleteAllQuestionsByQuizId(int quizId) throws Exception {
         String sql = "DELETE FROM QuizQuestions WHERE QuizID = ?";
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
@@ -72,9 +72,22 @@ public class QuizQuestionDAO extends JDBC {
             return false;
         }
     }
-    
+
+    public static boolean deleteQuestionById(int questionId) throws Exception {
+        String sql = "DELETE FROM QuizQuestions WHERE QuestionID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, questionId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(QuizQuestionDAO.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
     public static void main(String[] args) {
-        List<QuizQuestion> q = QuizQuestionDAO.getQuizQuestionsByQuizId(7);
+        List<QuizQuestion> q = QuizQuestionDAO.getQuizQuestionsByQuizId(3);
         for (QuizQuestion quizQuestion : q) {
             System.out.println(q.toString());
         }

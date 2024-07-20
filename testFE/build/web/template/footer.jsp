@@ -29,7 +29,7 @@
                                 <li><a href="#">Digital Library</a></li>
                                 <li><a href="#">Compare Us</a></li>
                                 <li><a href="${pageContext.request.contextPath}/pages/become-instructor.jsp">Become Instructor</a></li>
-                                <li><a href="#">Build Career</a></li>
+                                <li><a href="${pageContext.request.contextPath}/pages/report.jsp">Send Report</a></li>
                             </ul>
                         </div>
                     </div>

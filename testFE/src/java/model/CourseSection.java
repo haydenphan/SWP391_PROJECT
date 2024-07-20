@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class CourseSection {
+
     private int sectionID;
     private int courseID;
     private String sectionName;
@@ -11,6 +12,15 @@ public class CourseSection {
     private LocalDateTime createdDate;
     private String sectionDescription;
     private List<SectionLecture> lectures;
+    private List<Quiz> quizzes;  // Add quizzes field
+
+    public List<Quiz> getQuizzes() {
+        return quizzes;
+    }
+
+    public void setQuizzes(List<Quiz> quizzes) {
+        this.quizzes = quizzes;
+    }
 
     public String getSectionDescription() {
         return sectionDescription;
@@ -19,7 +29,7 @@ public class CourseSection {
     public void setSectionDescription(String sectionDescription) {
         this.sectionDescription = sectionDescription;
     }
-    
+
     public List<SectionLecture> getLectures() {
         return lectures;
     }
@@ -29,7 +39,8 @@ public class CourseSection {
     }
 
     // Constructor
-    public CourseSection() {}
+    public CourseSection() {
+    }
 
     public CourseSection(int sectionID, int courseID, String sectionName, String sectionDescription, int sectionOrder, LocalDateTime createdDate) {
         this.sectionID = sectionID;
@@ -84,13 +95,13 @@ public class CourseSection {
     // Override toString() method for debugging
     @Override
     public String toString() {
-        return "CourseSection{" +
-                "sectionID=" + sectionID +
-                ", courseID=" + courseID +
-                ", sectionName='" + sectionName + '\'' +
-                ", sectionOrder=" + sectionOrder +
-                ", createdDate=" + createdDate +
-                ", sectionDescription=" + sectionDescription +
-                '}';
+        return "CourseSection{"
+                + "sectionID=" + sectionID
+                + ", courseID=" + courseID
+                + ", sectionName='" + sectionName + '\''
+                + ", sectionOrder=" + sectionOrder
+                + ", createdDate=" + createdDate
+                + ", sectionDescription=" + sectionDescription
+                + '}';
     }
 }

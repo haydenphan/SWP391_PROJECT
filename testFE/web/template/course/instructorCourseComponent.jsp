@@ -102,7 +102,7 @@
                 </span>
                 <% if (!currentCourse.IsPublished()) {%>
                 <div style="margin: 10px 0px" class="course-deteals-btn">
-                    <a href="${pageContext.request.contextPath}/course-approval-servlet/request?courseId=<%= currentCourse.getCourseID()%>&instructorId=<%=user.getUserID()%>">
+                    <a href="javascript:void(0);" onclick="confirmPublishRequest(<%= currentCourse.getCourseID()%>, <%=user.getUserID()%>)">
                         <i class="fas fa-paper-plane"></i>
                         <span class="me-2">Publication Request</span>
                     </a>
@@ -124,6 +124,13 @@
         var confirmation = confirm("Are you sure you want to request to edit the course details? If you proceed, the course will become unpublished and will need to be reviewed by an admin.");
         if (confirmation) {
             window.location.href = '<%= request.getContextPath()%>/edit-request?action=requestEdit&courseId=' + courseId;
+        }
+    }
+
+    function confirmPublishRequest(courseId, instructorId) {
+        var confirmation = confirm("Are you sure you want to request publication of this course? Once requested, you will not be able to edit the course details until it is reviewed by an admin.");
+        if (confirmation) {
+            window.location.href = '<%= request.getContextPath()%>/course-approval-servlet/request?courseId=' + courseId + '&instructorId=' + instructorId;
         }
     }
 </script>

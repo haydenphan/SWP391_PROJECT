@@ -101,7 +101,6 @@
                     <tr>
                         <th>Quiz ID</th>
                         <th>Quiz Name</th>
-                        <th>Graded</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -110,7 +109,6 @@
                         <tr>
                             <td>${quiz.quizId}</td>
                             <td>${quiz.quizName}</td>
-                            <td>${quiz.isGraded() ? "Yes" : "No"}</td>
                             <td>
                                 <form action="${pageContext.request.contextPath}/pages/quizPreviews.jsp" method="get" style="display:inline;">
                                     <input type="hidden" name="quizId" value="${quiz.quizId}">
@@ -118,12 +116,7 @@
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </form>
-                                <form action="${pageContext.request.contextPath}/pages/editQuiz.jsp" method="get" style="display:inline;">
-                                    <input type="hidden" name="quizId" value="${quiz.quizId}">
-                                    <button type="submit" class="icon-btn">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </form>
+                              
                                 <form action="${pageContext.request.contextPath}/manage-quiz/delete?sectionId=<%= sectionId%>" method="post" style="display:inline;" onsubmit="return confirmDelete(this);">
                                     <input type="hidden" name="quizId" value="${quiz.quizId}">
                                     <button type="submit" class="icon-btn">

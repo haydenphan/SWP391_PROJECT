@@ -10,8 +10,35 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Course;
 import model.CourseEnrollment;
+import model.User;
 
 public class CourseEnrollmentDAO {
+    public List<Integer> getMonthlyCourseCompleted(int year) {
+        String sql = "SELECT MONTH(CompletionDate) as Month, COUNT(*) as Total "
+                + "FROM CourseEnrollments "
+                + "WHERE YEAR(CompletionDate) = ? AND IsCompleted = 1 "
+                + "GROUP BY MONTH(CompletionDate)";
+        List<Integer> monthlyCompletions = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            monthlyCompletions.add(0);
+        }
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, year);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int month = rs.getInt("Month");
+                int total = rs.getInt("Total");
+                monthlyCompletions.set(month - 1, total);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return monthlyCompletions;
+    }
 
     public int insertEnrollment(CourseEnrollment enrollment) {
         String sql = "INSERT INTO CourseEnrollments (StudentID, CourseID, EnrollmentDate) VALUES (?, ?, ?)";
@@ -34,6 +61,37 @@ public class CourseEnrollmentDAO {
             Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
+    }
+
+    public List<User> getLearnersByCourseID(String courseID) {
+        List<User> learners = new ArrayList<>();
+        String sql = "SELECT u.*, ce.EnrollmentDate AS EnrollmentDate FROM Users u "
+                + "JOIN CourseEnrollments ce ON u.userID = ce.StudentID "
+                + "WHERE ce.CourseID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+
+            st.setString(1, courseID);
+            try (ResultSet rs = st.executeQuery()) {
+
+                while (rs.next()) {
+                    User learner = new User();
+                    learner.setUserID(rs.getInt("UserID"));
+                    learner.setUserName(rs.getString("Username"));
+                    learner.setEmail(rs.getString("Email"));
+//                    learner.setEnrollmentDate(rs.getTimestamp("EnrollmentDate").toLocalDateTime());
+                    learners.add(learner);
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println(e.getMessage());
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return learners;
     }
 
     public List<CourseEnrollment> getEnrollmentsByUserID(String userID) {

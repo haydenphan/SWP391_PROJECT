@@ -544,15 +544,21 @@ public class CourseDAO extends DAO<Course> {
         return courses;
     }
 
-    public List<Course> SearchCourseByName(String name) {
+    public List<Course> searchCourse(String searchText) {
         List<Course> list = new ArrayList<>();
-        String sql = "SELECT * FROM Courses WHERE [CourseName] LIKE ?";
+        String sql = "SELECT c.*, u.FirstName, u.LastName "
+                + "FROM Courses c "
+                + "JOIN Users u ON c.CreatedBy = u.UserID "
+                + "WHERE c.CourseName LIKE ? OR c.Description LIKE ? OR u.FirstName LIKE ? OR u.LastName LIKE ?";
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, "%" + name + "%");
+            ps.setString(1, "%" + searchText + "%");
+            ps.setString(2, "%" + searchText + "%");
+            ps.setString(3, "%" + searchText + "%");
+            ps.setString(4, "%" + searchText + "%");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Course course = new Course();
-                // populate the course object with data from result set
+                // Populate the course object with data from result set
                 course.setCourseID(rs.getInt("CourseID"));
                 course.setCourseName(rs.getString("CourseName"));
                 course.setDescription(rs.getString("Description"));
@@ -564,6 +570,9 @@ public class CourseDAO extends DAO<Course> {
                 course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime());
                 course.setRequirements(rs.getString("Requirements"));
                 course.setPrice(rs.getDouble("Price"));
+                // Add the creator's name to the course object (if needed)
+                String creatorName = rs.getString("FirstName") + " " + rs.getString("LastName");
+                course.setCreatorName(creatorName); // Assuming Course class has a setCreatorName method
                 list.add(course);
             }
         } catch (Exception e) {
@@ -926,6 +935,33 @@ public class CourseDAO extends DAO<Course> {
         } catch (Exception ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public boolean hasPassedAllQuizzesInCourse(int studentID, int courseID) throws Exception {
+        List<Integer> sectionIDs = getSectionIDsByCourseID(courseID);
+        for (int sectionID : sectionIDs) {
+            if (!QuizDAO.hasPassedAllQuizzesInSection(studentID, sectionID)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public List<Integer> getSectionIDsByCourseID(int courseID) throws Exception {
+        List<Integer> sectionIDs = new ArrayList<>();
+        String query = "SELECT SectionID FROM CourseSections WHERE CourseID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, courseID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                sectionIDs.add(rs.getInt("SectionID"));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return sectionIDs;
     }
 
     public static void main(String[] args) {

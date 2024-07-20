@@ -47,30 +47,37 @@ public class CourseDetailServlet extends HttpServlet {
         boolean certificateGenerated = false;
 
         if (user != null) {
-            if (CourseEnrollmentDAO.isCourseCompleted(user.getUserID(), course.getCourseID())) {
-                courseCompleted = true;
-                if (!CourseEnrollmentDAO.isCertificateGenerated(user.getUserID(), course.getCourseID())) {
-                    CourseEnrollmentDAO.updateCourseCompletionStatus(user.getUserID(), course.getCourseID());
+            try {
+                // Check if the learner has passed all quizzes
+                boolean hasPassedAllQuizzes = courseDAO.hasPassedAllQuizzesInCourse(user.getUserID(), course.getCourseID());
 
-                    // Send completion notification if not already sent or if it's unread
-                    NotificationDAO notiDAO = new NotificationDAO();
-                    if (!notiDAO.hasUnreadCompletionNotification(user.getUserID(), "CompletedCourse", course.getCourseID())) {
-                        Notification notification = new Notification();
-                        notification.setUserId(user.getUserID());
-                        notification.setMessage("Congratulations! You have completed the course: " + course.getCourseName());
-                        notification.setType("CourseCompletion");
-                        notification.setTimeStamp(LocalDateTime.now());
-                        notification.setTarget("CompletedCourse");
-                        notification.setTargetId(course.getCourseID());
-                        notification.setIsRead(false);
+                if (CourseEnrollmentDAO.isCourseCompleted(user.getUserID(), course.getCourseID()) && hasPassedAllQuizzes) {
+                    courseCompleted = true;
+                    if (!CourseEnrollmentDAO.isCertificateGenerated(user.getUserID(), course.getCourseID())) {
+                        CourseEnrollmentDAO.updateCourseCompletionStatus(user.getUserID(), course.getCourseID());
 
-                        notiDAO.insertNotification(notification);
+                        // Send completion notification if not already sent or if it's unread
+                        NotificationDAO notiDAO = new NotificationDAO();
+                        if (!notiDAO.hasUnreadCompletionNotification(user.getUserID(), "CompletedCourse", course.getCourseID())) {
+                            Notification notification = new Notification();
+                            notification.setUserId(user.getUserID());
+                            notification.setMessage("Congratulations! You have completed the course: " + course.getCourseName());
+                            notification.setType("CourseCompletion");
+                            notification.setTimeStamp(LocalDateTime.now());
+                            notification.setTarget("CompletedCourse");
+                            notification.setTargetId(course.getCourseID());
+                            notification.setIsRead(false);
+
+                            notiDAO.insertNotification(notification);
+                        }
+                    } else {
+                        certificateGenerated = true;
                     }
-                } else {
-                    certificateGenerated = true;
                 }
+                request.setAttribute("hasSubmittedFeedback", CourseFeedbackDAO.hasSubmittedFeedback(course.getCourseID(), user.getUserID()));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            request.setAttribute("hasSubmittedFeedback", CourseFeedbackDAO.hasSubmittedFeedback(course.getCourseID(), user.getUserID()));
         }
 
         request.setAttribute("materialNum", materialNum);

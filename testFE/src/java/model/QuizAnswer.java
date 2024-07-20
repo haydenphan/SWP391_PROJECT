@@ -1,6 +1,7 @@
 package model;
 
 public class QuizAnswer {
+
     private int answerID;
     private int questionID;
     private String answerText;
@@ -8,8 +9,7 @@ public class QuizAnswer {
 
     public QuizAnswer() {
     }
-    
-    
+
     // Constructor
     public QuizAnswer(int answerID, int questionID, String answerText, boolean isCorrect) {
         this.answerID = answerID;
@@ -47,10 +47,17 @@ public class QuizAnswer {
         return isCorrect;
     }
 
-    public void setCorrect(boolean correct) {
-        isCorrect = correct;
+    public void setCorrect(boolean isCorrect) {
+        this.isCorrect = isCorrect;
     }
 
-  
-    
+    @Override
+    public String toString() {
+        return "QuizAnswer{"
+                + "answerID=" + answerID
+                + ", questionID=" + questionID
+                + ", answerText='" + answerText + '\''
+                + ", isCorrect=" + isCorrect
+                + '}';
+    }
 }

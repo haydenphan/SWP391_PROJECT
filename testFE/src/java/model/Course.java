@@ -28,6 +28,7 @@ public class Course {
     private double averageRating;
     private boolean isCancelled;
     private List<Integer> NumberOfStarRatingList = new ArrayList<>();
+    private String creatorName;
 
     public boolean isIsCancelled() {
         return isCancelled;
@@ -227,6 +228,14 @@ public class Course {
         this.TotalEnrolled = TotalEnrolled;
         this.LastUpdate = LastUpdate;
         this.Requirements = Requirements;
+    }
+    
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
     }
 // New method to get the list of requirements
 

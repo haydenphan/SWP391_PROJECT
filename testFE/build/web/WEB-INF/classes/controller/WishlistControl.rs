@@ -1,1 +1,0 @@
-controller.Wishlist.WishlistControl

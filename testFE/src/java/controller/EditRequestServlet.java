@@ -56,6 +56,8 @@ public class EditRequestServlet extends HttpServlet {
 
     private void handleRequestEditCourse(User user, int courseId, HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        CourseDAO dao = new CourseDAO();
+        dao.updateCourseStatus(courseId, false);
         NotificationDAO notiDAO = new NotificationDAO();
         UserDAO userDAO = new UserDAO();
         List<Integer> adminIds = userDAO.getAllAdminIds();

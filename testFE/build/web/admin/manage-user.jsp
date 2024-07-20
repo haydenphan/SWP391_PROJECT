@@ -78,8 +78,8 @@
                         <label for="banned" class="form-label">Banned</label>
                         <select id="banned" name="banned" class="form-control">
                             <option value="all">All</option>
-                            <option value="1">Banned</option>
-                            <option value="0">Not Banned</option>
+                            <option value="0">Banned</option>
+                            <option value="1">Not Banned</option>
                         </select>
                     </div>
                     <div class="col-md-3">

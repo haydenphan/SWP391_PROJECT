@@ -10,18 +10,6 @@
         <%-- HEAD --%>
         <%@ include file="../template/head.jsp" %>
         <style>
-            /*            .btn-primary {
-                            background-color: #007bff;
-                            border-color: #007bff;
-                            color: #fff;
-                        }
-            
-                        .btn-secondary {
-                            background-color: #6c757d;
-                            border-color: #6c757d;
-                            color: #fff;
-                        }*/
-
             .btn {
                 padding: 10px 20px;
                 font-size: 16px;
@@ -50,8 +38,14 @@
 
         <main>
             <%
+                if (user == null) {
+                    response.sendRedirect("login.jsp");
+                    return;
+                }
                 int instructorID = user.getUserID();
+                boolean isApproved = InstructorApprovalsDAO.isUserApproved(instructorID);
                 List<Course> coursesList = CourseDAO.getCoursesByInstructor(instructorID);
+                boolean isUserInApprovalTable = InstructorApprovalsDAO.doesUserIDExist(instructorID);
             %>
             <!-- hero-area start-->
             <div class="hero-area hero-height d-flex align-items-center position-relative" data-background="">
@@ -85,12 +79,26 @@
                                             <span class="down-mark-line-2">Manage Your Courses</span></h2>
                                     </div>
                                     <div class="slider-search d-flex justify-content-center">
-                                        <form class="m-3" action="${pageContext.request.contextPath}/course-adding-servlet/create-course" method="POST">
-                                            <button type="submit" class="btn btn-primary">New Course</button>
-                                        </form>
-                                        <form class="m-3" action="${pageContext.request.contextPath}/course-adding-servlet/create-course" method="POST">
-                                            <button type="submit" class="btn btn-secondary">Manage Earnings</button>
-                                        </form>
+                                        <c:choose>
+                                            <c:when test="<%=isApproved%>">
+                                                <form class="m-3" action="${pageContext.request.contextPath}/course-adding-servlet/create-course" method="POST">
+                                                    <button type="submit" class="btn btn-primary">New Course</button>
+                                                </form>
+                                                <form class="m-3" action="${pageContext.request.contextPath}/pages/statisticalInstructorIncome.jsp?instructorId=${instructorID}" method="GET">
+                                                    <button type="submit" class="btn btn-secondary">Manage Earnings</button>
+                                                </form>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:if test="<%=!isUserInApprovalTable%>">
+                                                    <form class="m-3" action="${pageContext.request.contextPath}/pages/instructorRegistrationForm.jsp" method="GET">
+                                                        <button type="submit" class="btn btn-primary">Fill Instructor Registration Form</button>
+                                                    </form>
+                                                </c:if>
+                                                <c:if test="<%=isUserInApprovalTable && !isApproved%>">
+                                                    <p>Your request has been submitted and is awaiting admin approval.</p>
+                                                </c:if>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                 </div>
                             </div>
@@ -99,60 +107,6 @@
                 </div>
             </div>
             <!-- hero-area end-->
-
-            <!-- instructor-dashboard-stats start-->
-            <!--            <div class="instructor-dashboard-stats mt-4 pt-120 pb-100">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="stat-box">
-                                            <h3>Total Courses</h3>
-                                            <p><span class="stat-number">18</span></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="stat-box">
-                                            <h3>Total Students</h3>
-                                            <p><span class="stat-number">5740</span></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="stat-box">
-                                            <h3>Total Earnings</h3>
-                                            <p><span class="stat-number">$25,000</span></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>-->
-            <!-- instructor-dashboard-stats end-->
-
-            <!-- dashboard-quick-links start-->
-            <!--            <div class="dashboard-quick-links mt-4">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <a href="/manage-courses" class="quick-link-box">
-                                            <i class="fas fa-book"></i>
-                                            <span>Manage Courses</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="/manage-enrollments" class="quick-link-box">
-                                            <i class="fas fa-user-graduate"></i>
-                                            <span>Manage Enrollments</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="/course-reports" class="quick-link-box">
-                                            <i class="fas fa-chart-line"></i>
-                                            <span>Course Reports</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>-->
-            <!-- dashboard-quick-links end-->
 
             <!-- course-details-area start -->
             <div class="course-details-area pt-120 pb-100">

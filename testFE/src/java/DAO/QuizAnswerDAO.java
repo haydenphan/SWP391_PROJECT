@@ -68,4 +68,28 @@ public class QuizAnswerDAO {
             return false;
         }
     }
+
+    public static String getAnswerTextByAnswerID(int answerID) {
+        String sql = "SELECT AnswerText FROM QuizAnswers WHERE AnswerID = ?";
+        String answerText = null;
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, answerID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                answerText = rs.getString("AnswerText");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(QuizAnswerDAO.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(QuizAnswerDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return answerText;
+    }
+
+    public static void main(String[] args) {
+        for (QuizAnswer quizAnswer : QuizAnswerDAO.getAnswersByQuestionId(14)) {
+            System.out.println(quizAnswer.toString());
+        }
+    }
 }

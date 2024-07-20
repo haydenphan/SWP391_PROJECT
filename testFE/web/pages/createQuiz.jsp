@@ -47,7 +47,7 @@
             }
 
             input[type="text"],
-            input[type="checkbox"],
+            textarea,
             input[type="submit"] {
                 border: 1px solid #d3d3d3;
                 border-radius: 10px;
@@ -57,7 +57,7 @@
             }
 
             input[type="text"]:focus,
-            input[type="checkbox"]:focus {
+            textarea:focus {
                 border-color: #1b53bb;
                 box-shadow: 0 0 10px rgba(36, 103, 236, 0.2);
                 outline: none;
@@ -81,6 +81,25 @@
                 flex-direction: column;
             }
         </style>
+        <script>
+            function formatDuration(input) {
+                var value = input.value.replace(/[^0-9]/g, '');
+                if (value.length >= 3) {
+                    value = value.slice(0, 2) + ':' + value.slice(2, 4);
+                }
+                input.value = value;
+            }
+
+            function validateForm() {
+                var duration = document.getElementById("duration").value;
+                var pattern = /^([0-5][0-9]):([0-5][0-9])$/;
+                if (!pattern.test(duration)) {
+                    alert("Please enter a valid duration in MM:SS format.");
+                    return false;
+                }
+                return true;
+            }
+        </script>
     </head>
     <body>
         <%
@@ -88,15 +107,19 @@
         %>
         <div class="container">
             <h2>Add New Quiz</h2>
-            <form action="${pageContext.request.contextPath}/add-quiz" method="post">
+            <form action="${pageContext.request.contextPath}/add-quiz" method="post" onsubmit="return validateForm()">
                 <input type="hidden" name="sectionId" value="<%= sectionId%>"/>
                 <div class="form-group">
-                    <label for="quizName">Quiz Name:</label>
-                    <input type="text" id="quizName" name="quizName">
+                    <label for="quizName">Quiz Name</label>
+                    <input type="text" id="quizName" name="quizName" required>
                 </div>
-                <div>
-                    <label for="isGraded">Graded:</label>
-                    <input type="checkbox" id="isGraded" name="isGraded" value="true">
+                <div class="form-group">
+                    <label for="quizDescription">Quiz Description</label>
+                    <textarea id="quizDescription" name="quizDescription" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="duration">Duration (Minutes:Seconds)</label>
+                    <input type="text" id="duration" name="duration" placeholder="MM:SS" oninput="formatDuration(this)" maxlength="5" required>
                 </div>
                 <input type="submit" value="Create Quiz">
             </form>

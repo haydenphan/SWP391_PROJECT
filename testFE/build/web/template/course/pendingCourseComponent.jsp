@@ -5,11 +5,14 @@
 <%@ page import="model.*" %>
 <%@ page import="utils.NumberUtils" %>
 <%@ page import="DAO.*" %>
+<%@ page import="java.util.List" %>
 
 <%
     Course currentCourse = (Course) request.getAttribute("currentCourse");
-    InstructorCertificatesDAO dao = new InstructorCertificatesDAO();
-    InstructorCertificates certificate = dao.getCertificateByCourseAndUser(currentCourse.getCourseID(), currentCourse.getCreatedBy());
+    UserDAO uDAO = new UserDAO();
+    request.setAttribute("instructor", uDAO.getUserByID(currentCourse.getCreatedBy()));
+//    InstructorCertificatesDAO dao = new InstructorCertificatesDAO();
+//    List<InstructorCertificates> certificates = dao.getAllCertificatesByUserID(currentCourse.getCreatedBy());
 %>
 
 <div class="card-courses-list admin-courses">
@@ -60,7 +63,7 @@
                 <h6 class="m-b10">Course Description</h6>
                 <p>
                     ${currentCourse.description}
-                </p>	
+                </p>    
             </div>
             <div style="display: flex" class="col-md-12">
                 <button class="btn blue outline radius-xl ">
@@ -77,18 +80,10 @@
                     <input type="hidden" name="courseID" value="${currentCourse.getCourseID()}">
                     <button class="btn red outline radius-xl " type="button" onclick="confirmCancel(${currentCourse.getCourseID()})">Cancel</button>
                 </form>
-
             </div>
             <div style="margin-top: 10px">
-                <% if (certificate == null) {%>
-
-                No credential available.
-
-                <% } else {%>
-                <a class="viewcer" href="<%= certificate.getCertificateUrl()%>" target="_blank">View Instructor Certificate</a>
-                <% }%>
+                <a href="${pageContext.request.contextPath}/admin/viewInstructorProfile.jsp?instructorId=${currentCourse.getCreatedBy()}">View Instructor Profile</a>
             </div>
         </div>
-
     </div>
 </div>

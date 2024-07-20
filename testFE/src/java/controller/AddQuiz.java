@@ -4,6 +4,9 @@ import DAO.QuizDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +21,6 @@ public class AddQuiz extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -44,32 +46,38 @@ public class AddQuiz extends HttpServlet {
         try {
             int sectionId = Integer.parseInt(request.getParameter("sectionId"));
             String quizName = request.getParameter("quizName");
-            boolean isGraded = request.getParameter("isGraded") != null;
+            String quizDescription = request.getParameter("quizDescription");
+            String duration = request.getParameter("duration"); // Get duration as MM:SS
+
             LocalDateTime createdDate = LocalDateTime.now();
 
             Quiz newQuiz = new Quiz();
             newQuiz.setSectionId(sectionId);
             newQuiz.setQuizName(quizName);
-            newQuiz.setGraded(isGraded);
+            newQuiz.setQuizDescription(quizDescription);
             newQuiz.setCreatedDate(createdDate);
+            newQuiz.setDuration(duration);
 
-            QuizDAO.createQuiz(newQuiz);
+            int quizId = QuizDAO.addQuiz(newQuiz); // Changed to int
+            newQuiz.setQuizId(quizId); // Set the quiz ID after creation
 
             request.setAttribute("newQuiz", newQuiz);
 
-            // Redirect to createQuizForm.jsp with quizID parameter
-            response.sendRedirect(request.getContextPath() + "/pages/quizQuestion.jsp?quizID=" + newQuiz.getQuizId());
-
+            // Redirect to quizQuestion.jsp with quizID parameter
+            RequestDispatcher rd = request.getRequestDispatcher("/pages/quizManagement.jsp?sectionId=" + newQuiz.getSectionId());
+            rd.forward(request, response);
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid input format");
         } catch (IOException e) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error processing request");
+        } catch (Exception ex) {
+            Logger.getLogger(AddQuiz.class.getName()).log(Level.SEVERE, null, ex);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error processing request");
         }
     }
 
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "AddQuiz Servlet";
+    }
 }

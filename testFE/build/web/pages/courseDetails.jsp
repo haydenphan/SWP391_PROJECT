@@ -151,7 +151,6 @@
         <%-- Include jQuery and Bootstrap JavaScript --%>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
     </head>
 
     <body>
@@ -589,8 +588,13 @@
                                     </div>
 
                                     <%
-                                        if ((boolean) request.getAttribute("hasEnrolled")) {
+                                        if ((User) session.getAttribute("user") == null) {
                                     %>
+                                    <p>Register for a learner account to purchase the course! <span style="color: blue; text-decoration: underline"><a href="${pageContext.request.contextPath}/pages/registration.jsp">Sign Up<a/></span></p>
+                                    <%
+                                    } else if (((User) session.getAttribute("user") != null) && (boolean) request.getAttribute("hasEnrolled")) {
+                                    %>
+                                    <%%>
                                     <%
                                     } else {
                                     %>
@@ -642,6 +646,8 @@
                     $('#completionModal').modal('show');
                 });
             </script>
+
+
         </c:if>
 
         <div class="modal fade" id="completionModal" tabindex="-1" role="dialog" aria-labelledby="completionModalLabel" aria-hidden="true">
@@ -666,10 +672,12 @@
                             <a href="${pageContext.request.contextPath}/user-profile" class="btn btn-primary">View Certificate</a>
                         </c:if>
                     </div>
-                   
+
                 </div>
             </div>
         </div>
+
+
 
     </body>
 </html>

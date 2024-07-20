@@ -16,6 +16,36 @@ import model.User;
 
 public class TransactionDAO {
 
+    public List<Double> getMonthlyIncomeForInstructorAndCourse(int instructorId, int courseId, int year) throws Exception {
+        List<Double> monthlyIncome = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            monthlyIncome.add(0.0);
+        }
+
+        String sql = "SELECT MONTH(ce.EnrollmentDate) AS Month, SUM(c.Price * 0.7) AS Income "
+                + "FROM Courses c "
+                + "JOIN CourseEnrollments ce ON c.CourseID = ce.CourseID "
+                + "WHERE c.CreatedBy = ? AND c.CourseID = ? AND YEAR(ce.EnrollmentDate) = ? "
+                + "GROUP BY MONTH(ce.EnrollmentDate)";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, instructorId);
+            stmt.setInt(2, courseId);
+            stmt.setInt(3, year);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int month = rs.getInt("Month") - 1;
+                double income = rs.getDouble("Income");
+                monthlyIncome.set(month, income);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return monthlyIncome;
+    }
+
     public int insertTransaction(Transaction transaction) throws Exception {
         String transactionSql = "INSERT INTO Transactions (UserID, Amount, TransactionDate, Status) VALUES (?, ?, ?, ?)";
         Connection con = null;
