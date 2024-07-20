@@ -72,13 +72,13 @@
                         <h2 class="text-center mb-4">Let us know more about you!</h2>
                         <form action="choose-role" method="POST">
                             <div class="form-check mb-3">
-                                <input class="form-check-input" type="radio" name="role" id="flexRadioDefault1" value="1">
+                                <input class="form-check-input" type="radio" name="role" id="flexRadioDefault1" value="1" checked>
                                 <label class="form-check-label" for="flexRadioDefault1">
                                     Learner
                                 </label>
                             </div>
                             <div class="form-check mb-4">
-                                <input class="form-check-input" type="radio" name="role" id="flexRadioDefault2" value="2" checked>
+                                <input class="form-check-input" type="radio" name="role" id="flexRadioDefault2" value="2">
                                 <label class="form-check-label" for="flexRadioDefault2">
                                     Instructor
                                 </label>

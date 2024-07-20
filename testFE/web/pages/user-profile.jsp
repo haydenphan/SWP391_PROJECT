@@ -29,7 +29,6 @@
         <main>
             <%
                 int learnerID = ((User) session.getAttribute("user")).getUserID();
-                List<Course> courseList = CourseEnrollmentDAO.getCoursesByUserID(learnerID);
             %>
 
             <!-- hero-area -->
@@ -68,12 +67,7 @@
                         <div class="col-xl-3 col-lg-4">
                             <div class="student-profile-sidebar mb-30">
                                 <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
-                                                data-bs-target="#home" type="button" role="tab" aria-controls="home"
-                                                aria-selected="true"><i class="fas fa-tachometer-alt-fast"></i>
-                                            Dashboard</button>
-                                    </li>
+
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
                                                 data-bs-target="#profile" type="button" role="tab" aria-controls="profile"
@@ -85,74 +79,64 @@
                                                 aria-selected="false"><i class="fas fa-graduation-cap"></i> Enrolled
                                             Courses</button>
                                     </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="wishlist-tab" data-bs-toggle="tab"
-                                                data-bs-target="#wishlist" type="button" role="tab" aria-controls="wishlist"
-                                                aria-selected="false"><i class="fas fa-bookmark"></i> Wishlist</button>
-                                    </li>
+
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="reviews-tab" data-bs-toggle="tab"
                                                 data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews"
-                                                aria-selected="false"><i class="fas fa-star"></i> Reviews</button>
+                                                aria-selected="false"><i class="fas fa-star"></i> Certificates</button>
                                     </li>
+
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="quiz-tab" data-bs-toggle="tab" data-bs-target="#quiz"
-                                                type="button" role="tab" aria-controls="quiz" aria-selected="false"><i
-                                                class="fas fa-cubes"></i> My Quiz Attempts</button>
+                                        <button class="nav-link" id="history-tab" data-bs-toggle="tab"
+                                                data-bs-target="#history" type="button" role="tab" aria-controls="history"
+                                                aria-selected="false"><i class="fas fa-cart-plus"></i> Order
+                                            History</button>
                                     </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" 
-                                                type="button" role="tab" aria-controls="history" aria-selected="false"><i 
-                                                class="fas fa-cart-plus"></i> Order History</a>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="ques-tab" data-bs-toggle="tab" data-bs-target="#ques"
-                                                type="button" role="tab" aria-controls="ques" aria-selected="false"><i
-                                                class="fas fa-fist-raised"></i> Question & Answer</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="cert-tab" data-bs-toggle="tab" data-bs-target="#cert"
-                                                type="button" role="tab" aria-controls="cert" aria-selected="false">
-                                            <i class="fas fa-award"></i> Certificate
-                                        </button>
-                                    </li>
+
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="setting-tab" data-bs-toggle="tab"
                                                 data-bs-target="#setting" type="button" role="tab" aria-controls="setting"
-                                                aria-selected="false"><i class="fas fa-cog"></i> Settings
+                                                aria-selected="false"><i class="fas fa-cog"></i> Settings</button>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
-
                         <div class="col-xl-9 col-lg-8">
                             <div class="student-profile-content">
                                 <div class="tab-content" id="myTabContent">
-                                    <div class="tab-pane fade show active" id="home" role="tabpanel"
-                                         aria-labelledby="home-tab">
-                                        <h4 class='mb-25'>Dashboard</h4>
-                                    </div>
-                                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                    <div class="tab-pane fade show active" id="profile" role="tabpanel"
+                                         aria-labelledby="profile-tab">
                                         <h4 class='mb-25'>My Profile</h4>
                                         <ul class='student-profile-info'>
                                             <li>
                                                 <h5>Registration Date :</h5>
-                                                <span><%=user.getRegistrationDate()%></span>
+                                                <span>
+                                                    <%=user.getRegistrationDate()%>
+                                                </span>
                                             </li>
                                             <li>
                                                 <h5>First Name :</h5>
-                                                <span><%=user.getFirstName()%></span>
+                                                <span>
+                                                    <%=user.getFirstName()%>
+                                                </span>
                                             </li>
                                             <li>
                                                 <h5>Last Name :</h5>
-                                                <span><%=user.getLastName()%></span>
+                                                <span>
+                                                    <%=user.getLastName()%>
+                                                </span>
                                             </li>
                                             <li>
                                                 <h5>Username :</h5>
-                                                <span><%=user.getUserName()%></span>
+                                                <span>
+                                                    <%=user.getUserName()%>
+                                                </span>
                                             </li>
                                             <li>
                                                 <h5>Email :</h5>
-                                                <span><%=user.getEmail()%></span>
+                                                <span>
+                                                    <%=user.getEmail()%>
+                                                </span>
                                             </li>
                                             <li>
                                                 <h5>Phone :</h5>
@@ -160,34 +144,95 @@
                                             </li>
                                             <li>
                                                 <h5>Role :</h5>
-                                                <span><%=user.getRoleName()%></span>
+                                                <span>
+                                                    <%=user.getRoleName()%>
+                                                </span>
                                             </li>
                                             <li>
                                                 <h5>Biography :</h5>
-                                                <span><%=user.getBio()%></span>
+                                                <span>
+                                                    <%=user.getBio()%>
+                                                </span>
                                             </li>
                                         </ul>
                                     </div>
                                     <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                                        <h4 class='mb-25'>My Enrolled Courses</h4>
+                                        <h4 class='mb-25'>Enrolled Courses</h4>
+                                        <div class="student-profile-enroll">
+                                            <ul class="nav mb-30" id="myTab" role="tablist">
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link active" id="enrolled-tab" data-bs-toggle="tab"
+                                                            data-bs-target="#enrolled" type="button" role="tab"
+                                                            aria-controls="enrolled" aria-selected="true">Enrolled
+                                                        Courses (<%=CourseEnrollmentDAO.countCoursesByLearnerID(user.getUserID())%>)</button>
+                                                </li>
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link" id="active-tab" data-bs-toggle="tab"
+                                                            data-bs-target="#active" type="button" role="tab"
+                                                            aria-controls="active" aria-selected="false">Active Courses
+                                                        (<%=CourseEnrollmentDAO.countIncompleteCoursesByLearnerID(user.getUserID())%>)</button>
+                                                </li>
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link" id="completed-tab" data-bs-toggle="tab"
+                                                            data-bs-target="#completed" type="button" role="tab"
+                                                            aria-controls="completed" aria-selected="false">Completed Courses
+                                                        (<%=CourseEnrollmentDAO.countCompletedCoursesByLearnerID(user.getUserID())%>)</button>
+                                                </li>
+                                            </ul>
 
-                                        <div class="row">
-                                            <c:forEach var="course" items="<%=courseList%>">
-                                                <c:set var="currentCourse" value="${course}" scope="request" />
-                                                <jsp:include page="../template/course/learnerCourseComponent.jsp" />
+                                            <div class="tab-content" id="myTabContent">
+                                                <div class="tab-pane fade show active" id="enrolled" role="tabpanel"
+                                                     aria-labelledby="enrolled-tab">
+                                                    <div class="student-profile-enrolled-course">
+                                                        <div class="row">
+                                                            <c:forEach var="course" items="${courseList}">
+                                                                <c:set var="currentCourse" value="${course}" scope="request" />
+                                                                <jsp:include page="../template/course/learnerCourseComponent.jsp" />
+                                                            </c:forEach>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="active" role="tabpanel"
+                                                     aria-labelledby="active-tab">
+                                                    <div class="student-profile-enrolled-course">
+                                                        <div class="row">
+                                                            <c:forEach var="course" items="${courseList}">
+                                                                <c:if test="${!courseCompletionMap[course.getCourseID()]}">
+                                                                    <c:set var="currentCourse" value="${course}" scope="request" />
+                                                                    <jsp:include page="../template/course/learnerCourseComponent.jsp" />
+                                                                </c:if>
+                                                            </c:forEach>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="completed" role="tabpanel"
+                                                     aria-labelledby="completed-tab">
+                                                    <div class="student-profile-enrolled-course">
+                                                        <div class="row">
+                                                            <c:forEach var="course" items="${courseList}">
+                                                                <c:if test="${courseCompletionMap[course.getCourseID()]}">
+                                                                    <c:set var="currentCourse" value="${course}" scope="request" />
+                                                                    <jsp:include page="../template/course/learnerCourseComponent.jsp" />
+                                                                </c:if>
+                                                            </c:forEach>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                                        <h1>Certificates</h1>
+                                        <div class="certificate-list">
+                                            <c:forEach var="certificate" items="${certificates}">
+                                                <div class="certificate-item">
+                                                    <a href="${certificate.certificateUrl}" target="_blank">View Certificate</a>
+                                                </div>
                                             </c:forEach>
                                         </div>
                                     </div>
 
-                                    <div class="tab-pane fade" id="wishlist" role="tabpanel" aria-labelledby="wishlist-tab">
-                                        <h4 class='mb-25'>Wishlist</h4>
-                                    </div>
-                                    <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-                                        <h4 class='mb-25'>Reviews</h4>
-                                    </div>
-                                    <div class="tab-pane fade" id="quiz" role="tabpanel" aria-labelledby="quiz-tab">
-                                        <p>No quiz attempts yet.</p>
-                                    </div>
                                     <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
                                         <h4 class='mb-25'>Order History</h4>
                                         <table class="table table-striped">
@@ -206,22 +251,6 @@
                                         </table>
                                     </div>
 
-                                    <div class="tab-pane fade" id="ques" role="tabpanel" aria-labelledby="ques-tab">
-                                        <p>No question completed yet.</p>
-                                    </div>
-
-                                    <!-- Certificates -->
-                                    <div class="tab-pane fade" id="cert" role="tabpanel" aria-labelledby="cert-tab">
-                                        <h1>Certificates</h1>
-                                        <div class="certificate-list">
-                                            <c:forEach var="certificate" items="${certificates}">
-                                                <div class="certificate-item">
-                                                    <a href="${certificate.certificateUrl}" target="_blank">View Certificate</a>
-                                                </div>
-                                            </c:forEach>
-                                        </div>
-                                    </div>
-
                                     <div class="tab-pane fade" id="setting" role="tabpanel" aria-labelledby="setting-tab">
                                         <h4 class='mb-25'>Settings</h4>
                                         <div class="student-profile-enroll">
@@ -231,16 +260,13 @@
                                                             data-bs-target="#profileA" type="button" role="tab"
                                                             aria-controls="profileA" aria-selected="true">Profile</button>
                                                 </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link" id="password-tab" data-bs-toggle="tab"
-                                                            data-bs-target="#password" type="button" role="tab"
-                                                            aria-controls="password" aria-selected="false">Password</button>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link" id="completedA-tab" data-bs-toggle="tab"
-                                                            data-bs-target="#completedA" type="button" role="tab"
-                                                            aria-controls="completedA" aria-selected="false">Social</button>
-                                                </li>
+                                                <c:if test="<%=user.getProviderID() == 1%>">
+                                                    <li class="nav-item" role="presentation">
+                                                        <button class="nav-link" id="password-tab" data-bs-toggle="tab"
+                                                                data-bs-target="#password" type="button" role="tab"
+                                                                aria-controls="password" aria-selected="false">Password</button>
+                                                    </li>
+                                                </c:if>
                                             </ul>
                                             <div class="tab-content" id="myTabContent">
                                                 <div class="tab-pane fade show active" id="profileA" role="tabpanel"
@@ -289,78 +315,41 @@
                                                         </form>
                                                     </div>
                                                 </div>
-                                                <div class="tab-pane fade" id="password" role="tabpanel"
-                                                     aria-labelledby="password-tab">
-                                                    <form action="user-profile/changePassword" method="POST">
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="contact-from-input mb-20">
-                                                                    <label htmlFor="Current">Current Password</label>
-                                                                    <input name="oldPassword" id='Current' type="password"
-                                                                           placeholder="Type password" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="contact-from-input mb-20">
-                                                                    <label htmlFor="New">New Password</label>
-                                                                    <input name="newPassword" id='New' type="password"
-                                                                           placeholder="Type password" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="contact-from-input mb-20">
-                                                                    <label htmlFor="Retype">Re-type New Password</label>
-                                                                    <input name="confirmPassword" id='Retype' type="password"
-                                                                           placeholder="Type password" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-12">
-                                                                <div class="cont-btn mb-20 mt-10">
-                                                                    <button type='submit' class="cont-btn">Update Profile</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                                <div class="tab-pane fade" id="completedA" role="tabpanel"
-                                                     aria-labelledby="completedA-tab">
-                                                    <div class="student-social-profile-link">
-                                                        <span class='mb-20'>Social Profile Link</span>
-                                                        <form action="#">
+                                                <c:if test="<%=user.getProviderID() == 1%>">
+                                                    <div class="tab-pane fade" id="password" role="tabpanel"
+                                                         aria-labelledby="password-tab">
+                                                        <form action="user-profile/changePassword" method="POST">
                                                             <div class="row">
                                                                 <div class="col-md-6">
                                                                     <div class="contact-from-input mb-20">
-                                                                        <input type="text"
-                                                                               placeholder="Write Your Facebook URL" />
+                                                                        <label htmlFor="Current">Current Password</label>
+                                                                        <input name="oldPassword" id='Current' type="password"
+                                                                               placeholder="Type password" />
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <div class="contact-from-input mb-20">
-                                                                        <input type="text"
-                                                                               placeholder="Write Your Twitter URL" />
+                                                                        <label htmlFor="New">New Password</label>
+                                                                        <input name="newPassword" id='New' type="password"
+                                                                               placeholder="Type password" />
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <div class="contact-from-input mb-20">
-                                                                        <input type="text"
-                                                                               placeholder="Write Your Instagram URL" />
+                                                                        <label htmlFor="Retype">Re-type New Password</label>
+                                                                        <input name="confirmPassword" id='Retype' type="password"
+                                                                               placeholder="Type password" />
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="contact-from-input mb-20">
-                                                                        <input type="text"
-                                                                               placeholder="Write Your Linkedin URL" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-12 ">
+                                                                <div class="col-sm-12">
                                                                     <div class="cont-btn mb-20 mt-10">
-                                                                        <button type='button' class="cont-btn">Update Profile</button>
+                                                                        <button type='submit' class="cont-btn">Update Profile</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </form>
                                                     </div>
-                                                </div>
+                                                </c:if>
                                             </div>
                                         </div>
                                     </div>

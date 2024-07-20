@@ -75,8 +75,8 @@
                     <a href="${pageContext.request.contextPath}/CourseDetail?id=${currentCourse.getCourseID()}">
                         <span class="me-2">View Details</span>
                         <i class="far fa-arrow-right"></i>
-                        <a href="${pageContext.request.contextPath}/student-course-section-servlet?courseId=${currentCourse.getCourseID()}">
-                            <span class="me-2">do quizz</span>
+                        <a href="#">
+                            <span class="me-2"></span>
                         </a>
                 </div>
             </div>

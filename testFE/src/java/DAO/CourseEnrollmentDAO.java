@@ -13,6 +13,7 @@ import model.CourseEnrollment;
 import model.User;
 
 public class CourseEnrollmentDAO {
+
     public List<Integer> getMonthlyCourseCompleted(int year) {
         String sql = "SELECT MONTH(CompletionDate) as Month, COUNT(*) as Total "
                 + "FROM CourseEnrollments "
@@ -352,6 +353,87 @@ public class CourseEnrollmentDAO {
         }
 
         return completedCount;
+    }
+
+    public static int countCoursesByLearnerID(int learnerID) {
+        String sql = "SELECT COUNT(*) AS courseCount FROM CourseEnrollments WHERE StudentID = ?";
+        int count = 0;
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, learnerID);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt("courseCount");
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return count;
+    }
+
+    public static int countIncompleteCoursesByLearnerID(int learnerID) {
+        String sql = "SELECT COUNT(*) AS incompleteCourseCount FROM CourseEnrollments WHERE StudentID = ? AND IsCompleted = 0";
+        int count = 0;
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, learnerID);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt("incompleteCourseCount");
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return count;
+    }
+
+    public static int countCompletedCoursesByLearnerID(int learnerID) {
+        String sql = "SELECT COUNT(*) AS completedCourseCount FROM CourseEnrollments WHERE StudentID = ? AND IsCompleted = 1";
+        int count = 0;
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, learnerID);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt("completedCourseCount");
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return count;
+    }
+
+    public static boolean hasLearnerCompletedCourse(int learnerID, int courseID) {
+        String sql = "SELECT IsCompleted FROM CourseEnrollments WHERE StudentID = ? AND CourseID = ?";
+        boolean isCompleted = false;
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, learnerID);
+            st.setInt(2, courseID);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    isCompleted = rs.getBoolean("IsCompleted");
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(CourseEnrollmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return isCompleted;
     }
 
     public static void main(String[] args) {

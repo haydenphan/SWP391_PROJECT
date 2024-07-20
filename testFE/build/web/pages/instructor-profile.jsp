@@ -38,6 +38,9 @@
             <%
                 int instructorID = ((User) session.getAttribute("user")).getUserID();
                 List<Course> coursesList = CourseDAO.getCoursesByInstructor(instructorID);
+                List<InstructorFeedback> feedbackList = InstructorFeedbackDAO.getAllFeedbackByInstructorID(instructorID);
+                InstructorCertificatesDAO icDAO = new InstructorCertificatesDAO();
+                List<InstructorCertificates> certificateList = icDAO.getAllCertificatesByUserID(instructorID);
             %>
 
             <!-- hero-area -->
@@ -95,12 +98,6 @@
                                     </li>
 
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="history-tab" data-bs-toggle="tab"
-                                                data-bs-target="#history" type="button" role="tab" aria-controls="history"
-                                                aria-selected="false"><i class="fas fa-cart-plus"></i> Transaction
-                                            History</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="wallet-tab" data-bs-toggle="tab" data-bs-target="#wallet"
                                                 type="button" role="tab" aria-controls="wallet" aria-selected="false"><i class="fas fa-wallet"></i> Wallet</button>
                                     </li>
@@ -116,7 +113,7 @@
                         <div class="col-xl-9 col-lg-8">
                             <div class="student-profile-content">
                                 <div class="tab-content" id="myTabContent">
-                                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                    <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                                         <h4 class='mb-25'>My Profile</h4>
                                         <ul class='student-profile-info'>
                                             <li>
@@ -156,17 +153,44 @@
 
                                     <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                                         <h4 class='mb-25'>Reviews</h4>
+                                        <div class="student-profile-reviews">
+                                            <c:forEach var="feedback" items="<%=feedbackList%>">
+                                                <div class="student-profile-reviews-item mb-30">
+                                                    <div class="student-profile-reviews-course-title">
+                                                        <h5>${feedback.learner.getFirstName()} ${feedback.learner.getLastName()}</h5>
+                                                    </div>
+                                                    <div class="student-profile-reviews-text">
+                                                        <div class="student-profile-reviews-text-wrap mb-20">
+                                                            <div class="student-profile-review-icon">
+                                                                <c:forEach var="i" begin="1" end="${feedback.rating}">
+                                                                    <a href="#"><i class="fas fa-star"></i></a>
+                                                                    </c:forEach>
+                                                                    <c:forEach var="i" begin="${feedback.rating + 1}" end="5">
+                                                                    <a href="#"><i class="far fa-star"></i></a>
+                                                                    </c:forEach>
+                                                            </div>
+                                                            <div class="student-profile-review-update">
+                                                                <button type='button' class='student-profile-review-update-btn'>
+                                                                    <i class="far fa-edit"></i> Report
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="student-profile-review-content">
+                                                            <p>${feedback.comment}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </c:forEach>
+                                        </div>
 
                                     </div>
 
                                     <div class="tab-pane fade" id="certificate" role="tabpanel" aria-labelledby="certificate-tab">
                                         <h4 class='mb-25'>Instructor Certificate</h4>
-
+                                        <c:forEach var="certificate" items="<%=certificateList%>">
+                                            <a href="${certificate.certificateUrl}">View Certificate</a>
+                                        </c:forEach>
                                     </div>       
-                                    <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-                                        <h4 class='mb-25'>Transaction History</h4>
-
-                                    </div>
 
                                     <div class="tab-pane fade" id="wallet" role="tabpanel" aria-labelledby="wallet-tab">
                                         <h4 class='mb-25'>Wallet</h4>
@@ -201,16 +225,13 @@
                                                             data-bs-target="#profileA" type="button" role="tab"
                                                             aria-controls="profileA" aria-selected="true">Profile</button>
                                                 </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link" id="password-tab" data-bs-toggle="tab"
-                                                            data-bs-target="#password" type="button" role="tab"
-                                                            aria-controls="password" aria-selected="false">Password</button>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link" id="completedA-tab" data-bs-toggle="tab"
-                                                            data-bs-target="#completedA" type="button" role="tab"
-                                                            aria-controls="completedA" aria-selected="false">Social</button>
-                                                </li>
+                                                <c:if test="<%=user.getProviderID() == 1%>">
+                                                    <li class="nav-item" role="presentation">
+                                                        <button class="nav-link" id="password-tab" data-bs-toggle="tab"
+                                                                data-bs-target="#password" type="button" role="tab"
+                                                                aria-controls="password" aria-selected="false">Password</button>
+                                                    </li>
+                                                </c:if>
                                             </ul>
                                             <div class="tab-content" id="myTabContent">
                                                 <div class="tab-pane fade show active" id="profileA" role="tabpanel"
@@ -260,80 +281,42 @@
 
                                                     </div>
                                                 </div>
-                                                <div class="tab-pane fade" id="password" role="tabpanel"
-                                                     aria-labelledby="password-tab">
-                                                    <form action="user-profile/changePassword" method="POST">
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="contact-from-input mb-20">
-                                                                    <label htmlFor="Current">Current Password</label>
-                                                                    <input name="oldPassword" id='Current' type="password"
-                                                                           placeholder="Type password" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="contact-from-input mb-20">
-                                                                    <label htmlFor="New">New Password</label>
-                                                                    <input name="newPassword" id='New' type="password"
-                                                                           placeholder="Type password" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="contact-from-input mb-20">
-                                                                    <label htmlFor="Retype">Re-type New Password</label>
-                                                                    <input name="confirmPassword" id='Retype' type="password"
-                                                                           placeholder="Type password" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-12">
-                                                                <div class="cont-btn mb-20 mt-10">
-                                                                    <button type='submit' class="cont-btn">Update
-                                                                        Profile</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                                <div class="tab-pane fade" id="completedA" role="tabpanel"
-                                                     aria-labelledby="completedA-tab">
-                                                    <div class="student-social-profile-link">
-                                                        <span class='mb-20'>Social Profile Link</span>
-                                                        <form action="#">
+                                                <c:if test="<%=user.getProviderID() == 1%>">
+                                                    <div class="tab-pane fade" id="password" role="tabpanel"
+                                                         aria-labelledby="password-tab">
+                                                        <form action="user-profile/changePassword" method="POST">
                                                             <div class="row">
                                                                 <div class="col-md-6">
                                                                     <div class="contact-from-input mb-20">
-                                                                        <input type="text"
-                                                                               placeholder="Write Your Facebook URL" />
+                                                                        <label htmlFor="Current">Current Password</label>
+                                                                        <input name="oldPassword" id='Current' type="password"
+                                                                               placeholder="Type password" />
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <div class="contact-from-input mb-20">
-                                                                        <input type="text"
-                                                                               placeholder="Write Your Twitter URL" />
+                                                                        <label htmlFor="New">New Password</label>
+                                                                        <input name="newPassword" id='New' type="password"
+                                                                               placeholder="Type password" />
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <div class="contact-from-input mb-20">
-                                                                        <input type="text"
-                                                                               placeholder="Write Your Instagram URL" />
+                                                                        <label htmlFor="Retype">Re-type New Password</label>
+                                                                        <input name="confirmPassword" id='Retype' type="password"
+                                                                               placeholder="Type password" />
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="contact-from-input mb-20">
-                                                                        <input type="text"
-                                                                               placeholder="Write Your Linkedin URL" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-12 ">
+                                                                <div class="col-sm-12">
                                                                     <div class="cont-btn mb-20 mt-10">
-                                                                        <button type='button' class="cont-btn">Update
+                                                                        <button type='submit' class="cont-btn">Update
                                                                             Profile</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </form>
                                                     </div>
-                                                </div>
+                                                </c:if>
                                             </div>
                                         </div>
                                     </div>

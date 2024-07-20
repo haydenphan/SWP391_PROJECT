@@ -39,11 +39,10 @@ public class InstructorFeedbackServlet extends HttpServlet {
                 out.println("<p>No more feedback available.</p>");
             } else {
                 // Build HTML response
-                for (int i = 0; i < feedbacks.size(); i++) {
-                    InstructorFeedback feedback = feedbacks.get(i);
+                for (InstructorFeedback feedback : feedbacks) {
                     out.println("<div class=\"course-review-item mb-30\">");
                     out.println("<div class=\"course-reviews-img\">");
-                    out.println("<a href=\"#\"><img src=\"" + feedback.getLearner().getAvatar() + "\" alt=\"image not found\"></a>");
+                    out.println("<a href=\"#\"><img src=\"" + feedback.getLearner().getAvatar() + "\" alt=\"image not found\" style=\"width:50px; height:50px; border-radius:50%;\"></a>");
                     out.println("</div>");
                     out.println("<div class=\"course-review-list\">");
                     out.println("<h5><a href=\"#\">" + feedback.getLearner().getFirstName() + " " + feedback.getLearner().getLastName() + "</a></h5>");
@@ -67,8 +66,7 @@ public class InstructorFeedbackServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         CourseEnrollmentDAO ceDAO = new CourseEnrollmentDAO();
-//        User user = new User();
-//        user.setUserID(1);
+
         int instructorID = Integer.parseInt(request.getParameter("instructorID"));
         boolean hasEnrolled = user != null && ceDAO.isLearnerEnrolledInInstructorCourse(user.getUserID(), instructorID);
         if (!hasEnrolled) {

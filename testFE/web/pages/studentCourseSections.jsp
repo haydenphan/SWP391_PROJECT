@@ -7,53 +7,93 @@
         <%@ include file="../template/head.jsp" %>
         <style>
             body {
-                font-family: Arial, sans-serif;
-                background-color: #f0f8ff;
-                color: #333;
+                font-family: 'Helvetica Neue', Arial, sans-serif;
+                background-color: #f8f9fa;
+                color: #343a40;
                 margin: 0;
                 padding: 0;
             }
             .container {
                 width: 80%;
-                margin: 0 auto;
+                max-width: 1200px;
+                margin: 50px auto;
                 padding: 20px;
+                background-color: #ffffff;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             }
             h1 {
                 text-align: center;
-                color: #004080;
+                color: #007bff;
+                margin-bottom: 40px;
+                font-size: 2.5em;
             }
             .section {
-                background-color: #e6f7ff;
-                border: 1px solid #b3d9ff;
+                background-color: #e9ecef;
+                border: 1px solid #dee2e6;
                 border-radius: 8px;
                 margin: 20px 0;
                 padding: 20px;
             }
             .section h2 {
-                color: #004080;
+                color: #007bff;
+                font-size: 1.75em;
+                margin-bottom: 20px;
             }
             .section p {
                 margin: 10px 0;
+                line-height: 1.6;
             }
             .quizzes {
-                background-color: #cceeff;
+                background-color: #f1f1f1;
                 border-radius: 8px;
-                padding: 10px;
+                padding: 20px;
+                margin-bottom: 20px;
             }
             .quizzes ul {
                 list-style-type: none;
                 padding: 0;
             }
             .quizzes li {
-                margin: 5px 0;
+                background-color: #ffffff;
+                border: 1px solid #dee2e6;
+                border-radius: 8px;
+                margin: 10px 0;
+                padding: 15px;
+                transition: all 0.3s ease;
+            }
+            .quizzes li:hover {
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                transform: translateY(-5px);
             }
             .quizzes a {
-                color: #004080;
+                color: #fff;
                 text-decoration: none;
                 font-weight: bold;
             }
-            .quizzes a:hover {
-                text-decoration: underline;
+         
+            .quizzes .quiz-description {
+                margin-top: 10px;
+                font-size: 0.9em;
+                color: #6c757d;
+            }
+            .btn-primary {
+                display: inline-block;
+                font-weight: 400;
+                color: #fff;
+                text-align: center;
+                vertical-align: middle;
+                background-color: #007bff;
+                border: 1px solid #007bff;
+                padding: 0.375rem 0.75rem;
+                font-size: 1rem;
+                line-height: 1.5;
+                border-radius: 0.25rem;
+                transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            }
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #004085;
             }
         </style>
     </head>
@@ -66,7 +106,11 @@
                         <c:forEach var="quiz" items="${quizzes}">
                             <li>
                                 <strong>${quiz.quizName}</strong> - Duration: ${quiz.duration}
-                                <a href="${pageContext.request.contextPath}/take-quiz-servlet?quizId=${quiz.quizId}">Do Quiz</a>
+                                <p class="quiz-description">
+                                    Quiz Description:
+                                    ${quiz.quizDescription}
+                                </p>
+                                <a class="btn-primary" href="${pageContext.request.contextPath}/take-quiz-servlet?quizId=${quiz.quizId}">Do Quiz</a>
                             </li>
                         </c:forEach>
                     </ul>

@@ -19,9 +19,6 @@
                             <li><i class="fas fa-check-circle"></i>Access to industry experts</li>
                         </ul>
                     </div>
-                    <div class="student-btn">
-                        <a class="edu-sec-btn" href="${pageContext.request.contextPath}/pages/about.jsp">More about us</a>
-                    </div>
                 </div>
             </div>
             <div class="col-xl-2 col-lg-2">

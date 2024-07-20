@@ -2,11 +2,14 @@ package controller;
 
 import DAO.CertificateDAO;
 import DAO.TransactionDAO;
+import DAO.CourseEnrollmentDAO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Certificate;
+import model.Course;
 import model.Transaction;
 import model.User;
 import utils.LocalDateTimeAdapter;
@@ -22,7 +26,6 @@ import utils.LocalDateTimeAdapter;
 public class UserProfileServlet extends HttpServlet {
 
     private TransactionDAO transactionDAO = new TransactionDAO();
-    private CertificateDAO certificateDAO = new CertificateDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -35,11 +38,6 @@ public class UserProfileServlet extends HttpServlet {
             if ("getTransactions".equals(action)) {
                 try {
                     List<Transaction> transactions = transactionDAO.getTransactionsByUserID(user.getUserID());
-
-                    // Logging the transactions
-                    for (Transaction transaction : transactions) {
-                        System.out.println(transaction.toString());
-                    }
 
                     // Register the custom LocalDateTime adapter
                     Gson gson = new GsonBuilder()
@@ -58,10 +56,20 @@ public class UserProfileServlet extends HttpServlet {
                 }
             } else {
                 // Fetch certificates
-                List<Certificate> certificates = certificateDAO.getCertificatesByUserId(user.getUserID());
+                List<Certificate> certificates = CertificateDAO.getCertificatesByUserId(user.getUserID());
                 request.setAttribute("certificates", certificates);
 
-                // Any logic you want to perform before forwarding to the JSP
+                // Fetch courses and mark completion status
+                List<Course> courseList = CourseEnrollmentDAO.getCoursesByUserID(user.getUserID());
+                Map<Integer, Boolean> courseCompletionMap = new HashMap<>();
+                for (Course course : courseList) {
+                    System.out.println(course.toString());
+                    boolean isCompleted = CourseEnrollmentDAO.hasLearnerCompletedCourse(user.getUserID(), course.getCourseID());
+                    courseCompletionMap.put(course.getCourseID(), isCompleted);
+                }
+                request.setAttribute("courseList", courseList);
+                request.setAttribute("courseCompletionMap", courseCompletionMap);
+
                 request.getRequestDispatcher("pages/user-profile.jsp").forward(request, response);
             }
         } else {

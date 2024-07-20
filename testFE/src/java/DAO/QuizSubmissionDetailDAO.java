@@ -4,6 +4,8 @@ import model.QuizSubmissionDetail;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class QuizSubmissionDetailDAO {
 
@@ -54,5 +56,30 @@ public class QuizSubmissionDetailDAO {
         }
 
         return isDeleted;
+    }
+
+    public static List<QuizSubmissionDetail> getUserAnswers(int userId, int quizId) {
+        String query = "SELECT qsd.* FROM QuizSubmissionDetails qsd "
+                + "JOIN QuizSubmissions qs ON qsd.QuizSubmissionID = qs.SubmissionID "
+                + "WHERE qs.StudentID = ? AND qs.QuizID = ?";
+        List<QuizSubmissionDetail> userAnswers = new ArrayList<>();
+
+        try (Connection connection = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, quizId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    QuizSubmissionDetail detail = new QuizSubmissionDetail();
+                    detail.setId(rs.getInt("ID"));
+                    detail.setQuizSubmissionId(rs.getInt("QuizSubmissionID"));
+                    detail.setQuestionId(rs.getInt("QuestionID"));
+                    detail.setAnswerId(rs.getInt("AnswerID"));
+                    userAnswers.add(detail);
+                }
+            }
+        } catch (Exception e) {
+        }
+
+        return userAnswers;
     }
 }

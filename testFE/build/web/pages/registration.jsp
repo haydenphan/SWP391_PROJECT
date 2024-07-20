@@ -21,7 +21,7 @@
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-xl-10 col-lg-10">
-                            <form action="${pageContext.request.contextPath}/validate-register-info" method="POST">
+                            <form action="${pageContext.request.contextPath}/validate-register-info" method="POST" onsubmit="return validateForm();">
                                 <div class="row">
                                     <div class="col-md-5">
                                         <div class="signup-box text-center">
@@ -123,9 +123,13 @@
             var matKhau = document.getElementById("password").value;
             var matKhauNhapLai = document.getElementById("passwordR").value;
             var msg = document.getElementById("msg");
+            var passwordPattern = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
 
             if (matKhau !== matKhauNhapLai) {
-                msg.innerHTML = "The password did not match!";
+                msg.innerHTML = "The passwords did not match!";
+                return false;
+            } else if (!passwordPattern.test(matKhau)) {
+                msg.innerHTML = "Password must be at least 8 characters long, contain at least one uppercase letter and one special character!";
                 return false;
             } else {
                 msg.innerHTML = "";

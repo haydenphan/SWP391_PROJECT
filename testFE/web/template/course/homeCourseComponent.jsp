@@ -48,9 +48,7 @@
                 </div>
             </div>
         </div>
-        <div class="eduman-course-thumb w-img">
-            <a href="${pageContext.request.contextPath}/CourseDetail?id=${currentCourse.courseID}"><img src="<%=currentCourse.getImageURL()%>" alt="course-img"></a>
-        </div>
+
         <div class="eduman-course-wraper">
             <div class="eduman-course-heading">
                 <a href="${pageContext.request.contextPath}/CourseList?subcategoryID=${currentCourse.subcategoryID}" class="course-link-color-1"><%=SubcategoryDAO.getCategoryNameBySubId(currentCourse.getSubcategoryID()) != null ? SubcategoryDAO.getCategoryNameBySubId(currentCourse.getSubcategoryID()) : "Others"%></a>
@@ -76,7 +74,7 @@
                 <path id="Path_01" data-name="Path 101" d="M16,1.222H8.726V.483a.483.483,0,1,0-.965,0v.74H.491A.483.483,0,0,0,.008,1.7V13.517A.483.483,0,0,0,.491,14H5.24L4.23,15.748a.483.483,0,1,0,.836.483L6.354,14H7.761v1.99a.483.483,0,0,0,.965,0V14h1.407l1.288,2.231a.483.483,0,1,0,.836-.483L11.247,14H16a.483.483,0,0,0,.483-.483V1.7A.483.483,0,0,0,16,1.222Zm-.483.965v8.905H.973V2.187Zm0,10.847H.973v-.976H15.514Z" fill="#575757"/>
                 </g>
                 </svg>
-                <span class="ms-2">12 Lessons</span>
+                <span class="ms-2"><%=CourseDAO.getTotalLecturesByCourseID(currentCourse.getCourseID())%> lectures</span>
             </div>
             <div class="course-deteals-btn">
                 <a href="${pageContext.request.contextPath}/CourseDetail?id=${currentCourse.courseID}"><span class="me-2">View Details</span><i class="far fa-arrow-right"></i></a>

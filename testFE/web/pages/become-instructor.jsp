@@ -211,6 +211,8 @@
                                                     <div class="step-journey-content mt-30">
                                                         <h4>01. Register Your Account</h4>
                                                         <p>Create an account with us and choose the role as an instructor to start your teaching journey. Provide the necessary personal details and set up your profile.</p>
+                                                        <h4>02. Confirm Your Information</h4>
+                                                        <p>Confirm your information and credentials by filling out the form and submitting it. Wait for the admin to review and provide feedback.</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -252,7 +254,7 @@
                                                 <div class="step-journey-box mb-30">
                                                     <div class="step-journey-content mt-30">
                                                         <h4>01. Submit for Approval</h4>
-                                                        <p>Submit your course for approval by our admin team. Make sure to include any relevant certificates or credentials related to the course subject.</p>
+                                                        <p>Submit your course for approval by our admin team.</p>
                                                     </div>
                                                     <div class="step-journey-content mt-30">
                                                         <h4>02. Track Approval Status</h4>

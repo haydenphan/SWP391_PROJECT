@@ -51,7 +51,7 @@ public class CourseDetailServlet extends HttpServlet {
                 // Check if the learner has passed all quizzes
                 boolean hasPassedAllQuizzes = courseDAO.hasPassedAllQuizzesInCourse(user.getUserID(), course.getCourseID());
 
-                if (CourseEnrollmentDAO.isCourseCompleted(user.getUserID(), course.getCourseID()) && hasPassedAllQuizzes) {
+                if (CourseEnrollmentDAO.isCourseCompleted(user.getUserID(), course.getCourseID()) && hasPassedAllQuizzes && hasEnrolled) {
                     courseCompleted = true;
                     if (!CourseEnrollmentDAO.isCertificateGenerated(user.getUserID(), course.getCourseID())) {
                         CourseEnrollmentDAO.updateCourseCompletionStatus(user.getUserID(), course.getCourseID());

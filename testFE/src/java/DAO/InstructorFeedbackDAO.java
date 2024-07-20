@@ -186,6 +186,44 @@ public class InstructorFeedbackDAO extends DAO<InstructorFeedback> {
 
         return hasSubmitted;
     }
+    
+    public static List<InstructorFeedback> getAllFeedbackByInstructorID(int instructorID) {
+        List<InstructorFeedback> feedbacks = new ArrayList<>();
+        String sql = "SELECT f.*, u.UserID, u.Avatar, u.FirstName, u.LastName "
+                   + "FROM InstructorFeedback f "
+                   + "JOIN Users u ON f.LearnerID = u.UserID "
+                   + "WHERE f.InstructorID = ?";
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, instructorID);
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    InstructorFeedback feedback = new InstructorFeedback();
+                    feedback.setFeedbackID(rs.getInt("FeedbackID"));
+                    feedback.setInstructorID(rs.getInt("InstructorID"));
+                    feedback.setComment(rs.getString("Comment"));
+                    feedback.setRating(rs.getInt("Rating"));
+                    feedback.setFeedbackDate(rs.getTimestamp("FeedbackDate").toLocalDateTime());
+
+                    User learner = new User();
+                    learner.setUserID(rs.getInt("UserID"));
+                    learner.setAvatar(rs.getString("Avatar"));
+                    learner.setFirstName(rs.getString("FirstName"));
+                    learner.setLastName(rs.getString("LastName"));
+                    feedback.setLearner(learner);
+
+                    feedbacks.add(feedback);
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
+            Logger.getLogger(InstructorFeedbackDAO.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(InstructorFeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return feedbacks;
+    }
 
     public static void main(String[] args) {
         InstructorFeedbackDAO feedbackDAO = new InstructorFeedbackDAO();
