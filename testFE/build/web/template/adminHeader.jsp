@@ -72,7 +72,7 @@
 
 
                                     <div class="user-avatar-wrapper mr-30">
-                                        <a href="#" 
+                                        <a href="${pageContext.request.contextPath}/admin/admin-profile.jsp" 
                                            class="user-avatar-btn">
                                             <div class="header__user-avatar p-relative">
                                                 <img src="${user.getAvatar()}" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%;">

@@ -964,6 +964,19 @@ public class CourseDAO extends DAO<Course> {
         return sectionIDs;
     }
 
+    public static double calculateCourseCompletionPercentage(int studentID, int courseID) throws Exception {
+        // Calculate lecture completion percentage
+        int totalLectures = getTotalLecturesByCourseID(courseID);
+        int completedLectures = LectureProgressDAO.countCompletedLectures(studentID, courseID);
+        double lectureCompletionPercentage = (totalLectures == 0) ? 0 : (double) completedLectures / totalLectures * 100;
+
+        // Calculate quiz completion percentage
+        double quizCompletionPercentage = QuizDAO.calculateQuizCompletionPercentage(studentID, courseID);
+
+        // Calculate overall course completion percentage
+        return (lectureCompletionPercentage + quizCompletionPercentage) / 2;
+    }
+
     public static void main(String[] args) {
         CourseDAO dao = new CourseDAO();
 //        List<Course> list = dao.getFilteredCourses(null, null, null, null, null, null, null);

@@ -279,4 +279,53 @@ public class QuizDAO {
 
         return quizIDs;
     }
+
+    // Method to calculate the percentage of completed quizzes in a course
+    public static double calculateQuizCompletionPercentage(int studentID, int courseID) throws Exception {
+        // Step 1: Get total quizzes in the course
+        String totalQuizzesQuery = "SELECT COUNT(q.QuizID) AS TotalQuizzes "
+                + "FROM Quizzes q "
+                + "JOIN CourseSections cs ON q.SectionID = cs.SectionID "
+                + "WHERE cs.CourseID = ?";
+        int totalQuizzes = 0;
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(totalQuizzesQuery)) {
+            ps.setInt(1, courseID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    totalQuizzes = rs.getInt("TotalQuizzes");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception("Error calculating total quizzes", e);
+        }
+
+        // Step 2: Get quizzes completed by the student
+        String completedQuizzesQuery = "SELECT COUNT(DISTINCT q.QuizID) AS CompletedQuizzes "
+                + "FROM QuizSubmissions qs "
+                + "JOIN Quizzes q ON qs.QuizID = q.QuizID "
+                + "JOIN CourseSections cs ON q.SectionID = cs.SectionID "
+                + "WHERE qs.StudentID = ? AND cs.CourseID = ?";
+        int completedQuizzes = 0;
+
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(completedQuizzesQuery)) {
+            ps.setInt(1, studentID);
+            ps.setInt(2, courseID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    completedQuizzes = rs.getInt("CompletedQuizzes");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception("Error calculating completed quizzes", e);
+        }
+
+        // Step 3: Calculate completion percentage
+        if (totalQuizzes == 0) {
+            return 0;
+        }
+        return (double) completedQuizzes / totalQuizzes * 100;
+    }
 }

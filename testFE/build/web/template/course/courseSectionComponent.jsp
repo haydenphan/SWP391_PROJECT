@@ -90,6 +90,9 @@
                 <div>
                     <span>Created Date: <fmt:formatDate value="<%= createdDate%>" pattern="dd MMM yyyy"/> </span>
                 </div>
+                <div>
+                    <%= currentSection.getSectionDescription()%>
+                </div>
             </div>
         </div>
         <div class="eduman-course-footer d-flex justify-content-between">

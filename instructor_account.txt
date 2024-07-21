@@ -1,0 +1,5 @@
+username: instructor1
+password: instructor123
+
+username: instructor2
+password: instructor123

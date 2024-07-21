@@ -3,13 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/testFE/src/java/controller/SectionManagementServlet.java</file>
-            <file>file:/D:/testFE/src/java/controller/TakeQuizServlet.java</file>
-            <file>file:/D:/testFE/src/java/controller/CourseSectionServlet.java</file>
-            <file>file:/D:/testFE/web/pages/takeQuiz.jsp</file>
-            <file>file:/D:/testFE/web/pages/manageSection.jsp</file>
-            <file>file:/D:/testFE/src/java/model/Quiz.java</file>
-            <file>file:/D:/testFE/web/pages/studentCourseSections.jsp</file>
+            <file>file:/D:/testFE/web/pages/instructor-profile.jsp</file>
+            <file>file:/D:/testFE/src/java/DAO/WalletDAO.java</file>
+            <file>file:/D:/testFE/src/java/controller/AdminCreator.java</file>
+            <file>file:/D:/testFE/src/java/DAO/UserDAO.java</file>
         </group>
     </open-files>
 </project-private>

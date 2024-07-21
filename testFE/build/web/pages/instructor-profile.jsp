@@ -1,3 +1,9 @@
+<%@page import="java.time.ZoneId"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.time.LocalDateTime"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.Map"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -41,6 +47,19 @@
                 List<InstructorFeedback> feedbackList = InstructorFeedbackDAO.getAllFeedbackByInstructorID(instructorID);
                 InstructorCertificatesDAO icDAO = new InstructorCertificatesDAO();
                 List<InstructorCertificates> certificateList = icDAO.getAllCertificatesByUserID(instructorID);
+
+                // Convert LocalDateTime to Date for feedbackList
+                List<Map<String, Object>> feedbackWithDates = new ArrayList<>();
+                for (InstructorFeedback feedback : feedbackList) {
+                    Map<String, Object> feedbackMap = new HashMap<>();
+                    feedbackMap.put("learner", feedback.getLearner());
+                    feedbackMap.put("rating", feedback.getRating());
+                    feedbackMap.put("comment", feedback.getComment());
+                    LocalDateTime localDateTime = feedback.getFeedbackDate();
+                    Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+                    feedbackMap.put("feedbackDate", date);
+                    feedbackWithDates.add(feedbackMap);
+                }
             %>
 
             <!-- hero-area -->
@@ -136,10 +155,7 @@
                                                 <h5>Email :</h5>
                                                 <span><%=user.getEmail()%></span>
                                             </li>
-                                            <li>
-                                                <h5>Phone :</h5>
-                                                <span></span>
-                                            </li>
+                                        
                                             <li>
                                                 <h5>Role :</h5>
                                                 <span><%=user.getRoleName()%></span>
@@ -154,10 +170,11 @@
                                     <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                                         <h4 class='mb-25'>Reviews</h4>
                                         <div class="student-profile-reviews">
-                                            <c:forEach var="feedback" items="<%=feedbackList%>">
+                                            <c:forEach var="feedback" items="<%=feedbackWithDates%>">
                                                 <div class="student-profile-reviews-item mb-30">
-                                                    <div class="student-profile-reviews-course-title">
+                                                    <div style="display: flex; justify-content: space-between" class="student-profile-reviews-course-title">
                                                         <h5>${feedback.learner.getFirstName()} ${feedback.learner.getLastName()}</h5>
+                                                        <h5><fmt:formatDate value="${feedback.feedbackDate}" pattern="HH:mm dd-MM-yyyy" /></h5>
                                                     </div>
                                                     <div class="student-profile-reviews-text">
                                                         <div class="student-profile-reviews-text-wrap mb-20">
@@ -170,9 +187,12 @@
                                                                     </c:forEach>
                                                             </div>
                                                             <div class="student-profile-review-update">
-                                                                <button type='button' class='student-profile-review-update-btn'>
-                                                                    <i class="far fa-edit"></i> Report
-                                                                </button>
+                                                                <form action="${pageContext.request.contextPath}/pages/report.jsp" method="post">
+                                                                    <input type="hidden" name="feedbackId" value="${feedback.id}" />
+                                                                    <button type='submit' class='student-profile-review-update-btn'>
+                                                                        <i class="far fa-edit"></i> Report
+                                                                    </button>
+                                                                </form>
                                                             </div>
                                                         </div>
                                                         <div class="student-profile-review-content">

@@ -26,6 +26,14 @@
                 margin-bottom: 2rem;
             }
 
+            .course-title {
+                font-size: 2rem;
+                font-weight: bold;
+                margin-bottom: 2rem;
+                text-align: center;
+                color: #2467EC;
+            }
+
             .section-card {
                 border: 1px solid #d3d3d3;
                 border-radius: 15px;
@@ -49,6 +57,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                cursor: pointer;
             }
 
             .section-title {
@@ -126,8 +135,8 @@
             }
 
             .add-section-btn {
-                position: absolute;
-                top: 20px;
+                position: fixed;
+                bottom: 630px;
                 right: 20px;
                 background-color: #2467EC;
                 color: white;
@@ -160,22 +169,26 @@
 
         <%
             List<CourseSection> sectionList = (List<CourseSection>) request.getAttribute("sectionList");
+            Course course = CourseDAO.getCoursesByID((int) request.getAttribute("courseId"));
             User user = (User) session.getAttribute("user");
-            int courseId = (int) request.getAttribute("courseId");
         %>
 
-        <div style="margin-top: 30px" class="container">
-            <div class="row">
-                <button class="add-section-btn" data-toggle="modal" data-target="#addSectionModal">+</button>
-                <c:if test="${fn:length(sectionList) == 0}">
-                    <div class="no-sections">
-                        No sections available. Please add a new section.
-                    </div>
-                </c:if>
-                <c:forEach var="section" items="${sectionList}">
-                    <div class="col-lg-6">
+        <div class="container">
+            <div style="margin-top: 20px" class="course-title">
+                <%=course.getCourseName()%>
+            </div>
+
+            <button class="add-section-btn" data-toggle="modal" data-target="#addSectionModal">+</button>
+            <c:if test="${fn:length(sectionList) == 0}">
+                <div class="no-sections">
+                    No sections available. Please add a new section.
+                </div>
+            </c:if>
+            <c:forEach var="section" items="${sectionList}">
+                <div class="row">
+                    <div class="col-12">
                         <div class="section-card">
-                            <div class="section-header">
+                            <div class="section-header" data-toggle="collapse" data-target="#section${section.sectionID}" aria-expanded="false" aria-controls="section${section.sectionID}">
                                 <div class="section-title">
                                     Section ${section.sectionOrder}.
                                     <form method="POST" action="${pageContext.request.contextPath}/section-management">
@@ -185,17 +198,20 @@
                                         <button type="submit"><i class="fas fa-edit"></i></button>
                                     </form>
                                 </div>
+                                <i class="fas fa-chevron-down"></i>
                             </div>
-                            <div class="section-body">
-                                <ul class="lecture-list">
-                                    <c:set var="currentSection" value="${section}" scope="request" />
-                                    <jsp:include page="../template/course/courseSectionComponent.jsp" />
-                                </ul>
+                            <div id="section${section.sectionID}" class="collapse">
+                                <div class="section-body">
+                                    <ul class="lecture-list">
+                                        <c:set var="currentSection" value="${section}" scope="request" />
+                                        <jsp:include page="../template/course/courseSectionComponent.jsp" />
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </c:forEach>
-            </div>
+                </div>
+            </c:forEach>
         </div>
 
         <!-- Modal for Adding New Section -->

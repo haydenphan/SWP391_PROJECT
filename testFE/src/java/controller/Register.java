@@ -70,7 +70,7 @@ public class Register extends HttpServlet {
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String defaultAvatarUrl = request.getContextPath() + "/img/avatar-default.png";
+        String defaultAvatarUrl = "https://res.cloudinary.com/dieoz2rgk/image/upload/v1721534307/qakzijjlqm8jlvf28ept.png";
         String defaultBio = "No bio yet";
         User user = new User();
         user.setUserName(username);

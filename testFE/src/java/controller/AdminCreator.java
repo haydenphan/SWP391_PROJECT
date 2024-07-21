@@ -12,11 +12,11 @@ import utils.PasswordUtils;
 public class AdminCreator {
 
     public static void main(String[] args) throws Exception {
-        String adminUsername = "admin2";
+        String adminUsername = "admin1";
         String adminPassword = "123";
-        String adminEmail = "admin2@gmail.com";
-        String firstName = "Jason";
-        String lastName = "Kim";
+        String adminEmail = "admin@gmail.com";
+        String firstName = "Jack";
+        String lastName = "Trinh";
         int roleID = 3; // Assuming 3 is the role ID for admin
 
         try {
@@ -32,7 +32,7 @@ public class AdminCreator {
             adminUser.setRole(roleID);
             adminUser.setRegistrationDate(LocalDateTime.now());
             adminUser.setIsActive(true);
-            adminUser.setAvatar("/img/avatar-default.png");
+            adminUser.setAvatar("https://res.cloudinary.com/dieoz2rgk/image/upload/v1721534307/qakzijjlqm8jlvf28ept.png");
             adminUser.setBio("No bio yet");
             adminUser.setStoredSalt(salt);
             adminUser.setProviderID(1);

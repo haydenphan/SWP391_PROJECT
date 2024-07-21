@@ -50,7 +50,7 @@
                             <div class="row">
                                 <c:forEach var="course" items="<%=coursesList%>">
                                     <c:set var="currentCourse" value="${course}" scope="request" />
-                                    <jsp:include page="../template/course/learnerCourseComponent.jsp" />
+                                    <jsp:include page="../template/course/inProgressCourse.jsp" />
                                 </c:forEach>
                             </div>
                             <div class="edu-pagination mt-30 mb-20">

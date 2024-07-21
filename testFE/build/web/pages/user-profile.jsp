@@ -139,10 +139,6 @@
                                                 </span>
                                             </li>
                                             <li>
-                                                <h5>Phone :</h5>
-                                                <span></span>
-                                            </li>
-                                            <li>
                                                 <h5>Role :</h5>
                                                 <span>
                                                     <%=user.getRoleName()%>
