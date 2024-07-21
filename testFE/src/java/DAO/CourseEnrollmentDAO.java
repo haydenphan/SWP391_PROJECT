@@ -1,5 +1,6 @@
 package DAO;
 
+import java.security.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -161,15 +162,26 @@ public class CourseEnrollmentDAO {
         return false;
     }
 
-    public static List<Course> getCoursesByUserID(int userID) {
+    public static List<Course> getCoursesByUserID(int studentID) {
+        String sql = "SELECT c.CourseID, c.CourseName, c.Description, c.CreatedBy, c.CreatedDate, c.IsPublished, "
+                + "c.SubcategoryID, c.LevelID, c.LanguageID, c.Price, c.ImageURL, c.TotalEnrolled, c.LastUpdate, "
+                + "c.Requirements, c.isCancelled, sc.SubcategoryName, l.LevelName, lg.LanguageName, "
+                + "ISNULL(AVG(cf.Rating), 0) AS AverageRating "
+                + "FROM Courses c "
+                + "JOIN CourseEnrollments ce ON c.CourseID = ce.CourseID "
+                + "LEFT JOIN CourseFeedback cf ON c.CourseID = cf.CourseID "
+                + "LEFT JOIN Subcategories sc ON c.SubcategoryID = sc.SubcategoryID "
+                + "LEFT JOIN CourseLevels l ON c.LevelID = l.LevelID "
+                + "LEFT JOIN CourseLanguages lg ON c.LanguageID = lg.LanguageID "
+                + "WHERE ce.StudentID = ? "
+                + "GROUP BY c.CourseID, c.CourseName, c.Description, c.CreatedBy, c.CreatedDate, c.IsPublished, "
+                + "c.SubcategoryID, c.LevelID, c.LanguageID, c.Price, c.ImageURL, c.TotalEnrolled, c.LastUpdate, "
+                + "c.Requirements, c.isCancelled, sc.SubcategoryName, l.LevelName, lg.LanguageName";
+
         List<Course> courses = new ArrayList<>();
-        String sql = "SELECT c.* FROM Courses c "
-                + "INNER JOIN CourseEnrollments ce ON c.CourseID = ce.CourseID "
-                + "WHERE ce.StudentID = ?";
 
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
-
-            st.setInt(1, userID);
+            st.setInt(1, studentID);
 
             try (ResultSet rs = st.executeQuery()) {
                 while (rs.next()) {
@@ -178,21 +190,33 @@ public class CourseEnrollmentDAO {
                     course.setCourseName(rs.getString("CourseName"));
                     course.setDescription(rs.getString("Description"));
                     course.setCreatedBy(rs.getInt("CreatedBy"));
-                    course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime()); // Correct conversion from java.sql.Date to LocalDate
+                    course.setCreatedDate(rs.getTimestamp("CreatedDate").toLocalDateTime());
                     course.setIsPublished(rs.getBoolean("IsPublished"));
                     course.setSubcategoryID(rs.getInt("SubcategoryID"));
-                    course.setLevelID(rs.getInt("LevelID"));
-                    course.setLanguageID(rs.getInt("LanguageID"));
-                    course.setPrice(rs.getInt("Price"));
-                    course.setImageURL(rs.getString("ImageURL"));
                     course.setTotalEnrolled(rs.getInt("TotalEnrolled"));
-                    course.setLastUpdate(rs.getTimestamp("LastUpdate").toLocalDateTime()); // Correct conversion from java.sql.Date to LocalDate
+
+                    java.sql.Timestamp lastUpdateTimestamp = rs.getTimestamp("LastUpdate");
+                    if (lastUpdateTimestamp != null) {
+                        course.setLastUpdate(lastUpdateTimestamp.toLocalDateTime());
+                    }
+
                     course.setRequirements(rs.getString("Requirements"));
+                    course.setPrice(rs.getDouble("Price"));
+                    course.setLanguageID(rs.getInt("LanguageID"));
+                    course.setLevelID(rs.getInt("LevelID"));
+                    course.setImageURL(rs.getString("ImageURL"));
+                    course.setAverageRating(rs.getDouble("AverageRating"));
+                    course.setSubcategoryName(rs.getString("SubcategoryName"));
+                    course.setLevelName(rs.getString("LevelName"));
+                    course.setLanguageName(rs.getString("LanguageName"));
+                    course.setIsCancelled(rs.getBoolean("isCancelled"));
+
                     courses.add(course);
                 }
             }
 
         } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error! " + e.getMessage());
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, e);
         } catch (Exception ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);

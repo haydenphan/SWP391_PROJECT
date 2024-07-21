@@ -280,13 +280,13 @@ public class QuizDAO {
         return quizIDs;
     }
 
-    // Method to calculate the percentage of completed quizzes in a course
     public static double calculateQuizCompletionPercentage(int studentID, int courseID) throws Exception {
         // Step 1: Get total quizzes in the course
-        String totalQuizzesQuery = "SELECT COUNT(q.QuizID) AS TotalQuizzes "
-                + "FROM Quizzes q "
-                + "JOIN CourseSections cs ON q.SectionID = cs.SectionID "
-                + "WHERE cs.CourseID = ?";
+        String totalQuizzesQuery = """
+                SELECT COUNT(q.QuizID) AS TotalQuizzes
+                FROM Quizzes q
+                JOIN CourseSections cs ON q.SectionID = cs.SectionID
+                WHERE cs.CourseID = ?""";
         int totalQuizzes = 0;
 
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(totalQuizzesQuery)) {
@@ -302,19 +302,20 @@ public class QuizDAO {
         }
 
         // Step 2: Get quizzes completed by the student
-        String completedQuizzesQuery = "SELECT COUNT(DISTINCT q.QuizID) AS CompletedQuizzes "
-                + "FROM QuizSubmissions qs "
-                + "JOIN Quizzes q ON qs.QuizID = q.QuizID "
-                + "JOIN CourseSections cs ON q.SectionID = cs.SectionID "
-                + "WHERE qs.StudentID = ? AND cs.CourseID = ?";
-        int completedQuizzes = 0;
+        String completedQuizzesQuery = """
+                SELECT q.QuizID
+                FROM Quizzes q
+                JOIN CourseSections cs ON q.SectionID = cs.SectionID
+                JOIN QuizSubmissions qs ON q.QuizID = qs.QuizID
+                WHERE qs.StudentID = ? AND cs.CourseID = ?""";
+        List<Integer> completedQuizzes = new ArrayList<>();
 
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(completedQuizzesQuery)) {
             ps.setInt(1, studentID);
             ps.setInt(2, courseID);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    completedQuizzes = rs.getInt("CompletedQuizzes");
+                while (rs.next()) {
+                    completedQuizzes.add(rs.getInt("QuizID"));
                 }
             }
         } catch (SQLException e) {
@@ -322,10 +323,18 @@ public class QuizDAO {
             throw new Exception("Error calculating completed quizzes", e);
         }
 
-        // Step 3: Calculate completion percentage
-        if (totalQuizzes == 0) {
+        // Step 3: Check if all quizzes are completed and each with at least 50% score
+        if (completedQuizzes.size() != totalQuizzes) {
             return 0;
         }
-        return (double) completedQuizzes / totalQuizzes * 100;
+
+        for (int quizID : completedQuizzes) {
+            if (!hasPassedQuiz(quizID, studentID)) {
+                return 0;
+            }
+        }
+
+        // Step 4: Calculate completion percentage
+        return 100;
     }
 }

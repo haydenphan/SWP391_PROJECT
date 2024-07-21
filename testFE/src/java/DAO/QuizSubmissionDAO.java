@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import model.QuizSubmission;
 
 public class QuizSubmissionDAO {
 
@@ -81,5 +82,31 @@ public class QuizSubmissionDAO {
             e.printStackTrace();
         }
         return hasSubmitted;
+    }
+
+    public static QuizSubmission getQuizSubmissionByStudentIdAndQuizId(int studentId, int quizId) {
+        String query = "SELECT * FROM QuizSubmissions WHERE StudentID = ? AND QuizID = ?";
+        QuizSubmission submission = null;
+
+        try (Connection connection = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, studentId);
+            ps.setInt(2, quizId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int submissionID = rs.getInt("SubmissionID");
+                    LocalDateTime submissionDate = rs.getTimestamp("SubmissionDate").toLocalDateTime();
+                    String timeSpent = rs.getString("TimeSpent");
+
+                    submission = new QuizSubmission();
+                    submission.setSubmissionId(submissionID);
+                    submission.setSubmissionDate(submissionDate);
+                    submission.setTimeSpent(studentId);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return submission;
     }
 }

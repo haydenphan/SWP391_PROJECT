@@ -16,7 +16,7 @@
         <a href="${pageContext.request.contextPath}/CourseDetail?id=<%=currentCourse.getCourseID()%>"><img src="<%= currentCourse.getImageURL()%>" alt="" /></a>
     </div>
     <div class="inprogress-course-text">
-        <div style="display: flex" class="inprogress-course-rating">
+        <div style="display: flex" class="course-star">
             <ul style="display: flex">
                 <c:set var="rating" value="<%= currentCourse.avgRatingDisplay(1)%>" />
                 <c:forEach var="i" begin="1" end="5">

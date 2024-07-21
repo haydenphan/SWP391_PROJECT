@@ -6,8 +6,7 @@
 
 <%
     int quizId = Integer.parseInt(request.getParameter("quizId"));
-    User user = (User)session.getAttribute("user");
-    boolean hasSubmitted = QuizSubmissionDAO.hasLearnerSubmittedQuiz(user.getUserID(), quizId);
+    User user = (User) session.getAttribute("user");
 
     Quiz quiz = QuizDAO.getQuizById(quizId);
     List<QuizQuestion> questions = QuizQuestionDAO.getQuizQuestionsByQuizId(quizId);
@@ -126,30 +125,22 @@
     <body>
         <div class="container">
             <h1>Quiz: ${quiz.quizName}</h1>
-
-            <c:if test="<%=hasSubmitted%>">
-                <div class="message">You have already submitted this quiz.</div>
-                <a href="${pageContext.request.contextPath}/view-quiz-result?quizID=<%=quizId%>" class="view-results-btn">View Results</a>
-            </c:if>
-
-            <c:if test="<%=!hasSubmitted%>">
-                <div id="timer">Loading...</div>
-                <form name="quizForm" action="${pageContext.request.contextPath}/submit-quiz-servlet" method="post">
-                    <c:forEach var="question" items="<%=questions%>">
-                        <div class="question">
-                            <h3>${question.questionText}</h3>
-                            <c:forEach var="answer" items="${QuizAnswerDAO.getAnswersByQuestionId(question.questionID)}">
-                                <div class="answer">
-                                    <input type="radio" name="question_${question.questionID}" value="${answer.answerID}" /> ${answer.answerText}
-                                </div>
-                            </c:forEach>
-                        </div>
-                    </c:forEach>
-                    <input type="hidden" name="quizId" value="${quiz.quizId}" />
-                    <input type="hidden" name="studentId" value="${studentId}" />
-                    <button type="submit" class="submit-btn">Submit Quiz</button>
-                </form>
-            </c:if>
+            <div id="timer">Loading...</div>
+            <form name="quizForm" action="${pageContext.request.contextPath}/submit-quiz-servlet" method="post">
+                <c:forEach var="question" items="<%=questions%>">
+                    <div class="question">
+                        <h3>${question.questionText}</h3>
+                        <c:forEach var="answer" items="${QuizAnswerDAO.getAnswersByQuestionId(question.questionID)}">
+                            <div class="answer">
+                                <input type="radio" name="question_${question.questionID}" value="${answer.answerID}" /> ${answer.answerText}
+                            </div>
+                        </c:forEach>
+                    </div>
+                </c:forEach>
+                <input type="hidden" name="quizId" value="${quiz.quizId}" />
+                <input type="hidden" name="studentId" value="${studentId}" />
+                <button type="submit" class="submit-btn">Submit Quiz</button>
+            </form>
         </div>
     </body>
 </html>

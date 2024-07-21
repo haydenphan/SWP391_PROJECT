@@ -1,5 +1,6 @@
 package controller;
 
+import DAO.QuizDAO;
 import DAO.QuizSubmissionDAO;
 import DAO.QuizSubmissionDetailDAO;
 import java.io.IOException;
@@ -36,6 +37,16 @@ public class SubmitQuizServlet extends HttpServlet {
         }
 
         int quizId = Integer.parseInt(request.getParameter("quizId"));
+
+        if (QuizSubmissionDAO.hasLearnerSubmittedQuiz(studentId, quizId)) {
+            try {
+                QuizSubmissionDetailDAO.deleteQuizSubmissionDetailsBySubmissionId(QuizSubmissionDAO.getQuizSubmissionByStudentIdAndQuizId(studentId, quizId).getSubmissionId());
+            } catch (Exception ex) {
+                Logger.getLogger(SubmitQuizServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            QuizSubmissionDAO.deleteSubmissionsByQuizId(quizId);
+        }
+
         LocalDateTime submissionDate = LocalDateTime.now();
 
         // Calculate timespent in seconds
@@ -69,7 +80,7 @@ public class SubmitQuizServlet extends HttpServlet {
 
         QuizSubmissionDetailDAO.saveQuizSubmissionDetails(submissionDetails);
 
-        RequestDispatcher rd = request.getRequestDispatcher("/view-quiz-result?quizID="+quizId);
+        RequestDispatcher rd = request.getRequestDispatcher("/view-quiz-result?quizID=" + quizId);
         rd.forward(request, response);
     }
 
