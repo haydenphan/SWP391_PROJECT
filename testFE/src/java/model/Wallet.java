@@ -33,5 +33,4 @@ public class Wallet {
     public String toString() {
         return "Wallet{" + "WalletID=" + WalletID + ", Balance=" + Balance + '}';
     }
-
 }

@@ -17,7 +17,6 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/horizontal-menu.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/style.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/adminCSS/css/skin_color.css">
-        <%@ include file="../template/head.jsp" %>
         <script src="<c:url value='/js/notifications.js'/>"></script>
         <link rel="stylesheet" href="<c:url value='/css/notifications.css'/>">
         <style>
@@ -55,7 +54,10 @@
                 background-color: #f8f9fa;
             }
         </style>
+        <%@ include file="../template/head.jsp" %>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+        
     </head>
 
     <body class="layout-top-nav light-skin theme-primary fixed">

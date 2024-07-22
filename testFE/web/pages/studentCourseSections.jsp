@@ -121,6 +121,26 @@
                 color: #6c757d;
                 margin-top: 10px;
             }
+            .back-button {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+            }
+            .back-button form {
+                display: inline;
+            }
+            .back-button button {
+                padding: 10px 20px;
+                border: none;
+                background-color: #007bff;
+                color: #fff;
+                cursor: pointer;
+                border-radius: 4px;
+                transition: background-color 0.3s;
+            }
+            .back-button button:hover {
+                background-color: #0056b3;
+            }
         </style>
     </head>
     <body>
@@ -161,6 +181,12 @@
             <c:if test="${empty quizzes}">
                 <p>No quizzes available for this section.</p>
             </c:if>
+            <div class="back-button">
+                <form action="${pageContext.request.contextPath}/CourseDetail" method="get">
+                    <input type="hidden" name="id" value="${section.getCourseID()}">
+                    <button type="submit">Back to Course Details</button>
+                </form>
+            </div>
         </div>
     </body>
 </html>

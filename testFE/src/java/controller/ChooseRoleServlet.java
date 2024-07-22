@@ -41,7 +41,7 @@ public class ChooseRoleServlet extends HttpServlet {
         }
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-
+        
         if (user != null) {
             Random rd = new Random();
             String username = System.currentTimeMillis() + rd.nextInt(1000) + "";
@@ -72,29 +72,25 @@ public class ChooseRoleServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User not found in session.");
             return;
         }
-        session.setAttribute("user", user);
-
-        // Forward to the user profile page
-        String url = "/home?role=2";
-        if (user.getRole() == 1) {
-            url = "/home?role=1";
-        }
-        RequestDispatcher rd = request.getRequestDispatcher(url);
+        session.removeAttribute("user");
+        request.setAttribute("success", true);
+        
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/pages/registration.jsp");
         rd.forward(request, response);
     }
-
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
+    
     @Override
     public String getServletInfo() {
         return "Servlet that handles user role selection and updates";

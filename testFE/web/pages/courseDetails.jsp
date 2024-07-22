@@ -5,6 +5,7 @@
 <%@ page import="model.*" %>
 <%@ page import="java.util.List" %>
 <%@ page import="DAO.*" %>
+<%@ page import="utils.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="java.io.*" %>
 
@@ -592,13 +593,8 @@
                                     %>
                                     <p>Register for a learner account to purchase the course! <span style="color: blue; text-decoration: underline"><a href="${pageContext.request.contextPath}/pages/registration.jsp">Sign Up<a/></span></p>
                                     <%
-                                    } else if (((User) session.getAttribute("user") != null) && (boolean) request.getAttribute("hasEnrolled")) {
-                                    %>
-                                    <%%>
-                                    <%
-                                    } else {
-                                    %>
-                                    <div class="button-container" style="display: flex; justify-content: flex-start;">
+                                    } else if (((User) session.getAttribute("user") != null) && (((boolean) request.getAttribute("hasEnrolled")) == false) && (((User) session.getAttribute("user")).getRole() == 1)) {
+                                    %><div class="button-container" style="display: flex; justify-content: flex-start;">
                                         <form style="width: 50%" action="${pageContext.request.contextPath}/Cart/add-to-cart" method="GET">
                                             <div class="video-wishlist" style="margin-right: 10px">
                                                 <input type="hidden" name="CourseID" value="${course.getCourseID()}">
@@ -612,6 +608,10 @@
                                             </div>
                                         </form>
                                     </div>
+                                    <%%>
+                                    <%
+                                    } else {
+                                    %>
                                     <%
                                         }
                                     %>                

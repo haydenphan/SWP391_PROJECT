@@ -156,22 +156,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="coupon-all">
-                                        <div class="coupon d-flex align-items-center">
-                                            <input id="coupon_code" class="input-text" name="coupon_code" value=""
-                                                   placeholder="Coupon code" type="text">
-                                            <button class="edu-btn" name="apply_coupon" type="submit">Apply coupon</button>
-                                        </div>
-                                        <div class="coupon2">
-                                            <button onClick="window.location.reload()" class="edu-btn" name="update_cart"
-                                                    type="submit">Update cart</button>
-                                            <button class="edu-btn" id="cancelOrderBtn">Delete All Courses</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
                             <div class="row">
                                 <div class="col-md-6 ml-auto">
                                     <div class="cart-page-total">
@@ -180,7 +165,6 @@
                                             <li>Total <span id="total">$<c:out value="${total != null ? total : 0}" /></span></li>
                                         </ul>
                                         <button id="proceedToCheckoutBtn" class="edu-border-btn">Proceed to checkout</button>
-                                        <a href="${pageContext.request.contextPath}/CourseList" class="btn-view-course">Continue to View Course</a>
                                     </div>
                                 </div>
                             </div>

@@ -108,11 +108,10 @@ public class Register extends HttpServlet {
                 Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        session.setAttribute("user", user);
 
-        url = "/home?role=" + user.getRole();
+        request.setAttribute("success", true);
 
-        RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/pages/registration.jsp");
         rd.forward(request, response);
     }
 

@@ -64,7 +64,7 @@ public class InstructorApprovalsDAO extends DAO<InstructorApprovals> {
         return 0;
     }
 
-    public InstructorApprovals select(int id) {
+    public static InstructorApprovals select(int id) {
         String sql = "SELECT ApprovalID, UserID, IsApproved, RequestDate, ApprovalDate FROM InstructorApprovals WHERE ApprovalID = ?";
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -118,7 +118,7 @@ public class InstructorApprovalsDAO extends DAO<InstructorApprovals> {
         }
         return false;
     }
-    
+
     public static int getApprovalIDByUserID(int userID) {
         String sql = "SELECT ApprovalID FROM InstructorApprovals WHERE UserID = ?";
         try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -133,18 +133,24 @@ public class InstructorApprovalsDAO extends DAO<InstructorApprovals> {
         }
         return 0; // Return 0 or another appropriate value if no ApprovalID is found
     }
-    
+
     public static boolean doesUserIDExist(int userID) {
-    String sql = "SELECT 1 FROM InstructorApprovals WHERE UserID = ?";
-    try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
-        ps.setInt(1, userID);
-        try (ResultSet rs = ps.executeQuery()) {
-            return rs.next(); // Returns true if there is at least one row, false otherwise
+        String sql = "SELECT 1 FROM InstructorApprovals WHERE UserID = ?";
+        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, userID);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next(); // Returns true if there is at least one row, false otherwise
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return false; // Return false in case of an exception
     }
-    return false; // Return false in case of an exception
-}
+
+    public static void main(String[] args) {
+        InstructorApprovalsDAO approvalsDAO = new InstructorApprovalsDAO();
+        int approvalID = InstructorApprovalsDAO.getApprovalIDByUserID(1);
+        System.out.println(approvalsDAO.select(approvalID).toString());
+    }
 
 }

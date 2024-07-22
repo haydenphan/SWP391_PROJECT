@@ -25,6 +25,7 @@ public class StudentCourseSectionServlet extends HttpServlet {
         CourseSection section = CourseSectionDAO.getSectionById(sectionID);
         List<Quiz> quizzes = QuizDAO.getQuizzesBySectionId(sectionID);
         request.setAttribute("quizzes", quizzes);
+        request.setAttribute("section", section);
         RequestDispatcher dis = request.getRequestDispatcher("/pages/studentCourseSections.jsp?sectionName=" + section.getSectionName());
         dis.forward(request, response);
     }

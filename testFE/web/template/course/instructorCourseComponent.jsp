@@ -73,7 +73,6 @@
                 <div class="course-icon">
                     (${currentCourse.avgRatingDisplay(1)})
                     <i class="fas fa-star"></i>
-                    avg
                 </div>
             </div>
             <div class="eduman-course-text">

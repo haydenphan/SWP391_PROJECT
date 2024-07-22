@@ -92,16 +92,33 @@
                     <tbody>
                         <c:forEach items="${instructorList}" var="instructor">
                             <tr>
-                                <td>${InstructorApprovalsDAO.getApprovalIDByUserID(instructor.userID)}</td>
+                                <td><c:choose>
+                                        <c:when test="${InstructorApprovalsDAO.getApprovalIDByUserID(instructor.userID) == 0}">
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${InstructorApprovalsDAO.getApprovalIDByUserID(instructor.userID)}
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
                                 <td>${instructor.userID}</td>
                                 <td>${instructor.firstName} ${instructor.lastName}</td>
                                 <td>
                                     <c:choose>
-                                        <c:when test="${InstructorApprovalsDAO.isUserApproved(instructor.userID)}">
-                                            Approved
+                                        <c:when test="${InstructorApprovalsDAO.select(InstructorApprovalsDAO.getApprovalIDByUserID(instructor.userID)) == null}">
+                                            <p style="color: red">Not submitted</p>
                                         </c:when>
+                                        <c:when test="${InstructorApprovalsDAO.isUserApproved(instructor.userID)}">
+                                            <p style="color: green">Approved</p>
+
+                                        </c:when>
+                                        <c:when test="${!InstructorApprovalsDAO.isUserApproved(instructor.userID)}">
+                                            <p style="color: red">Rejected</p>
+
+                                        </c:when>
+
                                         <c:otherwise>
-                                            Pending
+                                            <p style="color: blue">Pending</p>
+
                                         </c:otherwise>
                                     </c:choose>
                                 </td>

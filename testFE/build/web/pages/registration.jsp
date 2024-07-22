@@ -1,9 +1,13 @@
 <!doctype html>
 <html class="no-js" lang="zxx">
     <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
         <%-- HEAD --%>
         <%@ include file="../template/head.jsp" %>
-
     </head>
 
     <body>
@@ -55,9 +59,7 @@
                                                 <input id="passwordR" required type="password" placeholder="Enter password again" oninput="kiemTraMatKhau();">
                                             </div>
                                             <div id="msg" style="color: red; padding: 0px 10px 0px 10px;">
-
                                                 ${baoLoi}
-
                                             </div> <!-- Message display area -->
                                             <div style="display: flex;">
                                                 <label style="padding: 10px; margin-right: 10px" for="roles">Are you Learner or Instructor?</label>
@@ -102,67 +104,103 @@
                                     </div>
                                 </div>
                             </form>
+                            <!-- Success Modal -->
+                            <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLongTitle">Registration Successful</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            You have successfully registered. Please <a href="${pageContext.request.contextPath}/pages/login.jsp">login</a> to continue.
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="removeSuccessAttribute()">Close</button>
+                                            <a href="${pageContext.request.contextPath}/pages/login.jsp" class="btn btn-primary" onclick="removeSuccessAttribute()">Go to Login</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End of Success Modal -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </body>
 
-    <%-- FOOTER --%>
-    <%@ include file="../template/footer.jsp" %>
+        <%-- FOOTER --%>
+        <%@ include file="../template/footer.jsp" %>
 
-    <%-- BACK TO TOP --%>
-    <%@ include file="../template/backToTop.jsp" %>
+        <%-- BACK TO TOP --%>
+        <%@ include file="../template/backToTop.jsp" %>
 
-    <!-- JS here -->
-    <%@ include file="../template/script.jsp" %>
+        <!-- JS here -->
+        <%@ include file="../template/script.jsp" %>
 
-    <script>
-        function kiemTraMatKhau() {
-            var matKhau = document.getElementById("password").value;
-            var matKhauNhapLai = document.getElementById("passwordR").value;
-            var msg = document.getElementById("msg");
-            var passwordPattern = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
+        <script>
+            function kiemTraMatKhau() {
+                var matKhau = document.getElementById("password").value;
+                var matKhauNhapLai = document.getElementById("passwordR").value;
+                var msg = document.getElementById("msg");
+                var passwordPattern = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
 
-            if (matKhau !== matKhauNhapLai) {
-                msg.innerHTML = "The passwords did not match!";
-                return false;
-            } else if (!passwordPattern.test(matKhau)) {
-                msg.innerHTML = "Password must be at least 8 characters long, contain at least one uppercase letter and one special character!";
-                return false;
-            } else {
-                msg.innerHTML = "";
-                return true;
-            }
-        }
-
-        function xuLyChonDongY() {
-            var policycheckbox = document.getElementById("policycheckbox");
-            if (policycheckbox.checked) {
-                document.getElementById("submitbtn").disabled = false;
-            } else {
-                document.getElementById("submitbtn").disabled = true;
-            }
-        }
-
-        // Ensure the function is called when the page loads to set the initial state
-        document.addEventListener('DOMContentLoaded', function () {
-            xuLyChonDongY();
-        });
-
-        function validateForm() {
-            var passwordsMatch = kiemTraMatKhau();
-            var termsAccepted = document.getElementById("policycheckbox").checked;
-
-            if (!passwordsMatch || !termsAccepted) {
-                if (!termsAccepted) {
-                    document.getElementById("msg").innerHTML = "You must accept the privacy policy!";
+                if (matKhau !== matKhauNhapLai) {
+                    msg.innerHTML = "The passwords did not match!";
+                    return false;
+                } else if (!passwordPattern.test(matKhau)) {
+                    msg.innerHTML = "Password must be at least 8 characters long, contain at least one uppercase letter and one special character!";
+                    return false;
+                } else {
+                    msg.innerHTML = "";
+                    return true;
                 }
-                return false; // Prevent form submission
             }
 
-            return true; // Allow form submission
-        }
-    </script>
+            function xuLyChonDongY() {
+                var policycheckbox = document.getElementById("policycheckbox");
+                if (policycheckbox.checked) {
+                    document.getElementById("submitbtn").disabled = false;
+                } else {
+                    document.getElementById("submitbtn").disabled = true;
+                }
+            }
+
+            // Ensure the function is called when the page loads to set the initial state
+            document.addEventListener('DOMContentLoaded', function () {
+                xuLyChonDongY();
+                // Check if success attribute is present and show modal
+                const success = <%= request.getAttribute("success") != null && (boolean) request.getAttribute("success")%>;
+                if (success) {
+                    $('#successModal').modal('show');
+                }
+            });
+
+            function validateForm() {
+                var passwordsMatch = kiemTraMatKhau();
+                var termsAccepted = document.getElementById("policycheckbox").checked;
+
+                if (!passwordsMatch || !termsAccepted) {
+                    if (!termsAccepted) {
+                        document.getElementById("msg").innerHTML = "You must accept the privacy policy!";
+                    }
+                    return false; // Prevent form submission
+                }
+
+                return true; // Allow form submission
+            }
+
+            function removeSuccessAttribute() {
+                $.ajax({
+                    type: "POST",
+                    url: "${pageContext.request.contextPath}/removeSuccessAttribute",
+                    success: function () {
+                        console.log("Success attribute removed.");
+                    }
+                });
+            }
+        </script>
+    </body>
 </html>

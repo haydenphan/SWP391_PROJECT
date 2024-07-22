@@ -33,4 +33,11 @@ public class ValidateOtpEmail extends HttpServlet {
             dispatcher.forward(request, response);
         }
     }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doPost(req, resp);
+    }
+    
+    
 }

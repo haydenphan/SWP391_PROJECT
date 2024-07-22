@@ -40,6 +40,26 @@
             .incorrect {
                 color: red;
             }
+            .back-button {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+            }
+            .back-button form {
+                display: inline;
+            }
+            .back-button button {
+                padding: 10px 20px;
+                border: none;
+                background-color: #007bff;
+                color: #fff;
+                cursor: pointer;
+                border-radius: 4px;
+                transition: background-color 0.3s;
+            }
+            .back-button button:hover {
+                background-color: #0056b3;
+            }
         </style>
     </head>
     <body>
@@ -101,6 +121,12 @@
                         </ul>
                     </div>
                 </c:forEach>
+            </div>
+            <div class="back-button">
+                <form action="${pageContext.request.contextPath}/student-course-section-servlet" method="get">
+                    <input type="hidden" name="sectionId" value="${quiz.getSectionId()}">
+                    <button type="submit">Back to Quizzes</button>
+                </form>
             </div>
         </div>
     </body>

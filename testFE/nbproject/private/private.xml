@@ -3,16 +3,47 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/testFE/src/java/DAO/QuizDAO.java</file>
-            <file>file:/D:/testFE/src/java/controller/TakeQuizServlet.java</file>
-            <file>file:/D:/testFE/src/java/DAO/QuizSubmissionDAO.java</file>
-            <file>file:/D:/testFE/web/pages/takeQuiz.jsp</file>
-            <file>file:/D:/testFE/web/template/course/inProgressCourse.jsp</file>
-            <file>file:/D:/testFE/src/java/controller/SubmitQuizServlet.java</file>
-            <file>file:/D:/testFE/src/java/DAO/QuizSubmissionDetailDAO.java</file>
-            <file>file:/D:/testFE/src/java/controller/StudentCourseSectionServlet.java</file>
+            <file>file:/D:/testFE/web/pages/courseList.jsp</file>
+            <file>file:/D:/testFE/src/java/controller/ManageUserServlet.java</file>
+            <file>file:/D:/testFE/src/java/DAO/InstructorCertificatesDAO.java</file>
+            <file>file:/D:/testFE/web/pages/enterOtpForEmail.jsp</file>
             <file>file:/D:/testFE/src/java/DAO/CourseDAO.java</file>
+            <file>file:/D:/testFE/web/template/adminHeader.jsp</file>
+            <file>file:/D:/testFE/web/pages/user-profile.jsp</file>
+            <file>file:/D:/testFE/src/java/model/Quiz.java</file>
+            <file>file:/D:/testFE/src/java/model/Wallet.java</file>
+            <file>file:/D:/testFE/web/pages/instructor-profile-view.jsp</file>
+            <file>file:/D:/testFE/src/java/controller/InstructorRegistrationResponse.java</file>
+            <file>file:/D:/testFE/src/java/controller/ChooseRoleServlet.java</file>
+            <file>file:/D:/testFE/src/java/controller/CourseDetailServlet.java</file>
+            <file>file:/D:/testFE/src/java/DAO/CertificateDAO.java</file>
+            <file>file:/D:/testFE/src/java/controller/ValidateOtpEmail.java</file>
+            <file>file:/D:/testFE/src/java/controller/ViewQuizResultController.java</file>
+            <file>file:/D:/testFE/src/java/controller/RemoveSuccessAttributeServlet.java</file>
+            <file>file:/D:/testFE/web/pages/instructorHome.jsp</file>
+            <file>file:/D:/testFE/web/pages/verifyEmail.jsp</file>
+            <file>file:/D:/testFE/src/java/controller/StudentCourseSectionServlet.java</file>
+            <file>file:/D:/testFE/src/java/model/CourseSection.java</file>
+            <file>file:/D:/testFE/src/java/controller/Register.java</file>
+            <file>file:/D:/testFE/web/pages/courseDetails.jsp</file>
+            <file>file:/D:/testFE/src/java/model/InstructorApprovals.java</file>
+            <file>file:/D:/testFE/src/java/controller/InstructorRegistrationServlet.java</file>
+            <file>file:/D:/testFE/src/java/controller/ValidateRegisterInfo.java</file>
+            <file>file:/D:/testFE/web/admin/admin-profile.jsp</file>
+            <file>file:/D:/testFE/web/pages/google.jsp</file>
+            <file>file:/D:/testFE/src/java/DAO/InstructorApprovalsDAO.java</file>
+            <file>file:/D:/testFE/web/admin/instructorRegistrationRequest.jsp</file>
             <file>file:/D:/testFE/web/pages/studentCourseSections.jsp</file>
+            <file>file:/D:/testFE/web/pages/instructor-profile.jsp</file>
+            <file>file:/D:/testFE/src/java/controller/VerifyEmail.java</file>
+            <file>file:/D:/testFE/web/pages/registration.jsp</file>
+            <file>file:/D:/testFE/web/admin/manage-user.jsp</file>
+            <file>file:/D:/testFE/src/java/model/Certificate.java</file>
+            <file>file:/D:/testFE/web/pages/instructorRegistrationForm.jsp</file>
+            <file>file:/D:/testFE/web/admin/viewInstructorProfile.jsp</file>
+            <file>file:/D:/testFE/src/java/controller/UserProfileServlet.java</file>
+            <file>file:/D:/testFE/src/java/model/Course.java</file>
+            <file>file:/D:/testFE/web/pages/viewQuizResult.jsp</file>
         </group>
     </open-files>
 </project-private>

@@ -113,7 +113,7 @@
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="certificate-tab" data-bs-toggle="tab"
                                                 data-bs-target="#certificate" type="button" role="tab" aria-controls="certificate"
-                                                aria-selected="false"><i class="fas fa-bookmark"></i> Certificate</button>
+                                                aria-selected="false"><i class="fas fa-bookmark"></i> Credentials</button>
                                     </li>
 
                                     <li class="nav-item" role="presentation">
@@ -155,7 +155,7 @@
                                                 <h5>Email :</h5>
                                                 <span><%=user.getEmail()%></span>
                                             </li>
-                                        
+
                                             <li>
                                                 <h5>Role :</h5>
                                                 <span><%=user.getRoleName()%></span>
@@ -206,9 +206,11 @@
                                     </div>
 
                                     <div class="tab-pane fade" id="certificate" role="tabpanel" aria-labelledby="certificate-tab">
-                                        <h4 class='mb-25'>Instructor Certificate</h4>
+                                        <h4 class='mb-25'>Instructor Credentials</h4>
                                         <c:forEach var="certificate" items="<%=certificateList%>">
-                                            <a href="${certificate.certificateUrl}">View Certificate</a>
+                                            <div style="margin-bottom: 18px" class="certificate-item">
+                                                <a href="${certificate.certificateUrl}" target="_blank">View Certificate</a>
+                                            </div>
                                         </c:forEach>
                                     </div>       
 

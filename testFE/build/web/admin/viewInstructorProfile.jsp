@@ -1,8 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="model.User" %>
-<%@ page import="model.InstructorCertificates" %>
+<%@ page import="model.*" %>
 <%@ page import="java.util.List" %>
 <%@ page import="DAO.*" %>
 
@@ -104,13 +103,18 @@
     <body>
 
         <%
-            String instructorIdParam = request.getParameter("instructorId");
+            String instructorIdParam = request.getParameter("instructorID");
             User instructor = null;
+            InstructorApprovals approval = null;
             if (instructorIdParam != null) {
                 int instructorId = Integer.parseInt(instructorIdParam);
                 UserDAO uDAO = new UserDAO();
                 instructor = uDAO.getUserByID(instructorId);
                 request.setAttribute("instructor", instructor);
+
+                InstructorApprovalsDAO approvalsDAO = new InstructorApprovalsDAO();
+                int approvalID = approvalsDAO.getApprovalIDByUserID(instructorId);
+                approval = InstructorApprovalsDAO.select(approvalID);
             } else {
                 instructor = (User) request.getAttribute("instructor");
             }
@@ -141,14 +145,23 @@
                     </tr>
                     <!-- Add other details as necessary -->
                 </table>
-                <div class="btn-group">
-                    <form action="${pageContext.request.contextPath}/instructor-registration-response" method="post" onsubmit="confirmAction(event)">
-                        <input type="hidden" name="action" value="respond">
-                        <input type="hidden" name="userID" value="${instructor.userID}">
-                        <button type="submit" name="decision" value="approve" onclick="setDecision('approve')">Approve</button>
-                        <button type="submit" name="decision" value="reject" class="reject" onclick="setDecision('reject')">Reject</button>
-                    </form>
-                </div>
+                <c:choose>
+                    <c:when test="<%=approval == null%>">
+                        <p>This user has not submitted a registration form for approval.</p>
+                    </c:when>
+                    <c:otherwise>
+                        <c:if test="<%=approval.getApprovalDate() == null%>">
+                            <div class="btn-group">
+                                <form action="${pageContext.request.contextPath}/instructor-registration-response" method="post" onsubmit="confirmAction(event)">
+                                    <input type="hidden" name="action" value="respond">
+                                    <input type="hidden" name="userID" value="${instructor.userID}">
+                                    <button type="submit" name="decision" value="approve" onclick="setDecision('approve')">Approve</button>
+                                    <button type="submit" name="decision" value="reject" class="reject" onclick="setDecision('reject')">Reject</button>
+                                </form>
+                            </div>
+                        </c:if>
+                    </c:otherwise>
+                </c:choose>
                 <div class="certificate-list">
                     <h2>Certificates</h2>
                     <c:forEach var="certificate" items="<%=certificates%>">

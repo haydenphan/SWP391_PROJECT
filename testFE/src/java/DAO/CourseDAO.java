@@ -988,8 +988,12 @@ public class CourseDAO extends DAO<Course> {
 //        System.out.println("Star ratings count for course ID " + "3" + ": " + starCounts);
 //        System.out.println(CourseDAO.getCoursesByInstructor(3).size());
 
-        for (Course course : dao.listPopularCourse()) {
-            System.out.println(course.toString());
-        }
+//        for (Course course : dao.listPopularCourse()) {
+//            System.out.println(course.toString());
+//        }
+
+        Course course = dao.getCourseByID(7);
+        course.setNumberOfStarRatingList(dao.getStarRatingsCount(Integer.toString(course.getCourseID())));
+        System.out.println(course.getPercentageOfNStarRating(5));
     }
 }

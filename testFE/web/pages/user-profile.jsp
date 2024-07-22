@@ -222,7 +222,8 @@
                                         <h1>Certificates</h1>
                                         <div class="certificate-list">
                                             <c:forEach var="certificate" items="${certificates}">
-                                                <div class="certificate-item">
+                                                <div style="margin-bottom: 18px" class="certificate-item">
+                                                    <h5>${CertificateDAO.getCourseNameByCertificateID(certificate.certificateID)}</h5>
                                                     <a href="${certificate.certificateUrl}" target="_blank">View Certificate</a>
                                                 </div>
                                             </c:forEach>

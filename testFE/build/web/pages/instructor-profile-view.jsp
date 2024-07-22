@@ -122,7 +122,7 @@
                 <div class="row">
                     <div class="col-xl-3 col-lg-3">
                         <div class="course-instructors-img mb-30">
-                            <img class="mb-20" src="${pageContext.request.contextPath}/img/course/course-instructors.png" alt="instructors-img">
+                            <img class="mb-20" src="${instructor.getAvatar()}" alt="instructors-img">
                             <div class="course-details-tittle mb-30">
                                 <h3>${instructor.getFirstName()} ${instructor.getLastName()}</h3>
                                 <span class="d-block mb-15"></span>

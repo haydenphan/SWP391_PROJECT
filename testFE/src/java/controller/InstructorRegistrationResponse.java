@@ -65,7 +65,7 @@ public class InstructorRegistrationResponse extends HttpServlet {
             approvalsDao.update(approval);
         }
 
-        response.sendRedirect("admin/viewInstructorProfile.jsp");
+        response.sendRedirect("admin/adminHome.jsp");
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)

@@ -35,7 +35,7 @@ public class User {
     private byte[] storedSalt;
 
     private int providerID;
-    
+
     private int walletID;
 
     public int getWalletID() {
@@ -174,6 +174,15 @@ public class User {
     }
 
     public String getRoleName() {
-        return (this.roleID == 1 ? "Learner" : "Instructor");
+        String roleName = "";
+        switch (this.roleID) {
+            case 1 ->
+                roleName = "Learner";
+            case 2 ->
+                roleName = "Instructor";
+            default ->
+                roleName = "Admin";
+        }
+        return roleName;
     }
 }
