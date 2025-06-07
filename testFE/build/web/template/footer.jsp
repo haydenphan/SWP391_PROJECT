@@ -10,7 +10,7 @@
                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
                         <div class="footer-widget f-w1 mb-40">
                             <div class="footer-img">
-                                <a href="index.html"> <img src="${pageContext.request.contextPath}/img/logo/footer-logo.png" alt="footer-logo"></a>
+                                <a href="index.html"> <img src="${pageContext.request.contextPath}/img/logo/Logo-footer.png" alt="footer-logo"></a>
                                 <p></p>
                             </div>
                             <div class="footer-icon">

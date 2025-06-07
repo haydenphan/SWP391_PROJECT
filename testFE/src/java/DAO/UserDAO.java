@@ -141,38 +141,6 @@ public class UserDAO extends DAO<User> {
         return user;
     }
 
-//    public User checkExistedGGAccount(User user) throws Exception {
-//        String sql = "SELECT * FROM Users WHERE Email = ? AND PasswordHash = ?";
-//
-//        try (Connection con = JDBC.getConnectionWithSqlJdbc(); PreparedStatement st = con.prepareStatement(sql)) {
-//            st.setString(1, user.getEmail());
-//            st.setString(2, "GG");
-//
-//            try (ResultSet rs = st.executeQuery()) {
-//                if (rs.next()) {
-//                    user = new User();
-//                    user.setUserID(rs.getInt("UserID"));
-//                    user.setUserName(rs.getString("UserName"));
-//                    user.setPasswordHash(rs.getString("PasswordHash"));
-//                    user.setFirstName(rs.getString("FirstName"));
-//                    user.setLastName(rs.getString("LastName"));
-//                    user.setEmail(rs.getString("Email"));
-//                    user.setRole(rs.getInt("RoleID"));
-//                    user.setRegistrationDate(rs.getTimestamp("RegistrationDate").toLocalDateTime());
-//                    user.setIsActive(rs.getBoolean("IsActive"));
-//                    user.setAvatar(rs.getString("Avatar"));
-//                    user.setBio(rs.getString("Bio"));
-//                    user.setStoredSalt(rs.getBytes("StoredSalt"));
-//                    return user;
-//
-//                }
-//            }
-//        } catch (SQLException | ClassNotFoundException ex) {
-//            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//
-//        return null;
-//    }
     public User checkExistedAccount(User user) throws Exception {
         String sql = "";
         if (user.getProviderID() == 1) {
@@ -337,7 +305,7 @@ public class UserDAO extends DAO<User> {
     }
     
     public boolean updateUserProfile(User user) {
-        String sql = "UPDATE [OnlineLearningV2].[dbo].[Users] SET "
+        String sql = "UPDATE [Users] SET "
                 + "[FirstName] = ?, "
                 + "[LastName] = ?, "
                 + "[Email] = ?, "
@@ -696,33 +664,12 @@ public class UserDAO extends DAO<User> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
         return instructors;
     }
+    
+            public static void main(String[] args) throws SQLException, ClassNotFoundException{
+                System.out.println(UserDAO.getAdminId());
+        }
+    
 
-//    public boolean updateGoogleUser(String userId, String lastname, String firstname) throws Exception {
-//        String sql = "UPDATE Users SET UserName = ?, FirstName = ?, LastName = ? WHERE UserID = ?";
-//        Random rd = new Random();
-//        String username = System.currentTimeMillis() + rd.nextInt(1000) + "";
-//
-//        try (Connection conn = JDBC.getConnectionWithSqlJdbc();
-//             PreparedStatement stmt = conn.prepareStatement(sql)) {
-//
-//            stmt.setString(1, username);
-//            stmt.setString(2, firstname);
-//            stmt.setString(3, lastname);
-//            stmt.setString(4, userId);
-//
-//            int rowsUpdated = stmt.executeUpdate();
-//            return rowsUpdated > 0;
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        UserDAO user = new UserDAO();
-        System.out.println(user.getAdminId());
-//        user.insert(new User("4232", "gwgh", "fgrwgw", "gfaeg", "sgwG", "GFGW", "1", LocalDateTime.now(), true, null, null));
-    }
 }

@@ -362,8 +362,7 @@ public class SectionCommentDAO {
         }
 
         System.out.println(sectionCommentDAO.getCommentByID(3, null));
-//        sectionCommentDAO.insert(sectionComment);
-//        System.out.print(comments.get(0).getCommentDate());
+
     }
 
 }

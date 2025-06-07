@@ -363,7 +363,7 @@ public class CourseEnrollmentDAO {
 
     public static int countCompletedEnrollments() throws Exception {
         String sql = "SELECT COUNT(*) AS CompletedCount "
-                + "FROM [OnlineLearningV2].[dbo].[CourseEnrollments] "
+                + "FROM [dbo].[CourseEnrollments] "
                 + "WHERE IsCompleted = 1";
         int completedCount = 0;
 

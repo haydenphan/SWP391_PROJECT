@@ -976,24 +976,4 @@ public class CourseDAO extends DAO<Course> {
         // Calculate overall course completion percentage
         return (lectureCompletionPercentage + quizCompletionPercentage) / 2;
     }
-
-    public static void main(String[] args) {
-        CourseDAO dao = new CourseDAO();
-//        List<Course> list = dao.getFilteredCourses(null, null, null, null, null, null, null);
-//        for (Course course : list) {
-//            System.out.println(course.toString());
-//        }
-//        System.out.println(dao.getCourseByID("3"));
-//        List<Integer> starCounts = dao.getStarRatingsCount("3");
-//        System.out.println("Star ratings count for course ID " + "3" + ": " + starCounts);
-//        System.out.println(CourseDAO.getCoursesByInstructor(3).size());
-
-//        for (Course course : dao.listPopularCourse()) {
-//            System.out.println(course.toString());
-//        }
-
-        Course course = dao.getCourseByID(7);
-        course.setNumberOfStarRatingList(dao.getStarRatingsCount(Integer.toString(course.getCourseID())));
-        System.out.println(course.getPercentageOfNStarRating(5));
-    }
 }

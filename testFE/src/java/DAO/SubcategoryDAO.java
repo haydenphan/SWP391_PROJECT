@@ -57,8 +57,8 @@ public class SubcategoryDAO extends DAO {
 
     public static String getCategoryNameBySubId(int id) throws Exception {
         String sql = "SELECT c.CategoryName "
-                + "FROM [OnlineLearningV2].[dbo].[Subcategories] AS s "
-                + "JOIN [OnlineLearningV2].[dbo].[Categories] AS c "
+                + "FROM [dbo].[Subcategories] AS s "
+                + "JOIN [dbo].[Categories] AS c "
                 + "ON s.CategoryID = c.CategoryID "
                 + "WHERE s.SubcategoryID = ?";
 

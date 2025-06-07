@@ -138,11 +138,4 @@ public class ReportDAO {
         }
         return false;
     }
-    
-    public static void main(String[] args) throws Exception {
-        ReportDAO dao = new ReportDAO();
-        for (Report report : dao.getReports()) {
-            System.out.println(report.toString());
-        }
-    }
 }

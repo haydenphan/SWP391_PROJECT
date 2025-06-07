@@ -54,7 +54,7 @@
                                         </c:otherwise>
                                     </c:choose>
                                     <a href="${pageContext.request.contextPath}/home?role=${rolePath}">
-                                        <img src="${pageContext.request.contextPath}/img/logo/logo-black.png" alt="logo">
+                                        <img src="${pageContext.request.contextPath}/img/logo/Logo-header.png" width="190" height="48" alt="logo">
                                     </a>
                                 </div>
 

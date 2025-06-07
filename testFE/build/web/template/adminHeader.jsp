@@ -8,7 +8,7 @@
                     <div class="col-xl-7 col-lg-7 col-md-5 col-sm-9 col-9">
                         <div class="header-left d-flex align-items-center">
                             <div class="header-logo">
-                                <a href="${pageContext.request.contextPath}/admin/adminHome.jsp"><img src="${pageContext.request.contextPath}/img/logo/logo-black.png" alt="logo"></a>
+                                <a href="${pageContext.request.contextPath}/admin/adminHome.jsp"><img src="${pageContext.request.contextPath}/img/logo/Logo-header.png" alt="logo"></a>
                             </div>
 
                             <div class="main-menu d-none d-xl-block">

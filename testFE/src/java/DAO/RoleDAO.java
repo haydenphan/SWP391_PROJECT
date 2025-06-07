@@ -31,11 +31,4 @@ public class RoleDAO extends DAO<Role>{
         return res;
     }
     
-    public static void main(String[] args) {
-        RoleDAO r = new RoleDAO();
-        r.insert(new Role("Learner"));
-        r.insert(new Role("Instructor"));
-        r.insert(new Role("Admin"));
-    }
-    
 }
